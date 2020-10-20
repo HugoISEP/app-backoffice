@@ -1,0 +1,55 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-3.9.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.9.xsd">
+    <changeSet author="poc (generated)" id="1603210637134-2">
+        <createTable tableName="job_type">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="job_typePK"/>
+            </column>
+            <column name="description" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="duration" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="mission_id" type="BIGINT"/>
+            <column name="technology_id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="poc (generated)" id="1603210637134-3">
+        <createTable tableName="mission">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="missionPK"/>
+            </column>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="user_id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="poc (generated)" id="1603210637134-4">
+        <createTable tableName="technology">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="technologyPK"/>
+            </column>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="user_id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="poc (generated)" id="1603210637134-5">
+        <addForeignKeyConstraint baseColumnNames="mission_id" baseTableName="job_type" constraintName="FK5i4slav40l5walkqp6djyy3pt" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="mission" validate="true"/>
+    </changeSet>
+    <changeSet author="poc (generated)" id="1603210637134-6">
+        <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="technology" constraintName="FKbvltnvv54pr8cressdrahvtrl" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="jhi_user" validate="true"/>
+    </changeSet>
+    <changeSet author="poc (generated)" id="1603210637134-7">
+        <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="mission" constraintName="FKbw7uox3to1m22lllttde655y3" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="jhi_user" validate="true"/>
+    </changeSet>
+    <changeSet author="poc (generated)" id="1603210637134-8">
+        <addForeignKeyConstraint baseColumnNames="technology_id" baseTableName="job_type" constraintName="FKr0fjk0xi0sca5gpniykmsrdxd" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="technology" validate="true"/>
+    </changeSet>
+    <changeSet author="poc (generated)" id="1603210637134-1">
+        <alterSequence sequenceName="sequence_generator"/>
+    </changeSet>
+</databaseChangeLog>
