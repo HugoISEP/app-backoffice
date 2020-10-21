@@ -43,7 +43,6 @@ public class TechnologyController {
     }
 
     @GetMapping
-    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.USER + "\")")
     public List<Technology> getAllByUser(){
         UserDTO user = userService.getUserWithAuthorities()
             .map(UserDTO::new)
@@ -58,8 +57,7 @@ public class TechnologyController {
         return repository.findAll();
     }
 
-    @PostMapping()
-    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.USER + "\")")
+    @PostMapping
     public Technology create(@Valid @RequestBody Technology technology){
         if (technology.getId() != null) {
             throw new BadRequestAlertException("A new technologie cannot already have an ID", ENTITY_NAME, "id exists");
@@ -71,7 +69,7 @@ public class TechnologyController {
         return repository.save(technology);
     }
 
-    @PutMapping()
+    @PutMapping
     @PostAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\") || principal.username == returnObject.user.login ")
     public Technology edit(@Valid @RequestBody Technology technology){
         if (technology.getId() == null) {
@@ -83,17 +81,16 @@ public class TechnologyController {
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.USER + "\")")
     public void delete(@PathVariable Long id){
         UserDTO user = userService.getUserWithAuthorities()
             .map(UserDTO::new)
             .orElseThrow(() -> new TechnologyController.AccountResourceException("User could not be found"));
         Technology technologyToDelete = repository.findById(id).orElseThrow(() -> new BadRequestAlertException("Technologie doesn't exist", ENTITY_NAME, "id doesn't exist"));
 
-        if(technologyToDelete.getUser().getLogin() == user.getLogin()){
+        if(technologyToDelete.getUser().getLogin() == user.getLogin() || user.getAuthorities().contains(AuthoritiesConstants.ADMIN)){
             repository.delete(repository.findById(id).orElseThrow(() -> new BadRequestAlertException("Cannot delete ", ENTITY_NAME, " id doesn't exist")));
         } else {
-            new TechnologyController.AccountResourceException("User could not be found");
+            new TechnologyController.AccountResourceException("Access Forbidden");
         }
 
     }

@@ -54,8 +54,7 @@ public class MissionController {
     }
 
 
-    @GetMapping()
-    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.USER + "\")")
+    @GetMapping
     public List<Mission> getAllByUser(){
         UserDTO user = userService.getUserWithAuthorities()
             .map(UserDTO::new)
@@ -76,8 +75,7 @@ public class MissionController {
         return jobTypeRepository.findAllByMission_Id(id);
     }
 
-    @PostMapping()
-    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.USER + "\")")
+    @PostMapping
     public Mission create(@Valid @RequestBody Mission mission){
         if (mission.getId() != null) {
             throw new BadRequestAlertException("A new mission cannot already have an ID", ENTITY_NAME, "id exists");
@@ -105,7 +103,7 @@ public class MissionController {
         return repository.save(mission);
     }
 
-    @PutMapping()
+    @PutMapping
     @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\") || #mission.user.login == principal.username ")
     public Mission edit(@Valid @RequestBody Mission mission){
         if (mission.getId() == null) {
@@ -117,17 +115,16 @@ public class MissionController {
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.USER + "\")")
     public void delete(@PathVariable Long id){
         UserDTO user = userService.getUserWithAuthorities()
             .map(UserDTO::new)
             .orElseThrow(() -> new MissionController.AccountResourceException("User could not be found"));
         Mission missionToDelete = repository.findById(id).orElseThrow(() -> new BadRequestAlertException("Technologie doesn't exist", ENTITY_NAME, "id doesn't exist"));
 
-        if(missionToDelete.getUser().getLogin() == user.getLogin()){
+        if(missionToDelete.getUser().getLogin() == user.getLogin() || user.getAuthorities().contains(AuthoritiesConstants.ADMIN)){
             repository.delete(repository.findById(id).orElseThrow(() -> new BadRequestAlertException("Cannot delete ", ENTITY_NAME, " id doesn't exist")));
         } else {
-            new MissionController.AccountResourceException("User could not be found");
+            new MissionController.AccountResourceException("Access forbidden");
         }
     }
 }
