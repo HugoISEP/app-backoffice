@@ -19,9 +19,9 @@ export class MissionResolve implements Resolve<IMission> {
     const id = route.params['id'];
     if (id) {
       return this.service.getById(id).pipe(
-        flatMap((owner: HttpResponse<Mission>) => {
-          if (owner.body) {
-            return of(owner.body);
+        flatMap((mission: HttpResponse<Mission>) => {
+          if (mission.body) {
+            return of(mission.body);
           } else {
             this.router.navigate(['404']);
             return EMPTY;
@@ -47,7 +47,7 @@ export const missionRoute: Routes = [
     path: ':id/view',
     component: MissionDetailComponent,
     resolve: {
-      owner: MissionResolve,
+      mission: MissionResolve,
     },
     data: {
       authorities: [Authority.USER],
@@ -59,7 +59,7 @@ export const missionRoute: Routes = [
     path: 'new',
     component: MissionUpdateComponent,
     resolve: {
-      owner: MissionResolve,
+      mission: MissionResolve,
     },
     data: {
       authorities: [Authority.USER],
@@ -71,7 +71,7 @@ export const missionRoute: Routes = [
     path: ':id/edit',
     component: MissionUpdateComponent,
     resolve: {
-      owner: MissionResolve,
+      mission: MissionResolve,
     },
     data: {
       authorities: [Authority.USER],
