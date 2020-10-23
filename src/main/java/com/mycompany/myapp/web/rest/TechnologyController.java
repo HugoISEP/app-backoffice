@@ -16,6 +16,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/technology")
+@PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.USER + "\")")
 public class TechnologyController {
 
     private static class AccountResourceException extends RuntimeException {

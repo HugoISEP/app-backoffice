@@ -1,9 +1,12 @@
 package com.mycompany.myapp.web.rest;
 
 import com.mycompany.myapp.domain.JobType;
-import com.mycompany.myapp.domain.Technology;
+import com.mycompany.myapp.domain.Mission;
 import com.mycompany.myapp.repository.JobTypeRepository;
+import com.mycompany.myapp.repository.MissionRepository;
+import com.mycompany.myapp.repository.TechnologyRepository;
 import com.mycompany.myapp.security.AuthoritiesConstants;
+import com.mycompany.myapp.service.JobTypeService;
 import com.mycompany.myapp.service.UserService;
 import com.mycompany.myapp.service.dto.UserDTO;
 import com.mycompany.myapp.service.mapper.UserMapper;
@@ -17,23 +20,17 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/job-type")
+@PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.USER + "\")")
 public class JobTypeController {
-    private static class AccountResourceException extends RuntimeException {
-        private AccountResourceException(String message) {
-            super(message);
-        }
-    }
 
     private static final String ENTITY_NAME = "jobType";
 
     private final JobTypeRepository repository;
-    private final UserService userService;
-    private final UserMapper userMapper;
+    private final JobTypeService service;
 
-    public JobTypeController(JobTypeRepository repository, UserService userService, UserMapper userMapper) {
+    public JobTypeController(JobTypeRepository repository, JobTypeService service) {
         this.repository = repository;
-        this.userService = userService;
-        this.userMapper = userMapper;
+        this.service = service;
     }
 
     @GetMapping("/{id}")
@@ -48,6 +45,12 @@ public class JobTypeController {
         return repository.findAll();
     }
 
+    @PostMapping("/mission/{missionId}")
+    @PostAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\") || principal.username == returnObject.user.login ")
+    public Mission addJobType(@PathVariable Long missionId, @Valid @RequestBody JobType jobType){
+        return service.addJobType(missionId, jobType);
+    }
+
     @PutMapping()
     @PostAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\") || principal.username == returnObject.mission.user.login ")
     public JobType edit(@Valid @RequestBody JobType jobType){
@@ -59,15 +62,6 @@ public class JobTypeController {
 
     @DeleteMapping("/{id}")
     public void delete(@PathVariable Long id){
-        UserDTO user = userService.getUserWithAuthorities()
-            .map(UserDTO::new)
-            .orElseThrow(() -> new JobTypeController.AccountResourceException("User could not be found"));
-        JobType jobTypeToDelete = repository.findById(id).orElseThrow(() -> new BadRequestAlertException("Technologie doesn't exist", ENTITY_NAME, "id doesn't exist"));
-
-        if(jobTypeToDelete.getMission().getUser().getLogin() == user.getLogin() || user.getAuthorities().contains(AuthoritiesConstants.ADMIN)){
-            repository.delete(repository.findById(id).orElseThrow(() -> new BadRequestAlertException("Cannot delete ", ENTITY_NAME, " id doesn't exist")));
-        } else {
-            new JobTypeController.AccountResourceException("Access Forbidden");
-        }
+        service.deleteJobType(id);
     }
 }
