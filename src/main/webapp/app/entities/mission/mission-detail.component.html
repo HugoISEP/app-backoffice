@@ -2,21 +2,28 @@
     <div class="col-8">
         <div *ngIf="mission">
             <h2><span>Mission: </span> {{ mission.name }}</h2>
-
             <hr>
-
             <jhi-alert-error></jhi-alert-error>
-
-            <dl class="row-md jh-entity-details">
-                <dt><span>Name</span></dt>
-                <dd>
-                    <span>{{ mission.name }}</span>
-                </dd>
-                <dt><span>Id</span></dt>
-                <dd>
-                    {{mission.id}}
-                </dd>
-            </dl>
+            <table *ngIf="mission.positions && mission.positions.length > 0" class="table table-striped">
+                <thead class="thead-dark">
+                <tr>
+                    <th scope="col">Date</th>
+                    <th scope="col">Durée</th>
+                    <th scope="col">Description</th>
+                    <th scope="col">Travail</th>
+                    <th scope="col">Status</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr *ngFor="let position of mission?.positions ;trackBy: getPositionId">
+                    <th>{{position.createdAt | date: 'yyyy-MM-dd'}}</th>
+                    <td>{{position.duration}}</td>
+                    <td>{{position.description}}</td>
+                    <td>{{position.jobType!.name}}</td>
+                    <td>{{position.status}}</td>
+                </tr>
+                </tbody>
+            </table>
 
             <button type="submit"
                     (click)="previousState()"

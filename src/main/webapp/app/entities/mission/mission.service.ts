@@ -3,6 +3,8 @@ import { SERVER_API_URL } from '../../app.constants';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { IMission } from '../../shared/model/mission.model';
 import { Observable } from 'rxjs';
+import * as moment from 'moment';
+import { map } from 'rxjs/operators';
 
 type EntityResponseType = HttpResponse<IMission>;
 type EntityArrayResponseType = HttpResponse<IMission[]>;
@@ -26,7 +28,9 @@ export class MissionService {
   }
 
   getAllByUser(): Observable<EntityArrayResponseType> {
-    return this.http.get<IMission[]>(this.resourceUrl, { observe: 'response' });
+    return this.http
+      .get<IMission[]>(this.resourceUrl, { observe: 'response' })
+      .pipe(map((res: EntityArrayResponseType) => this.convertDateArrayFromServer(res)));
   }
 
   getAll(): Observable<EntityArrayResponseType> {
@@ -35,5 +39,25 @@ export class MissionService {
 
   delete(id: number): Observable<HttpResponse<{}>> {
     return this.http.delete(`${this.resourceUrl}/${id}`, { observe: 'response' });
+  }
+
+  protected convertDateFromServer(res: EntityResponseType): EntityResponseType {
+    if (res.body) {
+      res.body.positions?.forEach(position => {
+        position.createdAt = position.createdAt ? moment(position.createdAt) : undefined;
+      });
+    }
+    return res;
+  }
+
+  protected convertDateArrayFromServer(res: EntityArrayResponseType): EntityArrayResponseType {
+    if (res.body) {
+      res.body.forEach((mission: IMission) => {
+        mission.positions?.forEach(position => {
+          position.createdAt = position.createdAt ? moment(position.createdAt) : undefined;
+        });
+      });
+    }
+    return res;
   }
 }

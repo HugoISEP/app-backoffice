@@ -11,6 +11,8 @@ import com.mycompany.myapp.service.dto.UserDTO;
 import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+
 @Service
 public class PositionService {
     private static class AccountResourceException extends RuntimeException {

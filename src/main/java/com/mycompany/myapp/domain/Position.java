@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "position")
@@ -24,6 +26,12 @@ public class Position {
     @ManyToOne
     @JsonIgnoreProperties(value = "positions")
     private Mission mission;
+
+    @Column(name = "created_at", nullable = false)
+    private LocalDateTime createdAt = LocalDateTime.now();
+
+    @Column(name = "status", nullable = false)
+    private boolean status = false;
 
     @ManyToOne
     @JsonIgnoreProperties(value = "positions")
@@ -67,5 +75,21 @@ public class Position {
 
     public void setJobType(JobType technology) {
         this.jobType = technology;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public boolean isStatus() {
+        return status;
+    }
+
+    public void setStatus(boolean status) {
+        this.status = status;
     }
 }

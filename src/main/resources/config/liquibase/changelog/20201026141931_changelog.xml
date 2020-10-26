@@ -1,6 +1,6 @@
 <?xml version="1.1" encoding="UTF-8" standalone="no"?>
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-3.9.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.9.xsd">
-    <changeSet author="hugo (generated)" id="1603709526931-2">
+    <changeSet author="hugo (generated)" id="1603721977016-2">
         <createTable tableName="job_type">
             <column autoIncrement="true" name="id" type="BIGINT">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="job_typePK"/>
@@ -11,7 +11,7 @@
             <column name="user_id" type="BIGINT"/>
         </createTable>
     </changeSet>
-    <changeSet author="hugo (generated)" id="1603709526931-3">
+    <changeSet author="hugo (generated)" id="1603721977016-3">
         <createTable tableName="mission">
             <column autoIncrement="true" name="id" type="BIGINT">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="missionPK"/>
@@ -22,10 +22,13 @@
             <column name="user_id" type="BIGINT"/>
         </createTable>
     </changeSet>
-    <changeSet author="hugo (generated)" id="1603709526931-4">
+    <changeSet author="hugo (generated)" id="1603721977016-4">
         <createTable tableName="position">
             <column autoIncrement="true" name="id" type="BIGINT">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="positionPK"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP WITHOUT TIME ZONE">
+                <constraints nullable="false"/>
             </column>
             <column name="description" type="VARCHAR(255)">
                 <constraints nullable="false"/>
@@ -33,23 +36,26 @@
             <column name="duration" type="INTEGER">
                 <constraints nullable="false"/>
             </column>
+            <column name="status" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
             <column name="job_type_id" type="BIGINT"/>
             <column name="mission_id" type="BIGINT"/>
         </createTable>
     </changeSet>
-    <changeSet author="hugo (generated)" id="1603709526931-5">
+    <changeSet author="hugo (generated)" id="1603721977016-5">
         <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="job_type" constraintName="FK3v0gcaovjc65s69x3wdapop5m" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="jhi_user" validate="true"/>
     </changeSet>
-    <changeSet author="hugo (generated)" id="1603709526931-6">
+    <changeSet author="hugo (generated)" id="1603721977016-6">
         <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="mission" constraintName="FKbw7uox3to1m22lllttde655y3" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="jhi_user" validate="true"/>
     </changeSet>
-    <changeSet author="hugo (generated)" id="1603709526931-7">
+    <changeSet author="hugo (generated)" id="1603721977016-7">
         <addForeignKeyConstraint baseColumnNames="mission_id" baseTableName="position" constraintName="FKgepwke3ujb2vb7q2jdnrees45" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="mission" validate="true"/>
     </changeSet>
-    <changeSet author="hugo (generated)" id="1603709526931-8">
+    <changeSet author="hugo (generated)" id="1603721977016-8">
         <addForeignKeyConstraint baseColumnNames="job_type_id" baseTableName="position" constraintName="FKibc9yq315b75l0dlw89n9rawp" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="job_type" validate="true"/>
     </changeSet>
-    <changeSet author="hugo (generated)" id="1603709526931-1">
+    <changeSet author="hugo (generated)" id="1603721977016-1">
         <alterSequence sequenceName="sequence_generator"/>
     </changeSet>
 </databaseChangeLog>

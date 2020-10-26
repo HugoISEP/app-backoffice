@@ -41,7 +41,7 @@ public class PositionController {
         return repository.findAllByMissionId(id);
     }
 
-    @GetMapping()
+    @GetMapping("/all")
     @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
     public List<Position> getAll(){
         return repository.findAll();
@@ -49,7 +49,7 @@ public class PositionController {
 
     @PostMapping("/mission/{missionId}")
     @PostAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\") || principal.username == returnObject.user.login ")
-    public Mission addJobType(@PathVariable Long missionId, @Valid @RequestBody Position position){
+    public Mission addPosition(@PathVariable Long missionId, @Valid @RequestBody Position position){
         return service.addPosition(missionId, position);
     }
 
