@@ -12,6 +12,7 @@
                     <th scope="col">Description</th>
                     <th scope="col">Travail</th>
                     <th scope="col">Status</th>
+                    <th scope="col">Voir plus</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -20,7 +21,17 @@
                     <td>{{position.duration}}</td>
                     <td>{{position.description}}</td>
                     <td>{{position.jobType!.name}}</td>
-                    <td>{{position.status}}</td>
+                    <td>
+                        <div class="custom-control custom-switch">
+                            <input type="checkbox" class="custom-control-input" [id]="position.id" (click)="togglePosition(position)" [checked]="position.status">
+                            <label class="custom-control-label" [for]="position.id" ></label>
+                        </div>
+                    </td>
+                    <td>
+                        <button type="submit" class="btn btn-info btn-sm">
+                            <fa-icon icon="eye"></fa-icon><span class="d-none d-md-inline">Voir</span>
+                        </button>
+                    </td>
                 </tr>
                 </tbody>
             </table>

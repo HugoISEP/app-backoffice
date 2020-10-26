@@ -59,7 +59,9 @@ public class PositionController {
         if (position.getId() == null) {
             throw new BadRequestAlertException("Cannot edit ", ENTITY_NAME, " id doesn't exist");
         }
-        return repository.save(position);
+        Position oldPosition = repository.findById(position.getId()).orElseThrow(() -> new BadRequestAlertException("position doesn't exist", ENTITY_NAME, "id doesn't exist"));
+        oldPosition.setStatus(position.isStatus());
+        return repository.save(oldPosition);
     }
 
     @DeleteMapping("/{id}")

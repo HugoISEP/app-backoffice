@@ -78,7 +78,7 @@ public class JobTypeController {
         }
         JobType oldJobType = repository.findById(jobType.getId()).orElseThrow(() -> new BadRequestAlertException("technology doesn't exist", ENTITY_NAME, "id doesn't exist"));
         oldJobType.setName(jobType.getName());
-        return repository.save(jobType);
+        return repository.save(oldJobType);
     }
 
     @DeleteMapping("/{id}")
