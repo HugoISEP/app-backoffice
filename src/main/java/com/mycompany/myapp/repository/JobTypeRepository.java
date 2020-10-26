@@ -6,5 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface JobTypeRepository extends JpaRepository<JobType, Long> {
-    List<JobType> findAllByMission_Id(Long id);
+    List<JobType> findTechnologiesByUserId(Long id);
 }

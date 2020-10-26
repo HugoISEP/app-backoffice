@@ -22,7 +22,7 @@ public class Mission {
 
     @OneToMany(mappedBy = "mission", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JsonIgnoreProperties(value = "mission")
-    private List<JobType> jobTypes = new ArrayList<>();
+    private List<Position> positions = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -45,12 +45,12 @@ public class Mission {
         this.name = name;
     }
 
-    public List<JobType> getJobTypes() {
-        return jobTypes;
+    public List<Position> getPositions() {
+        return positions;
     }
 
-    public void setJobTypes(List<JobType> jobTypes) {
-        this.jobTypes = jobTypes;
+    public void setPositions(List<Position> jobTypes) {
+        this.positions = jobTypes;
     }
 
     public User getUser() {

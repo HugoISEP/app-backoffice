@@ -1,9 +1,12 @@
 package com.mycompany.myapp.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "job_type")
@@ -14,20 +17,17 @@ public class JobType {
     private Long id;
 
     @NotNull
-    @Column(name = "duration", nullable = false)
-    private int duration;
+    @Column(name = "name", nullable = false)
+    private String name;
 
-    @NotNull
-    @Column(name = "description", nullable = false)
-    private String description;
+    @OneToMany(mappedBy = "jobType", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JsonIgnoreProperties(value = "jobTypes")
+    private List<Position> positions = new ArrayList<>();
 
     @ManyToOne
-    @JsonIgnoreProperties(value = "jobTypes")
-    private Mission mission;
-
-    @ManyToOne
-    @JsonIgnoreProperties(value = "jobTypes")
-    private Technology technology;
+    @JoinColumn(name = "user_id")
+    @JsonIgnore
+    private User user;
 
     public Long getId() {
         return id;
@@ -37,35 +37,27 @@ public class JobType {
         this.id = id;
     }
 
-    public int getDuration() {
-        return duration;
+    public String getName() {
+        return name;
     }
 
-    public void setDuration(int duration) {
-        this.duration = duration;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public String getDescription() {
-        return description;
+    public List<Position> getPositions() {
+        return positions;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setPositions(List<Position> positions) {
+        this.positions = positions;
     }
 
-    public Mission getMission() {
-        return mission;
+    public User getUser() {
+        return user;
     }
 
-    public void setMission(Mission mission) {
-        this.mission = mission;
-    }
-
-    public Technology getTechnology() {
-        return technology;
-    }
-
-    public void setTechnology(Technology technology) {
-        this.technology = technology;
+    public void setUser(User user) {
+        this.user = user;
     }
 }
