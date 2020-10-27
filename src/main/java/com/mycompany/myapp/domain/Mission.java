@@ -21,6 +21,7 @@ public class Mission {
     private String name;
 
     @OneToMany(mappedBy = "mission", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OrderBy("id")
     @JsonIgnoreProperties(value = "mission")
     private List<Position> positions = new ArrayList<>();
 
