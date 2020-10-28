@@ -10,13 +10,16 @@ import { EMPTY, Observable, of } from 'rxjs';
 import { flatMap } from 'rxjs/operators';
 import { HttpResponse } from '@angular/common/http';
 import { MissionService } from './mission.service';
+import { PositionUpdateComponent } from '../position/position-update.component';
+import { IPosition, Position } from '../../shared/model/position.model';
+import { PositionService } from '../position/position.service';
 
 @Injectable({ providedIn: 'root' })
 export class MissionResolve implements Resolve<IMission> {
   constructor(private service: MissionService, private router: Router) {}
 
   resolve(route: ActivatedRouteSnapshot): Observable<IMission> | Observable<never> {
-    const id = route.params['id'];
+    const id = route.params['missionId'];
     if (id) {
       return this.service.getById(id).pipe(
         flatMap((mission: HttpResponse<Mission>) => {
@@ -33,6 +36,28 @@ export class MissionResolve implements Resolve<IMission> {
   }
 }
 
+@Injectable({ providedIn: 'root' })
+export class PositionResolve implements Resolve<IPosition> {
+  constructor(private service: PositionService, private router: Router) {}
+
+  resolve(route: ActivatedRouteSnapshot): Observable<IPosition> | Observable<never> {
+    const id = route.params['positionId'];
+    if (id) {
+      return this.service.getById(id).pipe(
+        flatMap((position: HttpResponse<Position>) => {
+          if (position.body) {
+            return of(position.body);
+          } else {
+            this.router.navigate(['404']);
+            return EMPTY;
+          }
+        })
+      );
+    }
+    return of(new Position());
+  }
+}
+
 export const missionRoute: Routes = [
   {
     path: '',
@@ -44,10 +69,23 @@ export const missionRoute: Routes = [
     canActivate: [UserRouteAccessService],
   },
   {
-    path: ':id/view',
+    path: ':missionId/view',
     component: MissionDetailComponent,
     resolve: {
       mission: MissionResolve,
+    },
+    data: {
+      authorities: [Authority.USER],
+      pageTitle: 'Mes Missions',
+    },
+    canActivate: [UserRouteAccessService],
+  },
+  {
+    path: ':missionId/position/:positionId/edit',
+    component: PositionUpdateComponent,
+    resolve: {
+      mission: MissionResolve,
+      position: PositionResolve,
     },
     data: {
       authorities: [Authority.USER],
@@ -68,7 +106,7 @@ export const missionRoute: Routes = [
     canActivate: [UserRouteAccessService],
   },
   {
-    path: ':id/edit',
+    path: ':missionId/edit',
     component: MissionUpdateComponent,
     resolve: {
       mission: MissionResolve,

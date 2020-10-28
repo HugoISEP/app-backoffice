@@ -5,6 +5,7 @@ import { IPosition } from 'app/shared/model/position.model';
 import { PositionService } from 'app/entities/position/position.service';
 import { MissionDeleteDialogComponent } from 'app/entities/mission/mission-delete-dialog.component';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { JhiAlertService } from 'ng-jhipster';
 
 @Component({
   selector: 'jhi-mission-detail',
@@ -13,7 +14,12 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 export class MissionDetailComponent implements OnInit {
   mission: IMission | null = null;
 
-  constructor(protected activatedRoute: ActivatedRoute, protected positionService: PositionService, protected modalService: NgbModal) {}
+  constructor(
+    protected activatedRoute: ActivatedRoute,
+    protected positionService: PositionService,
+    protected modalService: NgbModal,
+    protected alertService: JhiAlertService
+  ) {}
 
   ngOnInit(): void {
     this.activatedRoute.data.subscribe(({ mission }) => {

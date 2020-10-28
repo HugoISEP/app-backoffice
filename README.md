@@ -101,7 +101,7 @@ will generate few files:
 ```
 create src/main/webapp/app/my-component/my-component.component.html
 create src/main/webapp/app/my-component/my-component.component.ts
-update src/main/webapp/app/app.module.ts
+update src/main/webapp/app/app.position.module.ts
 ```
 
 ## Building for production

@@ -21,7 +21,7 @@ export class PositionService {
     return this.http.put<IPosition>(this.resourceUrl, position, { observe: 'response' });
   }
 
-  getId(id: number): Observable<EntityResponseType> {
+  getById(id: number): Observable<EntityResponseType> {
     return this.http.get<IPosition>(`${this.resourceUrl}/${id}`, { observe: 'response' });
   }
 

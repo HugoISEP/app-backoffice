@@ -41,15 +41,6 @@ export class MissionService {
     return this.http.delete(`${this.resourceUrl}/${id}`, { observe: 'response' });
   }
 
-  protected convertDateFromServer(res: EntityResponseType): EntityResponseType {
-    if (res.body) {
-      res.body.positions?.forEach(position => {
-        position.createdAt = position.createdAt ? moment(position.createdAt) : undefined;
-      });
-    }
-    return res;
-  }
-
   protected convertDateArrayFromServer(res: EntityArrayResponseType): EntityArrayResponseType {
     if (res.body) {
       res.body.forEach((mission: IMission) => {
