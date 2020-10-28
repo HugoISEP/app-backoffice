@@ -24,7 +24,7 @@ export class MissionDetailComponent implements OnInit {
   }
 
   togglePosition(position: IPosition): void {
-    this.positionService.update(position).subscribe(() => (position.status = !position.status));
+    this.positionService.update({ ...position, status: !position.status }).subscribe(() => (position.status = !position.status));
   }
 
   previousState(): void {
