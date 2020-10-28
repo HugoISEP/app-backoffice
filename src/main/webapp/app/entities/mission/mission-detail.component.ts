@@ -3,9 +3,6 @@ import { IMission } from 'app/shared/model/mission.model';
 import { ActivatedRoute } from '@angular/router';
 import { IPosition } from 'app/shared/model/position.model';
 import { PositionService } from 'app/entities/position/position.service';
-import { MissionDeleteDialogComponent } from 'app/entities/mission/mission-delete-dialog.component';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { JhiAlertService } from 'ng-jhipster';
 
 @Component({
   selector: 'jhi-mission-detail',
@@ -14,12 +11,7 @@ import { JhiAlertService } from 'ng-jhipster';
 export class MissionDetailComponent implements OnInit {
   mission: IMission | null = null;
 
-  constructor(
-    protected activatedRoute: ActivatedRoute,
-    protected positionService: PositionService,
-    protected modalService: NgbModal,
-    protected alertService: JhiAlertService
-  ) {}
+  constructor(protected activatedRoute: ActivatedRoute, protected positionService: PositionService) {}
 
   ngOnInit(): void {
     this.activatedRoute.data.subscribe(({ mission }) => {

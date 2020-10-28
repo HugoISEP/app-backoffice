@@ -88,7 +88,19 @@ export const missionRoute: Routes = [
     },
     data: {
       authorities: [Authority.USER],
-      pageTitle: 'Mes Missions',
+      pageTitle: 'Positions',
+    },
+    canActivate: [UserRouteAccessService],
+  },
+  {
+    path: ':missionId/position/new',
+    component: PositionUpdateComponent,
+    resolve: {
+      position: PositionResolve,
+    },
+    data: {
+      authorities: [Authority.USER],
+      pageTitle: 'Positions',
     },
     canActivate: [UserRouteAccessService],
   },

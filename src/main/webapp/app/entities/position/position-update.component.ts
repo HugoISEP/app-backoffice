@@ -36,8 +36,8 @@ export class PositionUpdateComponent implements OnInit {
   ngOnInit(): void {
     this.activateRoute.data.subscribe(({ position }) => {
       this.updateForm(position);
+      this.missionId = this.route.snapshot.params['missionId']; //.params['missionId'];
     });
-    this.missionId = this.route.params['missionId'];
     this.jobTypeService.getAllByUser().subscribe((res: HttpResponse<IJobType[]>) => (this.jobTypes = res.body || []));
   }
 
@@ -50,7 +50,7 @@ export class PositionUpdateComponent implements OnInit {
       id: position.id,
       duration: position.duration,
       description: position.description,
-      status: position.status,
+      status: !!position.status,
       jobType: position.jobType,
     });
   }
