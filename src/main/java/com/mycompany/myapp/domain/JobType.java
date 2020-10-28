@@ -21,7 +21,7 @@ public class JobType {
     private String name;
 
     @OneToMany(mappedBy = "jobType", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JsonIgnoreProperties(value = "jobTypes")
+    @JsonIgnore
     private List<Position> positions = new ArrayList<>();
 
     @ManyToOne

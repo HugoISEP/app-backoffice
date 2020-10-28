@@ -84,7 +84,6 @@ export const missionRoute: Routes = [
     path: ':missionId/position/:positionId/edit',
     component: PositionUpdateComponent,
     resolve: {
-      mission: MissionResolve,
       position: PositionResolve,
     },
     data: {

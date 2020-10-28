@@ -56,12 +56,7 @@ public class PositionController {
     @PutMapping()
     @PostAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\") || principal.username == returnObject.mission.user.login ")
     public Position edit(@Valid @RequestBody Position position){
-        if (position.getId() == null) {
-            throw new BadRequestAlertException("Cannot edit ", ENTITY_NAME, " id doesn't exist");
-        }
-        Position oldPosition = repository.findById(position.getId()).orElseThrow(() -> new BadRequestAlertException("position doesn't exist", ENTITY_NAME, "id doesn't exist"));
-        oldPosition.setStatus(position.isStatus());
-        return repository.save(oldPosition);
+        return repository.save(service.editPosition(position));
     }
 
     @DeleteMapping("/{id}")

@@ -1,11 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { IMission, Mission } from 'app/shared/model/mission.model';
 import { Observable } from 'rxjs';
 import { HttpResponse } from '@angular/common/http';
-import { PositionService } from 'app/entities/position/position.service';
-import { IPosition, Position } from 'app/shared/model/position.model';
+import { IJobType } from '../../shared/model/jobType.model';
+import { JobTypeService } from '../jobType/jobType.service';
+import { PositionService } from './position.service';
+import { IPosition, Position } from '../../shared/model/position.model';
 
 @Component({
   selector: 'jhi-position-update',
@@ -13,25 +14,35 @@ import { IPosition, Position } from 'app/shared/model/position.model';
 })
 export class PositionUpdateComponent implements OnInit {
   isSaving = false;
-  position: IPosition | null = null;
-  mission: IMission | null = null;
+  missionId?: number;
+  jobTypes: IJobType[] = [];
 
   editForm = this.fb.group({
     id: [],
     duration: [null, [Validators.required]],
     description: [null, [Validators.required]],
     status: [null, [Validators.required]],
-    createdAt: [],
+    jobType: [null, [Validators.required]],
   });
 
-  constructor(protected positionService: PositionService, protected activateRoute: ActivatedRoute, private fb: FormBuilder) {}
+  constructor(
+    protected jobTypeService: JobTypeService,
+    protected positionService: PositionService,
+    protected activateRoute: ActivatedRoute,
+    private fb: FormBuilder,
+    private route: ActivatedRoute
+  ) {}
 
   ngOnInit(): void {
-    this.activateRoute.data.subscribe(({ position, mission }) => {
+    this.activateRoute.data.subscribe(({ position }) => {
       this.updateForm(position);
-      this.position = position;
-      this.mission = mission;
     });
+    this.missionId = this.route.params['missionId'];
+    this.jobTypeService.getAllByUser().subscribe((res: HttpResponse<IJobType[]>) => (this.jobTypes = res.body || []));
+  }
+
+  getId(index: number, jobType: IJobType): any {
+    return jobType.id;
   }
 
   updateForm(position: IPosition): void {
@@ -40,7 +51,7 @@ export class PositionUpdateComponent implements OnInit {
       duration: position.duration,
       description: position.description,
       status: position.status,
-      createdAt: position.createdAt,
+      jobType: position.jobType,
     });
   }
 
@@ -51,6 +62,7 @@ export class PositionUpdateComponent implements OnInit {
       duration: this.editForm.get(['duration'])!.value,
       description: this.editForm.get(['description'])!.value,
       status: this.editForm.get(['status'])!.value,
+      jobType: this.editForm.get(['jobType'])!.value,
     };
   }
 
@@ -61,10 +73,6 @@ export class PositionUpdateComponent implements OnInit {
 
   protected onSaveError(): void {
     this.isSaving = false;
-  }
-
-  getId(index: number, mission: IMission): any {
-    return mission.id;
   }
 
   protected subscribeToSaveResponse(result: Observable<HttpResponse<IPosition>>): void {
@@ -84,7 +92,7 @@ export class PositionUpdateComponent implements OnInit {
     if (position.id !== undefined) {
       this.subscribeToSaveResponse(this.positionService.update(position));
     } else {
-      this.subscribeToSaveResponse(this.positionService.create(position, this.mission?.id!));
+      this.subscribeToSaveResponse(this.positionService.create(position, this.missionId!));
     }
   }
 }

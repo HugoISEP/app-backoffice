@@ -50,6 +50,18 @@ public class PositionService {
         return missionRepository.save(mission);
     }
 
+    public Position editPosition(Position newPosition){
+        if (newPosition.getId() == null) {
+            throw new BadRequestAlertException("Cannot edit ", ENTITY_NAME, " id doesn't exist");
+        }
+        Position oldPosition = repository.findById(newPosition.getId()).orElseThrow(() -> new BadRequestAlertException("position doesn't exist", ENTITY_NAME, "id doesn't exist"));
+        oldPosition.setStatus(newPosition.isStatus());
+        oldPosition.setJobType(newPosition.getJobType());
+        oldPosition.setDescription(newPosition.getDescription());
+        oldPosition.setDuration(newPosition.getDuration());
+        return oldPosition;
+    }
+
     public void deletePosition(Long id){
         UserDTO user = userService.getUserWithAuthorities()
             .map(UserDTO::new)
