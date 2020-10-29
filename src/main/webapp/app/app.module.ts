@@ -13,10 +13,6 @@ import { NavbarComponent } from './layouts/navbar/navbar.component';
 import { FooterComponent } from './layouts/footer/footer.component';
 import { PageRibbonComponent } from './layouts/profiles/page-ribbon.component';
 import { ErrorComponent } from './layouts/error/error.component';
-import { MissionComponent } from './entities/mission/mission.component';
-import { MissionDeleteDialogComponent } from './entities/mission/mission-delete-dialog.component';
-import { MissionDetailComponent } from './entities/mission/mission-detail.component';
-import { MissionUpdateComponent } from './entities/mission/mission-update.component';
 
 @NgModule({
   imports: [
