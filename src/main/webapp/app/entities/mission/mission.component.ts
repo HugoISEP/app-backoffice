@@ -6,7 +6,6 @@ import { JhiEventManager } from 'ng-jhipster';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { HttpResponse } from '@angular/common/http';
 import { MissionDeleteDialogComponent } from 'app/entities/mission/mission-delete-dialog.component';
-import { IPosition } from 'app/shared/model/position.model';
 
 @Component({
   selector: 'jhi-mission',
