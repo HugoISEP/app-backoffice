@@ -10,6 +10,7 @@ import com.mycompany.myapp.security.AuthoritiesConstants;
 import com.mycompany.myapp.service.dto.UserDTO;
 import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 
@@ -69,7 +70,7 @@ public class PositionService {
         Position positionToDelete = repository.findById(id).orElseThrow(() -> new BadRequestAlertException("Position doesn't exist", ENTITY_NAME, "id doesn't exist"));
 
         if(positionToDelete.getMission().getUser().getLogin() == user.getLogin() || user.getAuthorities().contains(AuthoritiesConstants.ADMIN)){
-            repository.delete(positionToDelete);
+            repository.delete(positionToDelete.getId());
         } else {
             new PositionService.AccountResourceException("Access Forbidden");
         }

@@ -13,6 +13,8 @@
                     <th scope="col">Travail</th>
                     <th scope="col">Status</th>
                     <th scope="col">Voir plus</th>
+                    <th scope="col">Supprimer</th>
+
                 </tr>
                 </thead>
                 <tbody>
@@ -30,6 +32,12 @@
                     <td>
                         <button type="submit" [routerLink]="['/mission', mission.id,'position', position.id, 'edit']" class="btn btn-info btn-sm">
                             <fa-icon icon="eye"></fa-icon><span class="d-none d-md-inline">Voir</span>
+                        </button>
+                    </td>
+                    <td>
+                        <button type="submit" (click)="delete(position)"
+                                class="btn btn-danger btn-sm">
+                            <fa-icon icon="trash-alt"></fa-icon>
                         </button>
                     </td>
                 </tr>
