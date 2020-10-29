@@ -14,6 +14,10 @@
                                *ngIf="editForm.get('duration')?.errors?.required">
                             Ce champs est requis
                         </small>
+                        <small class="form-text text-danger"
+                               *ngIf="editForm.get('duration')?.errors?.pattern">
+                            Nombre entier positif requis
+                        </small>
                     </div>
                 </div>
 

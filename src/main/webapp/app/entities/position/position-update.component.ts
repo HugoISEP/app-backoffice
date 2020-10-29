@@ -19,7 +19,7 @@ export class PositionUpdateComponent implements OnInit {
 
   editForm = this.fb.group({
     id: [],
-    duration: [null, [Validators.required]],
+    duration: [null, [Validators.required, Validators.pattern('^[1-9]\\d*$')]],
     description: [null, [Validators.required]],
     status: [null, [Validators.required]],
     jobType: [null, [Validators.required]],
