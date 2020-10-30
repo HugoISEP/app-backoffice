@@ -29,9 +29,9 @@
             <tbody>
             <tr *ngFor="let mission of missions ;trackBy: getId">
                 <td><a [routerLink]="['/mission', mission.id, 'view']">{{ mission.name }}</a></td>
-                <td>{{ mission.name }}</td>
+                <td>{{ mission.positions?.length }}</td>
                 <td>
-                    TEST
+                    Ajouter une date ?
                 </td>
                 <td class="text-right">
                     <div class="btn-group">
