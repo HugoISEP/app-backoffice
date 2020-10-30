@@ -47,7 +47,7 @@ export const jobTypeRoute: Routes = [
     path: ':jobTypeId/view',
     component: JobTypeDetailComponent,
     resolve: {
-      mission: JobTypeResolve,
+      jobType: JobTypeResolve,
     },
     data: {
       authorities: [Authority.USER],
@@ -59,7 +59,7 @@ export const jobTypeRoute: Routes = [
     path: 'new',
     component: JobTypeUpdateComponent,
     resolve: {
-      mission: JobTypeResolve,
+      jobType: JobTypeResolve,
     },
     data: {
       authorities: [Authority.USER],
@@ -71,7 +71,7 @@ export const jobTypeRoute: Routes = [
     path: ':jobTypeId/edit',
     component: JobTypeUpdateComponent,
     resolve: {
-      mission: JobTypeResolve,
+      jobType: JobTypeResolve,
     },
     data: {
       authorities: [Authority.USER],

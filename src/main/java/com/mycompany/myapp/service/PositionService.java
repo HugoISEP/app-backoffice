@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Service
 public class PositionService {
@@ -34,6 +35,14 @@ public class PositionService {
         this.missionRepository = missionRepository;
         this.jobTypeRepository = jobTypeRepository;
         this.userService = userService;
+    }
+
+    public List<Position> getActivePositionsByUser(){
+        UserDTO user = userService.getUserWithAuthorities()
+            .map(UserDTO::new)
+            .orElseThrow(() -> new PositionService.AccountResourceException("User could not be found"));
+
+        return repository.findAllByMission_User_IdAndStatusIsTrue(user.getId());
     }
 
 

@@ -48,9 +48,8 @@ public class JobTypeController {
         UserDTO user = userService.getUserWithAuthorities()
             .map(UserDTO::new)
             .orElseThrow(() -> new JobTypeController.AccountResourceException("User could not be found"));
-        return repository.findTechnologiesByUserId(user.getId());
+        return repository.findJobTypesByUser_Id(user.getId());
     }
-
 
     @GetMapping("/all")
     @PostAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")

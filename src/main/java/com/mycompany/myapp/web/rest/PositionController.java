@@ -41,6 +41,13 @@ public class PositionController {
         return repository.findAllByMissionId(id);
     }
 
+    @GetMapping("/active")
+    @PostAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\") " +
+        "|| returnObject.size() != 0 ? returnObject.get(0).mission.user.login == principal.username : true  ")
+    public List<Position> getPositionsByMission(){
+        return service.getActivePositionsByUser();
+    }
+
     @GetMapping("/all")
     @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
     public List<Position> getAll(){

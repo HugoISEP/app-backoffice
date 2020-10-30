@@ -1,1 +1,30 @@
-<p>job-type-detail works!</p>
+<div class="row justify-content-center">
+    <div class="col-8">
+        <div *ngIf="jobType">
+            <h2><span>Type de poste : </span> {{ jobType.name }}</h2>
+
+            <hr>
+
+            <jhi-alert-error></jhi-alert-error>
+
+            <dl class="row-md jh-entity-details">
+                <dt><span>Type de poste</span></dt>
+                <div>
+                    <a >{{ jobType.name }}</a>
+                </div>
+            </dl>
+
+            <button type="submit"
+                    (click)="previousState()"
+                    class="btn btn-info">
+                <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span>Back</span>
+            </button>
+
+            <button type="button"
+                    [routerLink]="['/job-type', jobType.id, 'edit']"
+                    class="btn btn-primary">
+                <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span>Edit</span>
+            </button>
+        </div>
+    </div>
+</div>
