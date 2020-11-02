@@ -7,10 +7,11 @@ import com.mycompany.myapp.repository.PositionRepository;
 import com.mycompany.myapp.repository.MissionRepository;
 import com.mycompany.myapp.repository.JobTypeRepository;
 import com.mycompany.myapp.security.AuthoritiesConstants;
+import com.mycompany.myapp.service.dto.PositionDTO;
 import com.mycompany.myapp.service.dto.UserDTO;
+import com.mycompany.myapp.service.mapper.PositionMapper;
 import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -20,12 +21,14 @@ public class PositionService {
     private static final String ENTITY_NAME = "position";
 
     private final PositionRepository repository;
+    private final PositionMapper mapper;
     private final MissionRepository missionRepository;
     private final JobTypeRepository jobTypeRepository;
     private final UserService userService;
 
-    public PositionService(PositionRepository repository, MissionRepository missionRepository, JobTypeRepository jobTypeRepository, UserService userService) {
+    public PositionService(PositionRepository repository, PositionMapper mapper, MissionRepository missionRepository, JobTypeRepository jobTypeRepository, UserService userService) {
         this.repository = repository;
+        this.mapper = mapper;
         this.missionRepository = missionRepository;
         this.jobTypeRepository = jobTypeRepository;
         this.userService = userService;
@@ -40,21 +43,23 @@ public class PositionService {
     }
 
 
-    public Mission addPosition(Long missionId, Position position){
-        if (position.getId() != null) {
+    public Mission addPosition(Long missionId, PositionDTO position){
+        Position newPosition = mapper.fromDTO(position);
+        if (newPosition.getId() != null) {
             throw new BadRequestAlertException("A new Position cannot already have an ID", ENTITY_NAME, "id exists");
         }
         Mission mission = missionRepository.findById(missionId).orElseThrow(() -> new BadRequestAlertException("mission doesn't exist", ENTITY_NAME, "id doesn't exist"));
-        JobType jobType = jobTypeRepository.findById(position.getJobType().getId()).orElseThrow(() -> new BadRequestAlertException("jobType doesn't exist", ENTITY_NAME, "id doesn't exist"));
-        position.setJobType(jobType);
-        position.setMission(mission);
-        jobType.getPositions().add(position);
-        mission.getPositions().add(position);
+        JobType jobType = jobTypeRepository.findById(newPosition.getJobType().getId()).orElseThrow(() -> new BadRequestAlertException("jobType doesn't exist", ENTITY_NAME, "id doesn't exist"));
+        newPosition.setJobType(jobType);
+        newPosition.setMission(mission);
+        jobType.getPositions().add(newPosition);
+        mission.getPositions().add(newPosition);
 
         return missionRepository.save(mission);
     }
 
-    public Position editPosition(Position newPosition){
+    public Position editPosition(PositionDTO position){
+        Position newPosition = mapper.fromDTO(position);
         if (newPosition.getId() == null) {
             throw new BadRequestAlertException("Cannot edit ", ENTITY_NAME, " id doesn't exist");
         }

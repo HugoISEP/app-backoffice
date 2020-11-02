@@ -5,9 +5,13 @@ import com.mycompany.myapp.repository.JobTypeRepository;
 import com.mycompany.myapp.repository.PositionRepository;
 import com.mycompany.myapp.security.AuthoritiesConstants;
 import com.mycompany.myapp.service.UserService;
+import com.mycompany.myapp.service.dto.JobTypeDTO;
 import com.mycompany.myapp.service.dto.UserDTO;
+import com.mycompany.myapp.service.mapper.JobTypeMapper;
 import com.mycompany.myapp.service.mapper.UserMapper;
+import com.mycompany.myapp.service.view.JobTypeView;
 import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
+import org.aspectj.weaver.AjcMemberMaker;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -23,12 +27,14 @@ public class JobTypeController {
     private static final String ENTITY_NAME = "jobType";
 
     private final JobTypeRepository repository;
+    private final JobTypeMapper mapper;
     private final PositionRepository positionRepository;
     private final UserService userService;
     private final UserMapper userMapper;
 
-    public JobTypeController(JobTypeRepository repository, PositionRepository positionRepository, UserService userService, UserMapper userMapper) {
+    public JobTypeController(JobTypeRepository repository, JobTypeMapper mapper, PositionRepository positionRepository, UserService userService, UserMapper userMapper) {
         this.repository = repository;
+        this.mapper = mapper;
         this.positionRepository = positionRepository;
         this.userService = userService;
         this.userMapper = userMapper;
@@ -36,45 +42,46 @@ public class JobTypeController {
 
     @GetMapping("/{id}")
     @PostAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\") || principal.username == returnObject.user.login ")
-    public JobType getById(@PathVariable Long id){
-        return repository.findById(id).orElseThrow(() -> new BadRequestAlertException("JobType doesn't exist", ENTITY_NAME, "id doesn't exist"));
+    public JobTypeView getById(@PathVariable Long id){
+        return mapper.asDTO(repository.findById(id).orElseThrow(() -> new BadRequestAlertException("JobType doesn't exist", ENTITY_NAME, "id doesn't exist")));
     }
 
     @GetMapping
-    public List<JobType> getAllByUser(){
+    public List<? extends JobTypeView> getAllByUser(){
         UserDTO user = userService.getUserWithAuthorities()
             .map(UserDTO::new)
             .orElseThrow(() -> new BadRequestAlertException("User not found", ENTITY_NAME, "id doesn't exist"));
-        return repository.findJobTypesByUser_Id(user.getId());
+        return mapper.asListDTO(repository.findJobTypesByUser_Id(user.getId()));
     }
 
     @GetMapping("/all")
     @PostAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
-    public List<JobType> getAll(){
-        return repository.findAll();
+    public List<? extends JobTypeView> getAll(){
+        return mapper.asListDTO(repository.findAll());
     }
 
     @PostMapping
-    public JobType create(@Valid @RequestBody JobType jobType){
-        if (jobType.getId() != null) {
+    public JobTypeView create(@Valid @RequestBody JobTypeDTO jobType){
+        JobType newJobType = mapper.fromDTO(jobType);
+        if (newJobType.getId() != null) {
             throw new BadRequestAlertException("A new JobType cannot already have an ID", ENTITY_NAME, "id exists");
         }
         UserDTO user = userService.getUserWithAuthorities()
             .map(UserDTO::new)
             .orElseThrow(() -> new BadRequestAlertException("User not found", ENTITY_NAME, "id doesn't exist"));
-        jobType.setUser(userMapper.userDTOToUser(user));
-        return repository.save(jobType);
+        newJobType.setUser(userMapper.userDTOToUser(user));
+        return mapper.asDTO(repository.save(newJobType));
     }
 
     @PutMapping
     @PostAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\") || principal.username == returnObject.user.login ")
-    public JobType edit(@Valid @RequestBody JobType jobType){
+    public JobTypeView edit(@Valid @RequestBody JobTypeDTO jobType){
         if (jobType.getId() == null) {
             throw new BadRequestAlertException("Cannot edit ", ENTITY_NAME, " id doesn't exist");
         }
         JobType oldJobType = repository.findById(jobType.getId()).orElseThrow(() -> new BadRequestAlertException("technology doesn't exist", ENTITY_NAME, "id doesn't exist"));
         oldJobType.setName(jobType.getName());
-        return repository.save(oldJobType);
+        return mapper.asDTO(repository.save(oldJobType));
     }
 
     @DeleteMapping("/{id}")

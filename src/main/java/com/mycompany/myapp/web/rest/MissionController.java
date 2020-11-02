@@ -1,13 +1,15 @@
 package com.mycompany.myapp.web.rest;
 
-import com.mycompany.myapp.domain.JobType;
 import com.mycompany.myapp.domain.Mission;
-import com.mycompany.myapp.domain.Position;
 import com.mycompany.myapp.repository.PositionRepository;
 import com.mycompany.myapp.repository.MissionRepository;
 import com.mycompany.myapp.security.AuthoritiesConstants;
 import com.mycompany.myapp.service.MissionService;
+import com.mycompany.myapp.service.dto.MissionDTO;
+import com.mycompany.myapp.service.mapper.MissionMapper;
+import com.mycompany.myapp.service.view.MissionView;
 import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -23,41 +25,43 @@ public class MissionController {
     private static final String ENTITY_NAME = "mission";
 
     private final MissionRepository repository;
+    private final MissionMapper mapper;
     private final PositionRepository positionRepository;
     private final MissionService service;
 
-    public MissionController(MissionRepository repository, PositionRepository positionRepository, MissionService service) {
+    public MissionController(MissionRepository repository, MissionMapper mapper, PositionRepository positionRepository, MissionService service) {
         this.repository = repository;
+        this.mapper = mapper;
         this.positionRepository = positionRepository;
         this.service = service;
     }
 
     @GetMapping("/{id}")
     @PostAuthorize("hasAuthority(\"" +AuthoritiesConstants.ADMIN + "\") || principal.username == returnObject.user.login ")
-    public Mission getById(@Valid @PathVariable Long id){
-        return repository.findById(id).orElseThrow(() -> new BadRequestAlertException("mission doesn't exist", ENTITY_NAME, "id doesn't exist"));
+    public MissionView getById(@Valid @PathVariable Long id){
+        return mapper.asDTO(repository.findById(id).orElseThrow(() -> new BadRequestAlertException("mission doesn't exist", ENTITY_NAME, "id doesn't exist")));
     }
 
     @GetMapping
-    public List<Mission> getAllByUser(){
-        return service.getAllMissionByUser();
+    public List<? extends MissionView> getAllByUser(){
+        return mapper.asListDTO(service.getAllMissionByUser());
     }
 
     @GetMapping("/all")
     @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
-    public List<Mission> getAll(){
-        return repository.findAll();
+    public List<? extends MissionView> getAll(){
+        return mapper.asListDTO(repository.findAll());
     }
 
     @PostMapping
-    public Mission create(@Valid @RequestBody Mission mission){
-        return service.createMission(mission);
+    public MissionView create(@Valid @RequestBody MissionDTO mission){
+        return mapper.asDTO(service.createMission(mission));
     }
 
     @PutMapping
     @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\") || #mission.user.login == principal.username ")
-    public Mission edit(@Valid @RequestBody Mission mission){
-        return service.editMission(mission);
+    public MissionView edit(@Valid @RequestBody MissionDTO mission){
+        return mapper.asDTO(service.editMission(mission));
     }
 
     @DeleteMapping("/{id}")
