@@ -20,7 +20,7 @@ public class JobType {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @OneToMany(mappedBy = "jobType", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "jobType", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
     private List<Position> positions = new ArrayList<>();
 

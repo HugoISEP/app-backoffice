@@ -12,7 +12,6 @@ import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -72,6 +71,7 @@ public class PositionService {
         return oldPosition;
     }
 
+    @Transactional
     public void deletePosition(Long id){
         UserDTO user = userService.getUserWithAuthorities()
             .map(UserDTO::new)

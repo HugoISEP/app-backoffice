@@ -11,7 +11,6 @@ import java.util.List;
 
 public interface PositionRepository extends JpaRepository<Position, Long> {
     List<Position> findAllByMissionId(Long id);
-
     List<Position> findAllByMission_User_IdAndStatusIsTrue(Long id);
 
     @Transactional
