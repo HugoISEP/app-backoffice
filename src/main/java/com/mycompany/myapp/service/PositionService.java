@@ -16,11 +16,6 @@ import java.util.List;
 
 @Service
 public class PositionService {
-    private static class AccountResourceException extends RuntimeException {
-        private AccountResourceException(String message) {
-            super(message);
-        }
-    }
 
     private static final String ENTITY_NAME = "position";
 
@@ -39,7 +34,7 @@ public class PositionService {
     public List<Position> getActivePositionsByUser(){
         UserDTO user = userService.getUserWithAuthorities()
             .map(UserDTO::new)
-            .orElseThrow(() -> new PositionService.AccountResourceException("User could not be found"));
+            .orElseThrow(() -> new BadRequestAlertException("user not found", ENTITY_NAME, "id exists"));
 
         return repository.findAllByMission_User_IdAndStatusIsTrue(user.getId());
     }
@@ -71,17 +66,15 @@ public class PositionService {
         return oldPosition;
     }
 
-    @Transactional
     public void deletePosition(Long id){
         UserDTO user = userService.getUserWithAuthorities()
             .map(UserDTO::new)
-            .orElseThrow(() -> new PositionService.AccountResourceException("User could not be found"));
+            .orElseThrow(() -> new BadRequestAlertException("user not found", ENTITY_NAME, "id exists"));
         Position positionToDelete = repository.findById(id).orElseThrow(() -> new BadRequestAlertException("Position doesn't exist", ENTITY_NAME, "id doesn't exist"));
-
-        if(positionToDelete.getMission().getUser().getLogin() == user.getLogin() || user.getAuthorities().contains(AuthoritiesConstants.ADMIN)){
+        if(positionToDelete.getMission().getUser().getId() == user.getId() || user.getAuthorities().contains(AuthoritiesConstants.ADMIN)){
             repository.delete(positionToDelete.getId());
         } else {
-            new PositionService.AccountResourceException("Access Forbidden");
+            throw new BadRequestAlertException("no permission to delete", ENTITY_NAME, "wrong user");
         }
     }
 }

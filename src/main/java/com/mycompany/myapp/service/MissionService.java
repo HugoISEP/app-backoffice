@@ -2,6 +2,7 @@ package com.mycompany.myapp.service;
 
 import com.mycompany.myapp.domain.Mission;
 import com.mycompany.myapp.repository.MissionRepository;
+import com.mycompany.myapp.repository.PositionRepository;
 import com.mycompany.myapp.security.AuthoritiesConstants;
 import com.mycompany.myapp.service.dto.UserDTO;
 import com.mycompany.myapp.service.mapper.UserMapper;
@@ -13,22 +14,18 @@ import java.util.List;
 @Service
 public class MissionService {
 
-    private static class AccountResourceException extends RuntimeException {
-        private AccountResourceException(String message) {
-            super(message);
-        }
-    }
-
     private static final String ENTITY_NAME = "mission";
 
     private final MissionRepository repository;
     private final UserService userService;
     private final UserMapper userMapper;
+    private final PositionRepository positionRepository;
 
-    public MissionService(MissionRepository repository, UserService userService, UserMapper userMapper) {
+    public MissionService(MissionRepository repository, UserService userService, UserMapper userMapper, PositionRepository positionRepository) {
         this.repository = repository;
         this.userService = userService;
         this.userMapper = userMapper;
+        this.positionRepository = positionRepository;
     }
 
     public Mission createMission(Mission newMission){
@@ -37,7 +34,7 @@ public class MissionService {
         }
         UserDTO user = userService.getUserWithAuthorities()
             .map(UserDTO::new)
-            .orElseThrow(() -> new MissionService.AccountResourceException("User could not be found"));
+            .orElseThrow(() -> new BadRequestAlertException("user not found", ENTITY_NAME, "id exists"));
         newMission.setUser(userMapper.userDTOToUser(user));
         return repository.save(newMission);
     }
@@ -45,13 +42,17 @@ public class MissionService {
     public void deleteMission(Long id){
         UserDTO user = userService.getUserWithAuthorities()
             .map(UserDTO::new)
-            .orElseThrow(() -> new MissionService.AccountResourceException("User could not be found"));
+            .orElseThrow(() -> new BadRequestAlertException("user not found", ENTITY_NAME, "id exists"));
         Mission missionToDelete = repository.findById(id).orElseThrow(() -> new BadRequestAlertException("Technologie doesn't exist", ENTITY_NAME, "id doesn't exist"));
 
-        if(missionToDelete.getUser().getLogin() == user.getLogin() || user.getAuthorities().contains(AuthoritiesConstants.ADMIN)){
-            repository.delete(repository.findById(id).orElseThrow(() -> new BadRequestAlertException("Cannot delete ", ENTITY_NAME, " id doesn't exist")));
+        if(missionToDelete.getUser().getId() == user.getId() || user.getAuthorities().contains(AuthoritiesConstants.ADMIN)){
+            missionToDelete.getPositions().forEach(position -> {
+                //positionRepository.delete(position);
+                positionRepository.delete(position.getId());
+            });
+            repository.delete(missionToDelete);
         } else {
-            new MissionService.AccountResourceException("Access forbidden");
+            throw new BadRequestAlertException("no permission to delete", ENTITY_NAME, "wrong user");
         }
     }
 
@@ -67,7 +68,7 @@ public class MissionService {
     public List<Mission> getAllMissionByUser(){
         UserDTO user = userService.getUserWithAuthorities()
             .map(UserDTO::new)
-            .orElseThrow(() -> new MissionService.AccountResourceException("User could not be found"));
+            .orElseThrow(() -> new BadRequestAlertException("user not found", ENTITY_NAME, "id exists"));
         return repository.findAllByUserId(user.getId());
     }
 }

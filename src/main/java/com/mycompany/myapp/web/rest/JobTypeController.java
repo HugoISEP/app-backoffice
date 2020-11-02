@@ -44,7 +44,7 @@ public class JobTypeController {
     public List<JobType> getAllByUser(){
         UserDTO user = userService.getUserWithAuthorities()
             .map(UserDTO::new)
-            .orElseThrow(() -> new BadRequestAlertException("User could not be found", ENTITY_NAME, "id doesn't exist"));
+            .orElseThrow(() -> new BadRequestAlertException("User not found", ENTITY_NAME, "id doesn't exist"));
         return repository.findJobTypesByUser_Id(user.getId());
     }
 
@@ -61,7 +61,7 @@ public class JobTypeController {
         }
         UserDTO user = userService.getUserWithAuthorities()
             .map(UserDTO::new)
-            .orElseThrow(() -> new BadRequestAlertException("User could not be found", ENTITY_NAME, "id doesn't exist"));
+            .orElseThrow(() -> new BadRequestAlertException("User not found", ENTITY_NAME, "id doesn't exist"));
         jobType.setUser(userMapper.userDTOToUser(user));
         return repository.save(jobType);
     }
@@ -81,10 +81,11 @@ public class JobTypeController {
     public void delete(@PathVariable Long id){
         UserDTO user = userService.getUserWithAuthorities()
             .map(UserDTO::new)
-            .orElseThrow(() -> new BadRequestAlertException("User could not be found", ENTITY_NAME, "id doesn't exist"));
+            .orElseThrow(() -> new BadRequestAlertException("User not found", ENTITY_NAME, "id doesn't exist"));
         JobType jobTypeToDelete = repository.findById(id).orElseThrow(() -> new BadRequestAlertException("JobType doesn't exist", ENTITY_NAME, "id doesn't exist"));
         if(jobTypeToDelete.getUser().getId() == user.getId() || user.getAuthorities().contains(AuthoritiesConstants.ADMIN)){
             jobTypeToDelete.getPositions().forEach(position -> {
+                //positionRepository.delete(position);
                 positionRepository.delete(position.getId());
             });
             repository.delete(jobTypeToDelete);
