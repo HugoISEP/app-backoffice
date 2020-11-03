@@ -1,7 +1,5 @@
 package com.mycompany.myapp.web.rest;
 
-import com.mycompany.myapp.domain.Mission;
-import com.mycompany.myapp.domain.Position;
 import com.mycompany.myapp.repository.PositionRepository;
 import com.mycompany.myapp.security.AuthoritiesConstants;
 import com.mycompany.myapp.service.PositionService;
@@ -46,15 +44,15 @@ public class PositionController {
     @GetMapping("/mission/{id}")
     @PostAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\") " +
         "|| returnObject.size() != 0 ? returnObject.get(0).mission.user.login == principal.username : true  ")
-    public List<? extends PositionView> getPositionsByMission(@PathVariable Long id){
-        return mapper.asListDTO(repository.findAllByMissionId(id));
+    public List<PositionView> getPositionsByMission(@PathVariable Long id){
+        return repository.findAllByMissionId(id);
     }
 
     @GetMapping("/active")
     @PostAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\") " +
         "|| returnObject.size() != 0 ? returnObject.get(0).mission.user.login == principal.username : true  ")
-    public List<? extends PositionView> getPositionsByMission(){
-        return mapper.asListDTO(service.getActivePositionsByUser());
+    public List<PositionView> getPositionsByMission(){
+        return service.getActivePositionsByUser();
     }
 
     @GetMapping("/all")

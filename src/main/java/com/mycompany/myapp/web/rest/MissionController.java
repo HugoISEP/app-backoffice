@@ -43,8 +43,8 @@ public class MissionController {
     }
 
     @GetMapping
-    public List<? extends MissionView> getAllByUser(){
-        return mapper.asListDTO(service.getAllMissionByUser());
+    public List<MissionView> getAllByUser(){
+        return service.getAllMissionByUser();
     }
 
     @GetMapping("/all")

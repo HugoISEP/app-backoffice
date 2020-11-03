@@ -10,6 +10,7 @@ import com.mycompany.myapp.security.AuthoritiesConstants;
 import com.mycompany.myapp.service.dto.PositionDTO;
 import com.mycompany.myapp.service.dto.UserDTO;
 import com.mycompany.myapp.service.mapper.PositionMapper;
+import com.mycompany.myapp.service.view.PositionView;
 import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
 import org.springframework.stereotype.Service;
 
@@ -34,7 +35,7 @@ public class PositionService {
         this.userService = userService;
     }
 
-    public List<Position> getActivePositionsByUser(){
+    public List<PositionView> getActivePositionsByUser(){
         UserDTO user = userService.getUserWithAuthorities()
             .map(UserDTO::new)
             .orElseThrow(() -> new BadRequestAlertException("user not found", ENTITY_NAME, "id exists"));

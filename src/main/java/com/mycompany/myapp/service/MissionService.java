@@ -71,7 +71,7 @@ public class MissionService {
         return repository.save(oldMission);
     }
 
-    public List<Mission> getAllMissionByUser(){
+    public List<MissionView> getAllMissionByUser(){
         UserDTO user = userService.getUserWithAuthorities()
             .map(UserDTO::new)
             .orElseThrow(() -> new BadRequestAlertException("user not found", ENTITY_NAME, "id exists"));

@@ -47,11 +47,11 @@ public class JobTypeController {
     }
 
     @GetMapping
-    public List<? extends JobTypeView> getAllByUser(){
+    public List<JobTypeView> getAllByUser(){
         UserDTO user = userService.getUserWithAuthorities()
             .map(UserDTO::new)
             .orElseThrow(() -> new BadRequestAlertException("User not found", ENTITY_NAME, "id doesn't exist"));
-        return mapper.asListDTO(repository.findJobTypesByUser_Id(user.getId()));
+        return repository.findJobTypesByUser_Id(user.getId());
     }
 
     @GetMapping("/all")
