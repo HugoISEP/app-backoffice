@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { IMission } from 'app/shared/model/mission.model';
 import { ActivatedRoute } from '@angular/router';
 import { IPosition } from 'app/shared/model/position.model';
@@ -14,7 +14,7 @@ import { MissionService } from 'app/entities/mission/mission.service';
   selector: 'jhi-mission-detail',
   templateUrl: './mission-detail.component.html',
 })
-export class MissionDetailComponent implements OnInit {
+export class MissionDetailComponent implements OnInit, OnDestroy {
   mission: IMission | null = null;
   eventSubscriber?: Subscription;
 
@@ -56,5 +56,11 @@ export class MissionDetailComponent implements OnInit {
 
   previousState(): void {
     window.history.back();
+  }
+
+  ngOnDestroy(): void {
+    if (this.eventSubscriber) {
+      this.eventManager.destroy(this.eventSubscriber);
+    }
   }
 }
