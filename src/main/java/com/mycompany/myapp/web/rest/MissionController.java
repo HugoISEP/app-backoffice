@@ -9,7 +9,6 @@ import com.mycompany.myapp.service.dto.MissionDTO;
 import com.mycompany.myapp.service.mapper.MissionMapper;
 import com.mycompany.myapp.service.view.MissionView;
 import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -26,13 +25,11 @@ public class MissionController {
 
     private final MissionRepository repository;
     private final MissionMapper mapper;
-    private final PositionRepository positionRepository;
     private final MissionService service;
 
     public MissionController(MissionRepository repository, MissionMapper mapper, PositionRepository positionRepository, MissionService service) {
         this.repository = repository;
         this.mapper = mapper;
-        this.positionRepository = positionRepository;
         this.service = service;
     }
 
@@ -59,7 +56,7 @@ public class MissionController {
     }
 
     @PutMapping
-    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\") || #mission.user.login == principal.username ")
+    @PostAuthorize("hasAuthority(\"" +AuthoritiesConstants.ADMIN + "\") || principal.username == returnObject.user.login ")
     public MissionView edit(@Valid @RequestBody MissionDTO mission){
         return mapper.asDTO(service.editMission(mission));
     }

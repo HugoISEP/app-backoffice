@@ -7,7 +7,7 @@ import org.mapstruct.NullValueMappingStrategy;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring",nullValueMappingStrategy= NullValueMappingStrategy.RETURN_DEFAULT)
+@Mapper(componentModel = "spring")
 public interface PositionMapper {
     PositionDTO asDto(Position in);
     List<PositionDTO> asListDTO(List<Position> in);

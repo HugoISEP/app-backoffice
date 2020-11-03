@@ -4,6 +4,7 @@ import com.mycompany.myapp.config.Constants;
 
 import com.mycompany.myapp.domain.Authority;
 import com.mycompany.myapp.domain.User;
+import com.mycompany.myapp.service.view.UserView;
 
 import javax.validation.constraints.*;
 import java.time.Instant;
@@ -13,7 +14,7 @@ import java.util.stream.Collectors;
 /**
  * A DTO representing a user, with his authorities.
  */
-public class UserDTO {
+public class UserDTO implements UserView {
 
     private Long id;
 

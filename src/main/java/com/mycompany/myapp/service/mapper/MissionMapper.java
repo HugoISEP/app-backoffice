@@ -7,7 +7,7 @@ import org.mapstruct.NullValueMappingStrategy;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring",nullValueMappingStrategy= NullValueMappingStrategy.RETURN_DEFAULT)
+@Mapper(componentModel = "spring")
 public interface MissionMapper {
     Mission fromDTO(MissionDTO in);
     MissionDTO asDTO(Mission in);
