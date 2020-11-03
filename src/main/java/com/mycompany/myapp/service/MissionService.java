@@ -11,10 +11,12 @@ import com.mycompany.myapp.service.mapper.UserMapper;
 import com.mycompany.myapp.service.view.MissionView;
 import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
+@Transactional
 public class MissionService {
 
     private static final String ENTITY_NAME = "mission";

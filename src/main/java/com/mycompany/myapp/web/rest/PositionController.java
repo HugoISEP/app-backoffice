@@ -70,7 +70,7 @@ public class PositionController {
     @PutMapping()
     @PostAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\") || principal.username == returnObject.mission.user.login")
     public PositionView edit(@Valid @RequestBody PositionDTO position){
-        return mapper.asDto(repository.save(service.editPosition(position)));
+        return mapper.asDto(service.editPosition(position));
     }
 
     @DeleteMapping("/{id}")

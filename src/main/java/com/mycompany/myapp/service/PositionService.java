@@ -13,10 +13,12 @@ import com.mycompany.myapp.service.mapper.PositionMapper;
 import com.mycompany.myapp.service.view.PositionView;
 import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
+@Transactional
 public class PositionService {
 
     private static final String ENTITY_NAME = "position";
@@ -50,10 +52,10 @@ public class PositionService {
             throw new BadRequestAlertException("A new Position cannot already have an ID", ENTITY_NAME, "id exists");
         }
         Mission mission = missionRepository.findById(missionId).orElseThrow(() -> new BadRequestAlertException("mission doesn't exist", ENTITY_NAME, "id doesn't exist"));
-        JobType jobType = jobTypeRepository.findById(newPosition.getJobType().getId()).orElseThrow(() -> new BadRequestAlertException("jobType doesn't exist", ENTITY_NAME, "id doesn't exist"));
-        newPosition.setJobType(jobType);
+        //JobType jobType = jobTypeRepository.findById(newPosition.getJobType().getId()).orElseThrow(() -> new BadRequestAlertException("jobType doesn't exist", ENTITY_NAME, "id doesn't exist"));
+        //newPosition.setJobType(jobType);
         newPosition.setMission(mission);
-        jobType.getPositions().add(newPosition);
+        //jobType.getPositions().add(newPosition);
         mission.getPositions().add(newPosition);
 
         return missionRepository.save(mission);
@@ -69,7 +71,7 @@ public class PositionService {
         oldPosition.setJobType(newPosition.getJobType());
         oldPosition.setDescription(newPosition.getDescription());
         oldPosition.setDuration(newPosition.getDuration());
-        return oldPosition;
+        return repository.save(oldPosition);
     }
 
     public void deletePosition(Long id){
