@@ -12,17 +12,19 @@ public class PositionDTO implements PositionView {
     private LocalDateTime createdAt;
     private boolean status;
     private JobTypeDTO jobType;
+    private MissionUserDTO mission;
 
     public PositionDTO() {
     }
 
-    public PositionDTO(Long id, int duration, String description, LocalDateTime createdAt, boolean status, JobTypeDTO jobType) {
+    public PositionDTO(Long id, int duration, String description, LocalDateTime createdAt, boolean status, JobTypeDTO jobType, MissionUserDTO mission) {
         this.id = id;
         this.duration = duration;
         this.description = description;
         this.createdAt = createdAt;
         this.status = status;
         this.jobType = jobType;
+        this.mission = mission;
     }
 
     public Long getId() {
@@ -71,5 +73,13 @@ public class PositionDTO implements PositionView {
 
     public void setJobType(JobTypeDTO jobType) {
         this.jobType = jobType;
+    }
+
+    public MissionUserDTO getMission() {
+        return mission;
+    }
+
+    public void setMission(MissionUserDTO mission) {
+        this.mission = mission;
     }
 }
