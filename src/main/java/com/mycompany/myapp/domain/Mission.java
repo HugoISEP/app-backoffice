@@ -26,9 +26,8 @@ public class Mission {
     private List<Position> positions = new ArrayList<>();
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
     @JsonIgnore
-    private User user;
+    private Entreprise entreprise;
 
     public Long getId() {
         return id;
@@ -54,11 +53,11 @@ public class Mission {
         this.positions = jobTypes;
     }
 
-    public User getUser() {
-        return user;
+    public Entreprise getEntreprise() {
+        return entreprise;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setEntreprise(Entreprise entreprise) {
+        this.entreprise = entreprise;
     }
 }

@@ -34,7 +34,7 @@ public class MissionController {
     }
 
     @GetMapping("/{id}")
-    @PostAuthorize("hasAuthority(\"" +AuthoritiesConstants.ADMIN + "\") || principal.username == returnObject.user.login ")
+    //@PostAuthorize("hasAuthority(\"" +AuthoritiesConstants.ADMIN + "\") || principal.username == returnObject.user.login ")
     public MissionView getById(@Valid @PathVariable Long id){
         return mapper.asDTO(repository.findById(id).orElseThrow(() -> new BadRequestAlertException("mission doesn't exist", ENTITY_NAME, "id doesn't exist")));
     }
@@ -56,7 +56,7 @@ public class MissionController {
     }
 
     @PutMapping
-    @PostAuthorize("hasAuthority(\"" +AuthoritiesConstants.ADMIN + "\") || principal.username == returnObject.user.login ")
+    //@PostAuthorize("hasAuthority(\"" +AuthoritiesConstants.ADMIN + "\") || principal.username == returnObject.user.login ")
     public MissionView edit(@Valid @RequestBody MissionDTO mission){
         return mapper.asDTO(service.editMission(mission));
     }

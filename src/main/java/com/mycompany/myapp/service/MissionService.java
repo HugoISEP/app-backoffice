@@ -24,14 +24,12 @@ public class MissionService {
     private final MissionRepository repository;
     private final MissionMapper mapper;
     private final UserService userService;
-    private final UserMapper userMapper;
     private final PositionRepository positionRepository;
 
-    public MissionService(MissionRepository repository, MissionMapper mapper, UserService userService, UserMapper userMapper, PositionRepository positionRepository) {
+    public MissionService(MissionRepository repository, MissionMapper mapper, UserService userService, PositionRepository positionRepository) {
         this.repository = repository;
         this.mapper = mapper;
         this.userService = userService;
-        this.userMapper = userMapper;
         this.positionRepository = positionRepository;
     }
 
@@ -43,7 +41,7 @@ public class MissionService {
             .map(UserDTO::new)
             .orElseThrow(() -> new BadRequestAlertException("user not found", ENTITY_NAME, "id exists"));
         Mission newMission = mapper.fromDTO(mission);
-        newMission.setUser(userMapper.userDTOToUser(user));
+        newMission.setEntreprise(user.getEntreprise());
         return repository.save(newMission);
     }
 
@@ -53,7 +51,7 @@ public class MissionService {
             .orElseThrow(() -> new BadRequestAlertException("user not found", ENTITY_NAME, "id exists"));
         Mission missionToDelete = repository.findById(id).orElseThrow(() -> new BadRequestAlertException("Technologie doesn't exist", ENTITY_NAME, "id doesn't exist"));
 
-        if(missionToDelete.getUser().getId() == user.getId() || user.getAuthorities().contains(AuthoritiesConstants.ADMIN)){
+        if(missionToDelete.getEntreprise().getId() == user.getEntreprise().getId() || user.getAuthorities().contains(AuthoritiesConstants.ADMIN)){
             missionToDelete.getPositions().forEach(position -> {
                 //positionRepository.delete(position);
                 positionRepository.delete(position.getId());
@@ -77,6 +75,6 @@ public class MissionService {
         UserDTO user = userService.getUserWithAuthorities()
             .map(UserDTO::new)
             .orElseThrow(() -> new BadRequestAlertException("user not found", ENTITY_NAME, "id exists"));
-        return repository.findAllByUserId(user.getId());
+        return repository.findAllByEntrepriseId(user.getEntreprise().getId());
     }
 }

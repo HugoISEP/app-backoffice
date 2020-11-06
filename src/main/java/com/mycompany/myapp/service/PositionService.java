@@ -42,7 +42,7 @@ public class PositionService {
             .map(UserDTO::new)
             .orElseThrow(() -> new BadRequestAlertException("user not found", ENTITY_NAME, "id exists"));
 
-        return repository.findAllByMission_User_IdAndStatusIsTrue(user.getId());
+        return repository.findAllByMissionEntrepriseIdAndStatusIsTrue(user.getEntreprise().getId());
     }
 
 
@@ -79,7 +79,7 @@ public class PositionService {
             .map(UserDTO::new)
             .orElseThrow(() -> new BadRequestAlertException("user not found", ENTITY_NAME, "id exists"));
         Position positionToDelete = repository.findById(id).orElseThrow(() -> new BadRequestAlertException("Position doesn't exist", ENTITY_NAME, "id doesn't exist"));
-        if(positionToDelete.getMission().getUser().getId() == user.getId() || user.getAuthorities().contains(AuthoritiesConstants.ADMIN)){
+        if(positionToDelete.getMission().getEntreprise().getId() == user.getEntreprise().getId() || user.getAuthorities().contains(AuthoritiesConstants.ADMIN)){
             repository.delete(positionToDelete.getId());
         } else {
             throw new BadRequestAlertException("no permission to delete", ENTITY_NAME, "wrong user");

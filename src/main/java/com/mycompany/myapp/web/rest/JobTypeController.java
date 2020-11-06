@@ -27,21 +27,15 @@ public class JobTypeController {
     private final JobTypeRepository repository;
     private final JobTypeMapper mapper;
     private final JobTypeService service;
-    private final PositionRepository positionRepository;
-    private final UserService userService;
-    private final UserMapper userMapper;
 
-    public JobTypeController(JobTypeRepository repository, JobTypeMapper mapper, JobTypeService service, PositionRepository positionRepository, UserService userService, UserMapper userMapper) {
+    public JobTypeController(JobTypeRepository repository, JobTypeMapper mapper, JobTypeService service) {
         this.repository = repository;
         this.mapper = mapper;
         this.service = service;
-        this.positionRepository = positionRepository;
-        this.userService = userService;
-        this.userMapper = userMapper;
     }
 
     @GetMapping("/{id}")
-    @PostAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\") || principal.username == returnObject.user.login ")
+    //@PostAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\") || principal.username == returnObject.user.login ")
     public JobTypeView getById(@PathVariable Long id){
         return mapper.asDTO(repository.findById(id).orElseThrow(() -> new BadRequestAlertException("JobType doesn't exist", ENTITY_NAME, "id doesn't exist")));
     }
@@ -63,7 +57,7 @@ public class JobTypeController {
     }
 
     @PutMapping
-    @PostAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\") || principal.username == returnObject.user.login ")
+    //@PostAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\") || principal.username == returnObject.user.login ")
     public JobTypeView edit(@Valid @RequestBody JobTypeDTO jobType){
         return service.editJobType(jobType);
     }

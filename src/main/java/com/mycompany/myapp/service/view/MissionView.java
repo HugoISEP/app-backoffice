@@ -1,7 +1,7 @@
 package com.mycompany.myapp.service.view;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.mycompany.myapp.domain.User;
+import com.mycompany.myapp.domain.Entreprise;
 
 import java.util.List;
 
@@ -10,5 +10,5 @@ public interface MissionView {
     String getName();
     List<? extends PositionView> getPositions();
     @JsonIgnore
-    User getUser(); //need user for authorization
+    Entreprise getEntreprise();
 }

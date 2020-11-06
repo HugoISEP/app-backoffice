@@ -36,21 +36,21 @@ public class PositionController {
     }
 
     @GetMapping("/{id}")
-    @PostAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\") || principal.username == returnObject.mission.user.login ")
+    //@PostAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\") || principal.username == returnObject.mission.user.login ")
     public PositionView getById(@PathVariable Long id){
         return mapper.asDto(repository.findById(id).orElseThrow(() -> new BadRequestAlertException("position doesn't exist", ENTITY_NAME, "id doesn't exist")));
     }
 
     @GetMapping("/mission/{id}")
-    @PostAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\") " +
-        "|| returnObject.size() != 0 ? returnObject.get(0).mission.user.login == principal.username : true  ")
+    //@PostAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\") " +
+    //    "|| returnObject.size() != 0 ? returnObject.get(0).mission.user.login == principal.username : true  ")
     public List<PositionView> getPositionsByMission(@PathVariable Long id){
         return repository.findAllByMissionId(id);
     }
 
     @GetMapping("/active")
-    @PostAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\") " +
-        "|| returnObject.size() != 0 ? returnObject.get(0).mission.user.login == principal.username : true  ")
+    //@PostAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\") " +
+    //    "|| returnObject.size() != 0 ? returnObject.get(0).mission.user.login == principal.username : true  ")
     public List<PositionView> getPositionsByMission(){
         return service.getActivePositionsByUser();
     }
@@ -62,13 +62,13 @@ public class PositionController {
     }
 
     @PostMapping("/mission/{missionId}")
-    @PostAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\") || principal.username == returnObject.user.login ")
+    //@PostAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\") || principal.username == returnObject.user.login ")
     public MissionView addPosition(@PathVariable Long missionId, @Valid @RequestBody PositionDTO position){
         return missionMapper.asDTO(service.addPosition(missionId, position));
     }
 
     @PutMapping()
-    @PostAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\") || principal.username == returnObject.mission.user.login")
+    //@PostAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\") || principal.username == returnObject.mission.user.login")
     public PositionView edit(@Valid @RequestBody PositionDTO position){
         return mapper.asDto(service.editPosition(position));
     }

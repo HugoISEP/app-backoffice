@@ -1,6 +1,7 @@
 package com.mycompany.myapp.service.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.mycompany.myapp.domain.Entreprise;
 import com.mycompany.myapp.domain.User;
 import com.mycompany.myapp.service.view.MissionView;
 
@@ -10,13 +11,13 @@ public class MissionDTO implements MissionView {
     private Long id;
     private String name;
     private List<PositionDTO> positions;
-    private User user;
+    private Entreprise entreprise;
 
-    public MissionDTO(Long id, String name, List<PositionDTO> positions, User user) {
+    public MissionDTO(Long id, String name, List<PositionDTO> positions, Entreprise entreprise) {
         this.id = id;
         this.name = name;
         this.positions = positions;
-        this.user = user;
+        this.entreprise = entreprise;
     }
 
     public MissionDTO() {
@@ -46,11 +47,11 @@ public class MissionDTO implements MissionView {
         this.positions = positions;
     }
 
-    public User getUser() {
-        return user;
+    public Entreprise getEntreprise() {
+        return entreprise;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setEntreprise(Entreprise entreprise) {
+        this.entreprise = entreprise;
     }
 }
