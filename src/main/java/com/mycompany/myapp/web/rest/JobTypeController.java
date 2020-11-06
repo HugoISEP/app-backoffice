@@ -19,7 +19,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/job-type")
-@PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.USER + "\")")
+@PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.MANAGER + "\")")
 public class JobTypeController {
 
     private static final String ENTITY_NAME = "jobType";

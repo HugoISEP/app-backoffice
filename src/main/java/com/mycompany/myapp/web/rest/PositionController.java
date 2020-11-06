@@ -18,7 +18,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/position")
-@PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.USER + "\")")
+@PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.MANAGER + "\")")
 public class PositionController {
 
     private static final String ENTITY_NAME = "position";

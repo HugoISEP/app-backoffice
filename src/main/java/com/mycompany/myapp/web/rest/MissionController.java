@@ -18,7 +18,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/mission")
-@PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.USER + "\")")
+@PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.MANAGER + "\")")
 public class MissionController {
 
     private static final String ENTITY_NAME = "mission";
