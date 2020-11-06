@@ -20,6 +20,8 @@ export class PositionUpdateComponent implements OnInit {
   editForm = this.fb.group({
     id: [],
     duration: [null, [Validators.required, Validators.pattern('^[1-9]\\d*$')]],
+    placesNumber: [null, [Validators.required, Validators.pattern('^[1-9]\\d*$')]],
+    remuneration: [null, [Validators.required, Validators.pattern('^[0-9]\\d*([.,]?[0-9]\\d*)?$')]],
     description: [null, [Validators.required]],
     status: [null, [Validators.required]],
     jobType: [null, [Validators.required]],
@@ -49,6 +51,8 @@ export class PositionUpdateComponent implements OnInit {
     this.editForm.patchValue({
       id: position.id,
       duration: position.duration,
+      placesNumber: position.placesNumber,
+      remuneration: position.remuneration,
       description: position.description,
       status: !!position.status,
       jobType: position.jobType,
@@ -60,6 +64,8 @@ export class PositionUpdateComponent implements OnInit {
       ...new Position(),
       id: this.editForm.get(['id'])!.value,
       duration: this.editForm.get(['duration'])!.value,
+      placesNumber: this.editForm.get(['placesNumber'])!.value,
+      remuneration: this.editForm.get(['remuneration'])!.value,
       description: this.editForm.get(['description'])!.value,
       status: this.editForm.get(['status'])!.value,
       jobType: this.editForm.get(['jobType'])!.value,

@@ -19,6 +19,34 @@
                             Nombre entier positif requis
                         </small>
                     </div>
+
+                    <label class="form-control-label" for="field_placesNumber">Nombre de places</label>
+                    <input type="number" class="form-control" name="placesNumber" id="field_placesNumber"
+                           formControlName="placesNumber"/>
+                    <div *ngIf="editForm.get('placesNumber')!.invalid && (editForm.get('placesNumber')!.dirty || editForm.get('placesNumber')!.touched)">
+                        <small class="form-text text-danger"
+                               *ngIf="editForm.get('placesNumber')?.errors?.required">
+                            Ce champs est requis
+                        </small>
+                        <small class="form-text text-danger"
+                               *ngIf="editForm.get('placesNumber')?.errors?.pattern">
+                            Nombre entier positif requis
+                        </small>
+                    </div>
+
+                    <label class="form-control-label" for="field_remuneration">Rémunération</label>
+                    <input type="number" class="form-control" name="remuneration" id="field_remuneration"
+                           formControlName="remuneration"/>
+                    <div *ngIf="editForm.get('remuneration')!.invalid && (editForm.get('remuneration')!.dirty || editForm.get('remuneration')!.touched)">
+                        <small class="form-text text-danger"
+                               *ngIf="editForm.get('remuneration')?.errors?.required">
+                            Ce champs est requis
+                        </small>
+                        <small class="form-text text-danger"
+                               *ngIf="editForm.get('remuneration')?.errors?.pattern">
+                            Nombre entier positif requis
+                        </small>
+                    </div>
                 </div>
 
                 <div class="form-group">

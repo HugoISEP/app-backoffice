@@ -60,12 +60,12 @@ public class PositionService {
         return missionRepository.save(mission);
     }
 
-    public Position editPosition(PositionDTO positionToEdit){
-        if (positionToEdit.getId() == null) {
+    public Position editPosition(PositionDTO updatedPosition){
+        if (updatedPosition.getId() == null) {
             throw new BadRequestAlertException("Cannot edit ", ENTITY_NAME, " id doesn't exist");
         }
-        Position position = repository.findById(positionToEdit.getId()).orElseThrow(() -> new BadRequestAlertException("position doesn't exist", ENTITY_NAME, "id doesn't exist"));
-        mapper.updatePosition(mapper.fromDTO(positionToEdit), position);
+        Position position = repository.findById(updatedPosition.getId()).orElseThrow(() -> new BadRequestAlertException("position doesn't exist", ENTITY_NAME, "id doesn't exist"));
+        mapper.updatePosition(mapper.fromDTO(updatedPosition), position);
         return repository.save(position);
     }
 

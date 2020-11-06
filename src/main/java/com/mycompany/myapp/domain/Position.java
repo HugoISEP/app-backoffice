@@ -101,4 +101,20 @@ public class Position {
     public void setStatus(boolean status) {
         this.status = status;
     }
+
+    public int getPlacesNumber() {
+        return placesNumber;
+    }
+
+    public void setPlacesNumber(int placesNumber) {
+        this.placesNumber = placesNumber;
+    }
+
+    public float getRemuneration() {
+        return remuneration;
+    }
+
+    public void setRemuneration(float remuneration) {
+        this.remuneration = remuneration;
+    }
 }

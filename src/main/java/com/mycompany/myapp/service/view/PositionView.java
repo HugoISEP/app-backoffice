@@ -7,6 +7,8 @@ import java.time.LocalDateTime;
 public interface PositionView {
     Long getId();
     int getDuration();
+    int getPlacesNumber();
+    float getRemuneration();
     String getDescription();
     LocalDateTime getCreatedAt();
     boolean isStatus();

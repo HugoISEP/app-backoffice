@@ -9,6 +9,8 @@ public class PositionDTO implements PositionView {
     private Long id;
     private int duration;
     private String description;
+    private int placesNumber;
+    private float remuneration;
     private LocalDateTime createdAt;
     private boolean status;
     private JobTypeDTO jobType;
@@ -17,10 +19,12 @@ public class PositionDTO implements PositionView {
     public PositionDTO() {
     }
 
-    public PositionDTO(Long id, int duration, String description, LocalDateTime createdAt, boolean status, JobTypeDTO jobType, MissionUserDTO mission) {
+    public PositionDTO(Long id, int duration, String description, int placesNumber, float remuneration, LocalDateTime createdAt, boolean status, JobTypeDTO jobType, MissionUserDTO mission) {
         this.id = id;
         this.duration = duration;
         this.description = description;
+        this.placesNumber = placesNumber;
+        this.remuneration = remuneration;
         this.createdAt = createdAt;
         this.status = status;
         this.jobType = jobType;
@@ -81,5 +85,21 @@ public class PositionDTO implements PositionView {
 
     public void setMission(MissionUserDTO mission) {
         this.mission = mission;
+    }
+
+    public int getPlacesNumber() {
+        return placesNumber;
+    }
+
+    public void setPlacesNumber(int placesNumber) {
+        this.placesNumber = placesNumber;
+    }
+
+    public float getRemuneration() {
+        return remuneration;
+    }
+
+    public void setRemuneration(float remuneration) {
+        this.remuneration = remuneration;
     }
 }
