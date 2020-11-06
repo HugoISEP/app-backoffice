@@ -1,6 +1,7 @@
 package com.mycompany.myapp.web.rest;
 
 import com.mycompany.myapp.domain.User;
+import com.mycompany.myapp.repository.EntrepriseRepository;
 import com.mycompany.myapp.repository.UserRepository;
 import com.mycompany.myapp.security.SecurityUtils;
 import com.mycompany.myapp.service.MailService;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.*;
+import java.util.regex.Pattern;
 
 /**
  * REST controller for managing the current user's account.
@@ -42,6 +44,7 @@ public class AccountResource {
 
     private final MailService mailService;
 
+
     public AccountResource(UserRepository userRepository, UserService userService, MailService mailService) {
 
         this.userRepository = userRepository;
@@ -59,9 +62,13 @@ public class AccountResource {
      */
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
-    public void registerAccount(@Valid @RequestBody ManagedUserVM managedUserVM) {
+    public void registerUserAccount(@Valid @RequestBody ManagedUserVM managedUserVM) throws Exception{
         if (!checkPasswordLength(managedUserVM.getPassword())) {
             throw new InvalidPasswordException();
+        }
+        Pattern pattern = Pattern.compile("^[\\w-\\.]+@"+ managedUserVM.getEntreprise().getEmailTemplate());
+        if (!pattern.matcher(managedUserVM.getEmail()).matches()) {
+            throw new Exception("invalid email");
         }
         User user = userService.registerUser(managedUserVM, managedUserVM.getPassword());
         mailService.sendActivationEmail(user);
