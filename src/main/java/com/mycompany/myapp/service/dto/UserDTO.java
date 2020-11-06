@@ -3,7 +3,7 @@ package com.mycompany.myapp.service.dto;
 import com.mycompany.myapp.config.Constants;
 
 import com.mycompany.myapp.domain.Authority;
-import com.mycompany.myapp.domain.Entreprise;
+import com.mycompany.myapp.domain.Company;
 import com.mycompany.myapp.domain.User;
 import com.mycompany.myapp.service.view.UserView;
 
@@ -52,7 +52,7 @@ public class UserDTO implements UserView {
 
     private Set<String> authorities;
 
-    private Entreprise entreprise;
+    private Company company;
 
     public UserDTO() {
         // Empty constructor needed for Jackson.
@@ -74,7 +74,7 @@ public class UserDTO implements UserView {
         this.authorities = user.getAuthorities().stream()
             .map(Authority::getName)
             .collect(Collectors.toSet());
-        this.entreprise = user.getEntreprise();
+        this.company = user.getCompany();
     }
 
     public Long getId() {
@@ -181,12 +181,12 @@ public class UserDTO implements UserView {
         this.authorities = authorities;
     }
 
-    public Entreprise getEntreprise() {
-        return entreprise;
+    public Company getCompany() {
+        return company;
     }
 
-    public void setEntreprise(Entreprise entreprise) {
-        this.entreprise = entreprise;
+    public void setCompany(Company company) {
+        this.company = company;
     }
 
     // prettier-ignore

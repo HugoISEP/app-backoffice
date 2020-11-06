@@ -35,7 +35,7 @@ public class JobTypeService {
         UserDTO user = userService.getUserWithAuthorities()
             .map(UserDTO::new)
             .orElseThrow(() -> new BadRequestAlertException("User not found", ENTITY_NAME, "id doesn't exist"));
-        return repository.findAllByEntrepriseId(user.getEntreprise().getId());
+        return repository.findAllByCompanyId(user.getCompany().getId());
     }
 
     public JobTypeDTO createJobType(JobTypeDTO jobTypeDTO){
@@ -46,7 +46,7 @@ public class JobTypeService {
         UserDTO user = userService.getUserWithAuthorities()
             .map(UserDTO::new)
             .orElseThrow(() -> new BadRequestAlertException("User not found", ENTITY_NAME, "id doesn't exist"));
-        newJobType.setEntreprise(user.getEntreprise());
+        newJobType.setCompany(user.getCompany());
         return mapper.asDTO(repository.save(newJobType));
     }
 
@@ -54,7 +54,7 @@ public class JobTypeService {
         if (updatedJobType.getId() == null) {
             throw new BadRequestAlertException("Cannot edit ", ENTITY_NAME, " id doesn't exist");
         }
-        JobType jobType = repository.findById(updatedJobType.getId()).orElseThrow(() -> new BadRequestAlertException("technology doesn't exist", ENTITY_NAME, "id doesn't exist"));
+        JobType jobType = repository.findById(updatedJobType.getId()).orElseThrow(() -> new BadRequestAlertException("jopType doesn't exist", ENTITY_NAME, "id doesn't exist"));
         mapper.updateJobtype(mapper.fromDTO(updatedJobType), jobType);
         return mapper.asDTO(repository.save(jobType));
     }
@@ -64,7 +64,7 @@ public class JobTypeService {
             .map(UserDTO::new)
             .orElseThrow(() -> new BadRequestAlertException("User not found", ENTITY_NAME, "id doesn't exist"));
         JobType jobTypeToDelete = repository.findById(id).orElseThrow(() -> new BadRequestAlertException("JobType doesn't exist", ENTITY_NAME, "id doesn't exist"));
-        if(jobTypeToDelete.getEntreprise().getId() == user.getEntreprise().getId() || user.getAuthorities().contains(AuthoritiesConstants.ADMIN)){
+        if(jobTypeToDelete.getCompany().getId() == user.getCompany().getId() || user.getAuthorities().contains(AuthoritiesConstants.ADMIN)){
             jobTypeToDelete.getPositions().forEach(position -> {
                 //positionRepository.delete(position);
                 positionRepository.delete(position.getId());

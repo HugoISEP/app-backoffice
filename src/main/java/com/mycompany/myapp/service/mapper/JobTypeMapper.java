@@ -13,6 +13,6 @@ public interface JobTypeMapper {
     JobTypeDTO asDTO(JobType in);
     List<JobTypeDTO> asListDTO(List<JobType> in);
     JobType fromDTO(JobTypeDTO in);
-    @Mapping(target = "entreprise", ignore = true)
+    @Mapping(target = "company", ignore = true)
     void updateJobtype(JobType in, @MappingTarget JobType out);
 }

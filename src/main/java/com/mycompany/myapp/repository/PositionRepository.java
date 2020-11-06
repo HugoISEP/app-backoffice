@@ -12,7 +12,7 @@ import java.util.List;
 
 public interface PositionRepository extends JpaRepository<Position, Long> {
     List<PositionView> findAllByMissionId(Long id);
-    List<PositionView> findAllByMissionEntrepriseIdAndStatusIsTrue(Long id);
+    List<PositionView> findAllByMissionCompanyIdAndStatusIsTrue(Long id);
 
     @Transactional
     @Modifying

@@ -1,7 +1,6 @@
 package com.mycompany.myapp.web.rest;
 
 import com.mycompany.myapp.domain.User;
-import com.mycompany.myapp.repository.EntrepriseRepository;
 import com.mycompany.myapp.repository.UserRepository;
 import com.mycompany.myapp.security.SecurityUtils;
 import com.mycompany.myapp.service.MailService;
@@ -66,7 +65,7 @@ public class AccountResource {
         if (!checkPasswordLength(managedUserVM.getPassword())) {
             throw new InvalidPasswordException();
         }
-        Pattern pattern = Pattern.compile("^[\\w-\\.]+@"+ managedUserVM.getEntreprise().getEmailTemplate());
+        Pattern pattern = Pattern.compile("^[\\w-\\.]+@"+ managedUserVM.getCompany().getEmailTemplate());
         if (!pattern.matcher(managedUserVM.getEmail()).matches()) {
             throw new Exception("invalid email");
         }

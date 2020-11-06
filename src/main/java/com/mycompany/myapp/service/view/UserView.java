@@ -1,6 +1,6 @@
 package com.mycompany.myapp.service.view;
 
-import com.mycompany.myapp.domain.Entreprise;
+import com.mycompany.myapp.domain.Company;
 
 import java.time.Instant;
 import java.util.Set;
@@ -20,5 +20,5 @@ public interface UserView {
     String getLastModifiedBy();
     Instant getLastModifiedDate();
     Set<String> getAuthorities();
-    Entreprise getEntreprise();
+    Company getCompany();
 }

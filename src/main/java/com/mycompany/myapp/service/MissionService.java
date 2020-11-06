@@ -7,7 +7,6 @@ import com.mycompany.myapp.security.AuthoritiesConstants;
 import com.mycompany.myapp.service.dto.MissionDTO;
 import com.mycompany.myapp.service.dto.UserDTO;
 import com.mycompany.myapp.service.mapper.MissionMapper;
-import com.mycompany.myapp.service.mapper.UserMapper;
 import com.mycompany.myapp.service.view.MissionView;
 import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
 import org.springframework.stereotype.Service;
@@ -41,7 +40,7 @@ public class MissionService {
             .map(UserDTO::new)
             .orElseThrow(() -> new BadRequestAlertException("user not found", ENTITY_NAME, "id exists"));
         Mission newMission = mapper.fromDTO(mission);
-        newMission.setEntreprise(user.getEntreprise());
+        newMission.setCompany(user.getCompany());
         return repository.save(newMission);
     }
 
@@ -51,7 +50,7 @@ public class MissionService {
             .orElseThrow(() -> new BadRequestAlertException("user not found", ENTITY_NAME, "id exists"));
         Mission missionToDelete = repository.findById(id).orElseThrow(() -> new BadRequestAlertException("Technologie doesn't exist", ENTITY_NAME, "id doesn't exist"));
 
-        if(missionToDelete.getEntreprise().getId() == user.getEntreprise().getId() || user.getAuthorities().contains(AuthoritiesConstants.ADMIN)){
+        if(missionToDelete.getCompany().getId() == user.getCompany().getId() || user.getAuthorities().contains(AuthoritiesConstants.ADMIN)){
             missionToDelete.getPositions().forEach(position -> {
                 //positionRepository.delete(position);
                 positionRepository.delete(position.getId());
@@ -75,6 +74,6 @@ public class MissionService {
         UserDTO user = userService.getUserWithAuthorities()
             .map(UserDTO::new)
             .orElseThrow(() -> new BadRequestAlertException("user not found", ENTITY_NAME, "id exists"));
-        return repository.findAllByEntrepriseId(user.getEntreprise().getId());
+        return repository.findAllByCompanyId(user.getCompany().getId());
     }
 }

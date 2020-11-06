@@ -1,6 +1,5 @@
 package com.mycompany.myapp.service;
 
-import com.mycompany.myapp.domain.JobType;
 import com.mycompany.myapp.domain.Mission;
 import com.mycompany.myapp.domain.Position;
 import com.mycompany.myapp.repository.PositionRepository;
@@ -42,7 +41,7 @@ public class PositionService {
             .map(UserDTO::new)
             .orElseThrow(() -> new BadRequestAlertException("user not found", ENTITY_NAME, "id exists"));
 
-        return repository.findAllByMissionEntrepriseIdAndStatusIsTrue(user.getEntreprise().getId());
+        return repository.findAllByMissionCompanyIdAndStatusIsTrue(user.getCompany().getId());
     }
 
 
@@ -75,7 +74,7 @@ public class PositionService {
             .map(UserDTO::new)
             .orElseThrow(() -> new BadRequestAlertException("user not found", ENTITY_NAME, "id exists"));
         Position positionToDelete = repository.findById(id).orElseThrow(() -> new BadRequestAlertException("Position doesn't exist", ENTITY_NAME, "id doesn't exist"));
-        if(positionToDelete.getMission().getEntreprise().getId() == user.getEntreprise().getId() || user.getAuthorities().contains(AuthoritiesConstants.ADMIN)){
+        if(positionToDelete.getMission().getCompany().getId() == user.getCompany().getId() || user.getAuthorities().contains(AuthoritiesConstants.ADMIN)){
             repository.delete(positionToDelete.getId());
         } else {
             throw new BadRequestAlertException("no permission to delete", ENTITY_NAME, "wrong user");

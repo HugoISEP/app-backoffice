@@ -1,22 +1,21 @@
 package com.mycompany.myapp.service.dto;
 
-import com.mycompany.myapp.domain.Entreprise;
-import com.mycompany.myapp.domain.User;
+import com.mycompany.myapp.domain.Company;
 import com.mycompany.myapp.service.view.JobTypeView;
 
 
 public class JobTypeDTO implements JobTypeView {
     private Long id;
     private String name;
-    private Entreprise entreprise;
+    private Company company;
 
     public JobTypeDTO() {
     }
 
-    public JobTypeDTO(Long id, String name, Entreprise entreprise) {
+    public JobTypeDTO(Long id, String name, Company company) {
         this.id = id;
         this.name = name;
-        this.entreprise = entreprise;
+        this.company = company;
     }
 
     public void setId(Long id) {
@@ -35,11 +34,11 @@ public class JobTypeDTO implements JobTypeView {
         return name;
     }
 
-    public Entreprise getEntreprise() {
-        return entreprise;
+    public Company getCompany() {
+        return company;
     }
 
-    public void setEntreprise(Entreprise entreprise) {
-        this.entreprise = entreprise;
+    public void setCompany(Company company) {
+        this.company = company;
     }
 }

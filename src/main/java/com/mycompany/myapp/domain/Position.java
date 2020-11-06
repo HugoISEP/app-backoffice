@@ -20,6 +20,14 @@ public class Position {
     private int duration;
 
     @NotNull
+    @Column(name = "places_number", nullable = false)
+    private int placesNumber;
+
+    @NotNull
+    @Column(name = "remuneration", nullable = false)
+    private float remuneration;
+
+    @NotNull
     @Column(name = "description", nullable = false)
     private String description;
 

@@ -15,7 +15,7 @@ public interface MissionMapper {
     MissionDTO asDTO(Mission in);
     List<MissionDTO> asListDTO(List<Mission> in);
 
-    @Mapping(target = "entreprise", ignore = true)
+    @Mapping(target = "company", ignore = true)
     void updateMission(Mission in, @MappingTarget Mission out);
 
 }

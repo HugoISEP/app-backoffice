@@ -28,7 +28,7 @@ public class Mission {
     @NotNull
     @ManyToOne(optional = false)
     @JsonIgnore
-    private Entreprise entreprise;
+    private Company company;
 
     public Long getId() {
         return id;
@@ -54,11 +54,11 @@ public class Mission {
         this.positions = jobTypes;
     }
 
-    public Entreprise getEntreprise() {
-        return entreprise;
+    public Company getCompany() {
+        return company;
     }
 
-    public void setEntreprise(Entreprise entreprise) {
-        this.entreprise = entreprise;
+    public void setCompany(Company company) {
+        this.company = company;
     }
 }

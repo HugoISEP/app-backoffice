@@ -91,7 +91,7 @@ public class User extends AbstractAuditingEntity implements Serializable {
     private Set<Authority> authorities = new HashSet<>();
 
     @ManyToOne
-    private Entreprise entreprise;
+    private Company company;
 
 
     public Long getId() {
@@ -199,12 +199,12 @@ public class User extends AbstractAuditingEntity implements Serializable {
         this.authorities = authorities;
     }
 
-    public Entreprise getEntreprise() {
-        return entreprise;
+    public Company getCompany() {
+        return company;
     }
 
-    public void setEntreprise(Entreprise entreprise) {
-        this.entreprise = entreprise;
+    public void setCompany(Company company) {
+        this.company = company;
     }
 
     @Override

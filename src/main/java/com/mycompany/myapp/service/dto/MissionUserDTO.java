@@ -1,21 +1,20 @@
 package com.mycompany.myapp.service.dto;
 
-import com.mycompany.myapp.domain.Entreprise;
-import com.mycompany.myapp.domain.User;
+import com.mycompany.myapp.domain.Company;
 import com.mycompany.myapp.service.view.MissionUserView;
 
 public class MissionUserDTO implements MissionUserView {
     private Long id;
     private String name;
-    private Entreprise entreprise;
+    private Company company;
 
     public MissionUserDTO() {
     }
 
-    public MissionUserDTO(Long id, String name, Entreprise entreprise) {
+    public MissionUserDTO(Long id, String name, Company company) {
         this.id = id;
         this.name = name;
-        this.entreprise = entreprise;
+        this.company = company;
     }
 
     public Long getId() {
@@ -35,11 +34,11 @@ public class MissionUserDTO implements MissionUserView {
     }
 
     @Override
-    public Entreprise getEntreprise() {
-        return entreprise;
+    public Company getCompany() {
+        return company;
     }
 
-    public void setEntreprise(Entreprise entreprise) {
-        this.entreprise = entreprise;
+    public void setCompany(Company company) {
+        this.company = company;
     }
 }

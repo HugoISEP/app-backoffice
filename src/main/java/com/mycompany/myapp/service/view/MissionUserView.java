@@ -1,10 +1,9 @@
 package com.mycompany.myapp.service.view;
 
-import com.mycompany.myapp.domain.Entreprise;
-import com.mycompany.myapp.domain.User;
+import com.mycompany.myapp.domain.Company;
 
 public interface MissionUserView {
     Long getId();
     String getName();
-    Entreprise getEntreprise();
+    Company getCompany();
 }
