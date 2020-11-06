@@ -1,6 +1,6 @@
 <?xml version="1.1" encoding="UTF-8" standalone="no"?>
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-3.9.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.9.xsd">
-    <changeSet author="hugo (generated)" id="1604655977301-2">
+    <changeSet author="hugo (generated)" id="1604660040450-2">
         <createTable tableName="entreprise">
             <column autoIncrement="true" name="id" type="BIGINT">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="entreprisePK"/>
@@ -13,7 +13,7 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="hugo (generated)" id="1604655977301-3">
+    <changeSet author="hugo (generated)" id="1604660040450-3">
         <createTable tableName="job_type">
             <column autoIncrement="true" name="id" type="BIGINT">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="job_typePK"/>
@@ -21,10 +21,12 @@
             <column name="name" type="VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
-            <column name="entreprise_id" type="BIGINT"/>
+            <column name="entreprise_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
         </createTable>
     </changeSet>
-    <changeSet author="hugo (generated)" id="1604655977301-4">
+    <changeSet author="hugo (generated)" id="1604660040450-4">
         <createTable tableName="mission">
             <column autoIncrement="true" name="id" type="BIGINT">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="missionPK"/>
@@ -32,10 +34,12 @@
             <column name="name" type="VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
-            <column name="entreprise_id" type="BIGINT"/>
+            <column name="entreprise_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
         </createTable>
     </changeSet>
-    <changeSet author="hugo (generated)" id="1604655977301-5">
+    <changeSet author="hugo (generated)" id="1604660040450-5">
         <createTable tableName="position">
             <column autoIncrement="true" name="id" type="BIGINT">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="positionPK"/>
@@ -56,27 +60,27 @@
             <column name="mission_id" type="BIGINT"/>
         </createTable>
     </changeSet>
-    <changeSet author="hugo (generated)" id="1604655977301-6">
+    <changeSet author="hugo (generated)" id="1604660040450-6">
         <addColumn tableName="jhi_user">
             <column name="entreprise_id" type="int8"/>
         </addColumn>
     </changeSet>
-    <changeSet author="hugo (generated)" id="1604655977301-7">
+    <changeSet author="hugo (generated)" id="1604660040450-7">
         <addForeignKeyConstraint baseColumnNames="entreprise_id" baseTableName="job_type" constraintName="FKfd4bmcvaxy29v75lrobpcar49" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="entreprise" validate="true"/>
     </changeSet>
-    <changeSet author="hugo (generated)" id="1604655977301-8">
+    <changeSet author="hugo (generated)" id="1604660040450-8">
         <addForeignKeyConstraint baseColumnNames="mission_id" baseTableName="position" constraintName="FKgepwke3ujb2vb7q2jdnrees45" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="mission" validate="true"/>
     </changeSet>
-    <changeSet author="hugo (generated)" id="1604655977301-9">
+    <changeSet author="hugo (generated)" id="1604660040450-9">
         <addForeignKeyConstraint baseColumnNames="entreprise_id" baseTableName="mission" constraintName="FKh3jmhrsp23heeo21beul0bh71" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="entreprise" validate="true"/>
     </changeSet>
-    <changeSet author="hugo (generated)" id="1604655977301-10">
+    <changeSet author="hugo (generated)" id="1604660040450-10">
         <addForeignKeyConstraint baseColumnNames="job_type_id" baseTableName="position" constraintName="FKibc9yq315b75l0dlw89n9rawp" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="job_type" validate="true"/>
     </changeSet>
-    <changeSet author="hugo (generated)" id="1604655977301-11">
+    <changeSet author="hugo (generated)" id="1604660040450-11">
         <addForeignKeyConstraint baseColumnNames="entreprise_id" baseTableName="jhi_user" constraintName="FKlxbvmmjsmccppbq5dl7r2bgls" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="entreprise" validate="true"/>
     </changeSet>
-    <changeSet author="hugo (generated)" id="1604655977301-1">
+    <changeSet author="hugo (generated)" id="1604660040450-1">
         <alterSequence sequenceName="sequence_generator"/>
     </changeSet>
 </databaseChangeLog>

@@ -66,9 +66,9 @@ public class MissionService {
         if (missionToEdit.getId() == null) {
             throw new BadRequestAlertException("Cannot edit ", ENTITY_NAME, " id doesn't exist");
         }
-        Mission oldMission = repository.findById(missionToEdit.getId()).orElseThrow(() -> new BadRequestAlertException("mission doesn't exist", ENTITY_NAME, "id doesn't exist"));
-        oldMission.setName(missionToEdit.getName());
-        return repository.save(oldMission);
+        Mission mission = repository.findById(missionToEdit.getId()).orElseThrow(() -> new BadRequestAlertException("mission doesn't exist", ENTITY_NAME, "id doesn't exist"));
+        mapper.updateMission(mapper.fromDTO(missionToEdit), mission);
+        return repository.save(mission);
     }
 
     public List<MissionView> getAllMissionByUser(){

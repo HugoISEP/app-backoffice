@@ -25,7 +25,8 @@ public class Mission {
     @JsonIgnoreProperties(value = "mission")
     private List<Position> positions = new ArrayList<>();
 
-    @ManyToOne
+    @NotNull
+    @ManyToOne(optional = false)
     @JsonIgnore
     private Entreprise entreprise;
 

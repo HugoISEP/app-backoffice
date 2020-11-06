@@ -24,7 +24,7 @@ public class JobType {
     @JsonIgnore
     private List<Position> positions = new ArrayList<>();
 
-    @ManyToOne
+    @ManyToOne(optional = false)
     @JsonIgnore
     private Entreprise entreprise;
 

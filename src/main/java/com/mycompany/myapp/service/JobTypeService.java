@@ -7,7 +7,6 @@ import com.mycompany.myapp.security.AuthoritiesConstants;
 import com.mycompany.myapp.service.dto.JobTypeDTO;
 import com.mycompany.myapp.service.dto.UserDTO;
 import com.mycompany.myapp.service.mapper.JobTypeMapper;
-import com.mycompany.myapp.service.mapper.UserMapper;
 import com.mycompany.myapp.service.view.JobTypeView;
 import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
 import org.springframework.stereotype.Service;
@@ -51,13 +50,13 @@ public class JobTypeService {
         return mapper.asDTO(repository.save(newJobType));
     }
 
-    public JobTypeDTO editJobType(JobTypeDTO jobType){
-        if (jobType.getId() == null) {
+    public JobTypeDTO editJobType(JobTypeDTO updatedJobType){
+        if (updatedJobType.getId() == null) {
             throw new BadRequestAlertException("Cannot edit ", ENTITY_NAME, " id doesn't exist");
         }
-        JobType oldJobType = repository.findById(jobType.getId()).orElseThrow(() -> new BadRequestAlertException("technology doesn't exist", ENTITY_NAME, "id doesn't exist"));
-        oldJobType.setName(jobType.getName());
-        return mapper.asDTO(repository.save(oldJobType));
+        JobType jobType = repository.findById(updatedJobType.getId()).orElseThrow(() -> new BadRequestAlertException("technology doesn't exist", ENTITY_NAME, "id doesn't exist"));
+        mapper.updateJobtype(mapper.fromDTO(updatedJobType), jobType);
+        return mapper.asDTO(repository.save(jobType));
     }
 
     public void deleteJobType(Long id){

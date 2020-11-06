@@ -61,17 +61,13 @@ public class PositionService {
         return missionRepository.save(mission);
     }
 
-    public Position editPosition(PositionDTO position){
-        Position newPosition = mapper.fromDTO(position);
-        if (newPosition.getId() == null) {
+    public Position editPosition(PositionDTO positionToEdit){
+        if (positionToEdit.getId() == null) {
             throw new BadRequestAlertException("Cannot edit ", ENTITY_NAME, " id doesn't exist");
         }
-        Position oldPosition = repository.findById(newPosition.getId()).orElseThrow(() -> new BadRequestAlertException("position doesn't exist", ENTITY_NAME, "id doesn't exist"));
-        oldPosition.setStatus(newPosition.isStatus());
-        oldPosition.setJobType(newPosition.getJobType());
-        oldPosition.setDescription(newPosition.getDescription());
-        oldPosition.setDuration(newPosition.getDuration());
-        return repository.save(oldPosition);
+        Position position = repository.findById(positionToEdit.getId()).orElseThrow(() -> new BadRequestAlertException("position doesn't exist", ENTITY_NAME, "id doesn't exist"));
+        mapper.updatePosition(mapper.fromDTO(positionToEdit), position);
+        return repository.save(position);
     }
 
     public void deletePosition(Long id){
