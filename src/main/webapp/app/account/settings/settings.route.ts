@@ -8,7 +8,7 @@ export const settingsRoute: Route = {
   path: 'settings',
   component: SettingsComponent,
   data: {
-    authorities: [Authority.USER],
+    authorities: [Authority.MANAGER],
     pageTitle: 'Settings',
   },
   canActivate: [UserRouteAccessService],

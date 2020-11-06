@@ -38,7 +38,7 @@ export const jobTypeRoute: Routes = [
     path: '',
     component: JobTypeComponent,
     data: {
-      authorities: [Authority.USER],
+      authorities: [Authority.MANAGER],
       pageTitle: 'Types de poste',
     },
     canActivate: [UserRouteAccessService],
@@ -50,7 +50,7 @@ export const jobTypeRoute: Routes = [
       jobType: JobTypeResolve,
     },
     data: {
-      authorities: [Authority.USER],
+      authorities: [Authority.MANAGER],
       pageTitle: 'Types de poste',
     },
     canActivate: [UserRouteAccessService],
@@ -62,7 +62,7 @@ export const jobTypeRoute: Routes = [
       jobType: JobTypeResolve,
     },
     data: {
-      authorities: [Authority.USER],
+      authorities: [Authority.MANAGER],
       pageTitle: 'Types de poste',
     },
     canActivate: [UserRouteAccessService],
@@ -74,7 +74,7 @@ export const jobTypeRoute: Routes = [
       jobType: JobTypeResolve,
     },
     data: {
-      authorities: [Authority.USER],
+      authorities: [Authority.MANAGER],
       pageTitle: 'Types de poste',
     },
     canActivate: [UserRouteAccessService],

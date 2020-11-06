@@ -63,7 +63,7 @@ export const missionRoute: Routes = [
     path: '',
     component: MissionComponent,
     data: {
-      authorities: [Authority.USER],
+      authorities: [Authority.MANAGER],
       pageTitle: 'Mes Missions',
     },
     canActivate: [UserRouteAccessService],
@@ -75,7 +75,7 @@ export const missionRoute: Routes = [
       mission: MissionResolve,
     },
     data: {
-      authorities: [Authority.USER],
+      authorities: [Authority.MANAGER],
       pageTitle: 'Mes Missions',
     },
     canActivate: [UserRouteAccessService],
@@ -87,7 +87,7 @@ export const missionRoute: Routes = [
       position: PositionResolve,
     },
     data: {
-      authorities: [Authority.USER],
+      authorities: [Authority.MANAGER],
       pageTitle: 'Positions',
     },
     canActivate: [UserRouteAccessService],
@@ -99,7 +99,7 @@ export const missionRoute: Routes = [
       position: PositionResolve,
     },
     data: {
-      authorities: [Authority.USER],
+      authorities: [Authority.MANAGER],
       pageTitle: 'Positions',
     },
     canActivate: [UserRouteAccessService],
@@ -111,7 +111,7 @@ export const missionRoute: Routes = [
       mission: MissionResolve,
     },
     data: {
-      authorities: [Authority.USER],
+      authorities: [Authority.MANAGER],
       pageTitle: 'Mes Missions',
     },
     canActivate: [UserRouteAccessService],
@@ -123,7 +123,7 @@ export const missionRoute: Routes = [
       mission: MissionResolve,
     },
     data: {
-      authorities: [Authority.USER],
+      authorities: [Authority.MANAGER],
       pageTitle: 'Mes Missions',
     },
     canActivate: [UserRouteAccessService],
