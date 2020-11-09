@@ -5,14 +5,15 @@ import com.mycompany.myapp.service.dto.JobTypeDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
+import org.mapstruct.NullValuePropertyMappingStrategy;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 public interface JobTypeMapper {
     JobTypeDTO asDTO(JobType in);
     List<JobTypeDTO> asListDTO(List<JobType> in);
     JobType fromDTO(JobTypeDTO in);
-    @Mapping(target = "company", ignore = true)
+
     void updateJobtype(JobType in, @MappingTarget JobType out);
 }
