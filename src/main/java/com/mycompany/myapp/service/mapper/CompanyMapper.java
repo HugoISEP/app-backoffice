@@ -4,7 +4,6 @@ import com.mycompany.myapp.domain.Company;
 import com.mycompany.myapp.service.dto.CompanyDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
-import org.mapstruct.NullValueCheckStrategy;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 
 import java.util.List;

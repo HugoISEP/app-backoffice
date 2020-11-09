@@ -26,8 +26,8 @@ const LAYOUT_ROUTES = [navbarRoute, ...errorRoute];
           loadChildren: () => import('./account/account.module').then(m => m.AccountModule),
         },
         ...LAYOUT_ROUTES,
-      ],
-      { enableTracing: DEBUG_INFO_ENABLED }
+      ]
+      //{ enableTracing: DEBUG_INFO_ENABLED }
     ),
   ],
   exports: [RouterModule],

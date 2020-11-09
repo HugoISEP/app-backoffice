@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class CompanyService {
 
-    private static final String ENTITY_NAME = "mission";
+    private static final String ENTITY_NAME = "company";
 
     private final CompanyRepository repository;
     private final CompanyMapper mapper;

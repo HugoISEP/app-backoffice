@@ -1,0 +1,55 @@
+<div>
+    <h2 id="page-heading">
+        <span>Junior-Entreprises</span>
+
+        <button id="jh-create-entity" class="btn btn-primary float-right jh-create-entity create-company" [routerLink]="['/company/new']">
+            <fa-icon icon="plus"></fa-icon>
+            <span>
+            Créer une nouvelle Junior-Entreprise
+            </span>
+        </button>
+    </h2>
+
+    <jhi-alert-error></jhi-alert-error>
+
+    <jhi-alert></jhi-alert>
+
+    <div class="alert alert-warning" id="no-result" *ngIf="companies?.length === 0">
+        <span>Aucune Junior-Entreprise trouvée</span>
+    </div>
+
+    <div class="table-responsive" id="entities" *ngIf="companies && companies.length > 0">
+        <table class="table table-striped" aria-describedby="page-heading">
+            <thead>
+            <tr>
+                <th scope="col" ><span>Nom</span></th>
+                <th scope="col" ><span>Template d'adresse email</span></th>
+                <th scope="col" ><span>Nombre d'utilisateurs inscrits</span></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let company of companies ;trackBy: getId">
+                <td>{{ company.name }}</td>
+                <td>{{ company.emailTemplate }}</td>
+                <td>Ajouter nombre d'utilisateurs inscrits </td>
+                <td class="text-right">
+                    <div class="btn-group">
+                        <button type="submit"
+                                [routerLink]="['/company', company.id, 'edit']"
+                                class="btn btn-primary btn-sm">
+                            <fa-icon icon="pencil-alt"></fa-icon>
+                            <span class="d-none d-md-inline">Modifier</span>
+                        </button>
+
+                        <button type="submit" (click)="delete(company)"
+                                class="btn btn-danger btn-sm">
+                            <fa-icon icon="times"></fa-icon>
+                            <span class="d-none d-md-inline">Supprimer</span>
+                        </button>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

@@ -6,6 +6,7 @@ import com.mycompany.myapp.service.CompanyService;
 import com.mycompany.myapp.service.dto.CompanyDTO;
 import com.mycompany.myapp.service.mapper.CompanyMapper;
 import com.mycompany.myapp.service.view.CompanyView;
+import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,6 +16,8 @@ import java.util.List;
 @RestController
 @RequestMapping("/company")
 public class CompanyController {
+
+    private static final String ENTITY_NAME = "company";
 
     private final CompanyRepository repository;
     private final CompanyService service;
@@ -31,6 +34,12 @@ public class CompanyController {
         return mapper.asListDTO(repository.findAll());
     }
 
+    @GetMapping("/{id}")
+    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
+    public CompanyView getCompanyById(@PathVariable("id") Long id){
+        return mapper.asDTO(repository.findById(id).orElseThrow(() -> new BadRequestAlertException("company doesn't exist", ENTITY_NAME, "id doesn't exist")));
+    }
+
     @PostMapping
     @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
     public CompanyView createCompany(@Valid @RequestBody CompanyDTO company){
@@ -43,7 +52,7 @@ public class CompanyController {
         return service.edit(updatedCompany);
     }
 
-    @DeleteMapping
+    @DeleteMapping("/{id}")
     @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
     public void deleteCompany(@PathVariable Long id){
         service.delete(id);

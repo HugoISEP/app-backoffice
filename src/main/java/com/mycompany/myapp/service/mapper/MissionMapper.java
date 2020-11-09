@@ -1,6 +1,5 @@
 package com.mycompany.myapp.service.mapper;
 
-import com.mycompany.myapp.domain.JobType;
 import com.mycompany.myapp.domain.Mission;
 import com.mycompany.myapp.service.dto.MissionDTO;
 import org.mapstruct.*;
