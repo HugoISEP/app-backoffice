@@ -10,7 +10,7 @@ type EntityArrayResponseType = HttpResponse<IJobType[]>;
 
 @Injectable({ providedIn: 'root' })
 export class JobTypeService {
-  public resourceUrl = SERVER_API_URL + 'job-type';
+  public resourceUrl = SERVER_API_URL + 'api/job-type';
 
   constructor(protected http: HttpClient) {}
 

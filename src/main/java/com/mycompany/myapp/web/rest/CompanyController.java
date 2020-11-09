@@ -14,7 +14,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping("/company")
+@RequestMapping("api/company")
 public class CompanyController {
 
     private static final String ENTITY_NAME = "company";

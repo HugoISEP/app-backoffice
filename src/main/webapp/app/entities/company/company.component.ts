@@ -21,6 +21,11 @@ export class CompanyComponent implements OnInit, OnDestroy {
     this.companyService.getAll().subscribe((response: HttpResponse<ICompany[]>) => (this.companies = response.body || []));
   }
 
+  ngOnInit(): void {
+    this.loadAll();
+    this.registerChangeInCompanies();
+  }
+
   getId(index: number, company: ICompany): number {
     return company.id!;
   }
@@ -32,11 +37,6 @@ export class CompanyComponent implements OnInit, OnDestroy {
 
   registerChangeInCompanies(): void {
     this.eventSubscriber = this.eventManager.subscribe('companyListModification', () => this.loadAll());
-  }
-
-  ngOnInit(): void {
-    this.loadAll();
-    this.registerChangeInCompanies();
   }
 
   ngOnDestroy(): void {

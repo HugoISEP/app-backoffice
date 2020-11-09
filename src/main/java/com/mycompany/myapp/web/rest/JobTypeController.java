@@ -18,7 +18,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping("/job-type")
+@RequestMapping("api/job-type")
 @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.MANAGER + "\")")
 public class JobTypeController {
 

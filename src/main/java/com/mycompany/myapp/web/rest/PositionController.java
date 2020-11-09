@@ -17,7 +17,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping("/position")
+@RequestMapping("api/position")
 @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.MANAGER + "\")")
 public class PositionController {
 

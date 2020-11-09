@@ -9,7 +9,7 @@ type EntityArrayResponseType = HttpResponse<IPosition[]>;
 
 @Injectable({ providedIn: 'root' })
 export class PositionService {
-  public resourceUrl = SERVER_API_URL + 'position';
+  public resourceUrl = SERVER_API_URL + 'api/position';
 
   constructor(protected http: HttpClient) {}
 
