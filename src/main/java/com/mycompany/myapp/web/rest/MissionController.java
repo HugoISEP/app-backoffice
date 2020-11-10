@@ -66,7 +66,7 @@ public class MissionController {
     }
 
     @PutMapping
-    //@PostAuthorize("hasAuthority(\"" +AuthoritiesConstants.ADMIN + "\") || principal.username == returnObject.user.login ")
+    //@PostAuthorize("hasAuthority(\"" +AuthoritiesConstants.ADMIN + "\") || principal. == returnObject.user.login ")
     public MissionView edit(@Valid @RequestBody MissionDTO mission){
         return mapper.asDTO(service.editMission(mission));
     }

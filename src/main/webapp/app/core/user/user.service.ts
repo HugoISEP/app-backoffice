@@ -29,6 +29,13 @@ export class UserService {
     return this.http.get<IUser[]>(this.resourceUrl, { params: options, observe: 'response' });
   }
 
+  getUsersByManager(req?: Pagination): Observable<HttpResponse<IUser[]>> {
+    // eslint-disable-next-line no-console
+    console.log('request');
+    const options = createRequestOption(req);
+    return this.http.get<IUser[]>(`${this.resourceUrl}/manager`, { params: options, observe: 'response' });
+  }
+
   delete(login: string): Observable<{}> {
     return this.http.delete(`${this.resourceUrl}/${login}`);
   }

@@ -9,6 +9,7 @@ import com.mycompany.myapp.security.AuthoritiesConstants;
 import com.mycompany.myapp.security.SecurityUtils;
 import com.mycompany.myapp.service.dto.UserDTO;
 
+import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
 import io.github.jhipster.security.RandomUtil;
 
 import org.slf4j.Logger;
@@ -257,6 +258,14 @@ public class UserService {
     @Transactional(readOnly = true)
     public Page<UserDTO> getAllManagedUsers(Pageable pageable) {
         return userRepository.findAllByLoginNot(pageable, Constants.ANONYMOUS_USER).map(UserDTO::new);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<UserDTO> getAllManagedUsersByManager(Pageable pageable) {
+        UserDTO user = this.getUserWithAuthorities()
+            .map(UserDTO::new)
+            .orElseThrow(() -> new BadRequestAlertException("user not found", "USER", "id exists"));
+        return userRepository.findAllUsersByManager(pageable, user.getCompany().getId()).map(UserDTO::new);
     }
 
     @Transactional(readOnly = true)

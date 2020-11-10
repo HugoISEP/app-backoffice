@@ -1,19 +1,18 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { HttpResponse, HttpHeaders } from '@angular/common/http';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { Subscription, combineLatest } from 'rxjs';
-import { ActivatedRoute, ParamMap, Router, Data } from '@angular/router';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { User } from '../../core/user/user.model';
+import { combineLatest, Subscription } from 'rxjs';
+import { ITEMS_PER_PAGE } from '../../shared/constants/pagination.constants';
+import { UserService } from '../../core/user/user.service';
+import { AccountService } from '../../core/auth/account.service';
+import { ActivatedRoute, Data, ParamMap, Router } from '@angular/router';
 import { JhiEventManager } from 'ng-jhipster';
-
-import { ITEMS_PER_PAGE } from 'app/shared/constants/pagination.constants';
-import { AccountService } from 'app/core/auth/account.service';
-import { Account } from 'app/core/user/account.model';
-import { UserService } from 'app/core/user/user.service';
-import { User } from 'app/core/user/user.model';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { HttpHeaders, HttpResponse } from '@angular/common/http';
+import { Account } from '../../core/user/account.model';
 import { UserManagementDeleteDialogComponent } from './user-management-delete-dialog.component';
 
 @Component({
-  selector: 'jhi-user-mgmt',
+  selector: 'jhi-user-management',
   templateUrl: './user-management.component.html',
 })
 export class UserManagementComponent implements OnInit, OnDestroy {
@@ -83,7 +82,7 @@ export class UserManagementComponent implements OnInit, OnDestroy {
 
   private loadAll(): void {
     this.userService
-      .query({
+      .getUsersByManager({
         page: this.page - 1,
         size: this.itemsPerPage,
         sort: this.sort(),
