@@ -7,8 +7,15 @@ import com.mycompany.myapp.service.dto.CompanyDTO;
 import com.mycompany.myapp.service.mapper.CompanyMapper;
 import com.mycompany.myapp.service.view.CompanyView;
 import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
+import io.github.jhipster.web.util.PaginationUtil;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -30,8 +37,10 @@ public class CompanyController {
     }
 
     @GetMapping("/all")
-    public List<? extends CompanyView> getAllCompanies(){
-        return mapper.asListDTO(repository.findAll());
+    public ResponseEntity<List<CompanyView>> getAllCompanies(Pageable pageable){
+        Page page = service.getAllPaginated(pageable);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
+        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")

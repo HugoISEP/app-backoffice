@@ -3,6 +3,7 @@ import { SERVER_API_URL } from '../../app.constants';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { ICompany } from '../../shared/model/company.model';
+import { createRequestOption, Pagination } from '../../shared/util/request-util';
 
 type EntityResponseType = HttpResponse<ICompany>;
 type EntityArrayResponseType = HttpResponse<ICompany[]>;
@@ -25,8 +26,9 @@ export class CompanyService {
     return this.http.get<ICompany>(`${this.resourceUrl}/${id}`, { observe: 'response' });
   }
 
-  getAll(): Observable<EntityArrayResponseType> {
-    return this.http.get<ICompany[]>(`${this.resourceUrl}/all`, { observe: 'response' });
+  getAll(req?: Pagination): Observable<EntityArrayResponseType> {
+    const options = createRequestOption(req);
+    return this.http.get<ICompany[]>(`${this.resourceUrl}/all`, { params: options, observe: 'response' });
   }
 
   delete(id: number): Observable<HttpResponse<{}>> {
