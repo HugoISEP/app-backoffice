@@ -9,6 +9,8 @@ import com.mycompany.myapp.service.dto.UserDTO;
 import com.mycompany.myapp.service.mapper.MissionMapper;
 import com.mycompany.myapp.service.view.MissionView;
 import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -70,10 +72,10 @@ public class MissionService {
         return repository.save(mission);
     }
 
-    public List<MissionView> getAllMissionByUser(){
+    public Page<MissionView> getAllMissionByCompany(Pageable pageable){
         UserDTO user = userService.getUserWithAuthorities()
             .map(UserDTO::new)
             .orElseThrow(() -> new BadRequestAlertException("user not found", ENTITY_NAME, "id exists"));
-        return repository.findAllByCompanyId(user.getCompany().getId());
+        return repository.findAllByCompanyId(user.getCompany().getId(), pageable);
     }
 }

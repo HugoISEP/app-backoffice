@@ -5,6 +5,7 @@ import { IMission } from '../../shared/model/mission.model';
 import { Observable } from 'rxjs';
 import * as moment from 'moment';
 import { map } from 'rxjs/operators';
+import { createRequestOption, Pagination } from '../../shared/util/request-util';
 
 type EntityResponseType = HttpResponse<IMission>;
 type EntityArrayResponseType = HttpResponse<IMission[]>;
@@ -27,9 +28,10 @@ export class MissionService {
     return this.http.get<IMission>(`${this.resourceUrl}/${id}`, { observe: 'response' });
   }
 
-  getAllByUser(): Observable<EntityArrayResponseType> {
+  getAllByUser(req?: Pagination): Observable<EntityArrayResponseType> {
+    const options = createRequestOption(req);
     return this.http
-      .get<IMission[]>(this.resourceUrl, { observe: 'response' })
+      .get<IMission[]>(this.resourceUrl, { params: options, observe: 'response' })
       .pipe(map((res: EntityArrayResponseType) => this.convertDateArrayFromServer(res)));
   }
 

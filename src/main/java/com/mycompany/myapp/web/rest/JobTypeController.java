@@ -57,7 +57,7 @@ public class JobTypeController {
     }
 
     @PutMapping
-    //@PostAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\") || principal.username == returnObject.user.login ")
+    //@PostAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\") || principal. == returnObject.user.login ")
     public JobTypeView edit(@Valid @RequestBody JobTypeDTO jobType){
         return service.editJobType(jobType);
     }

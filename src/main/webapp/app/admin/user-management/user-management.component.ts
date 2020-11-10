@@ -36,6 +36,8 @@ export class UserManagementComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
+    // eslint-disable-next-line no-console
+    console.log('page: ', this.page);
     this.accountService.identity().subscribe(account => (this.currentAccount = account));
     this.userListSubscription = this.eventManager.subscribe('userListModification', () => this.loadAll());
     this.handleNavigation();
@@ -82,6 +84,8 @@ export class UserManagementComponent implements OnInit, OnDestroy {
   }
 
   private loadAll(): void {
+    // eslint-disable-next-line no-console
+    console.log('page1: ', this.page);
     this.userService
       .query({
         page: this.page - 1,
@@ -89,6 +93,8 @@ export class UserManagementComponent implements OnInit, OnDestroy {
         sort: this.sort(),
       })
       .subscribe((res: HttpResponse<User[]>) => this.onSuccess(res.body, res.headers));
+    // eslint-disable-next-line no-console
+    console.log('page2: ', this.page);
   }
 
   private sort(): string[] {

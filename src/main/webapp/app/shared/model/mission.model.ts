@@ -1,4 +1,3 @@
-import { IUser } from '../../core/user/user.model';
 import { IPosition } from 'app/shared/model/position.model';
 
 export interface IMission {
@@ -8,5 +7,5 @@ export interface IMission {
 }
 
 export class Mission implements IMission {
-  constructor(public id?: number, public name?: string, public user?: IUser) {}
+  constructor(public id?: number, public name?: string, public positions?: IPosition[]) {}
 }
