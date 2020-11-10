@@ -4,6 +4,7 @@ import { HttpClient, HttpResponse } from '@angular/common/http';
 import { IPosition } from '../../shared/model/position.model';
 import { Observable } from 'rxjs';
 import { IJobType } from '../../shared/model/jobType.model';
+import { createRequestOption, Pagination } from '../../shared/util/request-util';
 
 type EntityResponseType = HttpResponse<IJobType>;
 type EntityArrayResponseType = HttpResponse<IJobType[]>;
@@ -26,8 +27,9 @@ export class JobTypeService {
     return this.http.get<IJobType>(`${this.resourceUrl}/${id}`, { observe: 'response' });
   }
 
-  getAllByUser(): Observable<EntityArrayResponseType> {
-    return this.http.get<IPosition[]>(`${this.resourceUrl}`, { observe: 'response' });
+  getAllByUser(req?: Pagination): Observable<EntityArrayResponseType> {
+    const options = createRequestOption(req);
+    return this.http.get<IPosition[]>(`${this.resourceUrl}`, { params: options, observe: 'response' });
   }
 
   delete(id: number): Observable<HttpResponse<{}>> {

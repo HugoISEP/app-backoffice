@@ -9,6 +9,8 @@ import com.mycompany.myapp.service.dto.UserDTO;
 import com.mycompany.myapp.service.mapper.JobTypeMapper;
 import com.mycompany.myapp.service.view.JobTypeView;
 import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,11 +33,12 @@ public class JobTypeService {
         this.userService = userService;
     }
 
-    public List<JobTypeView> getAllJobTypeByUser(){
+    public Page<JobTypeView> getAllJobTypeByUser(Pageable pageable){
         UserDTO user = userService.getUserWithAuthorities()
             .map(UserDTO::new)
             .orElseThrow(() -> new BadRequestAlertException("User not found", ENTITY_NAME, "id doesn't exist"));
-        return repository.findAllByCompanyId(user.getCompany().getId());
+
+        return repository.findAllByCompanyId(user.getCompany().getId(), pageable);
     }
 
     public JobTypeDTO createJobType(JobTypeDTO jobTypeDTO){
