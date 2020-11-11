@@ -153,7 +153,7 @@ public class UserService {
         user.setLastName(userDTO.getLastName());
         if (userDTO.getEmail() != null) {
             Company company = this.isEmailValid(userDTO.getEmail());
-            if (currentUser.getCompany().getId() != company.getId()){
+            if (currentUser.getCompany().getId() != company.getId() && !currentUser.getAuthorities().contains(AuthoritiesConstants.ADMIN)){
                 throw new Exception("Email match with the wrong company");
             }
             user.setEmail(userDTO.getEmail().toLowerCase());
@@ -188,7 +188,7 @@ public class UserService {
         return user;
     }
 
-    public Company isEmailValid(String emailToTest) throws Exception {
+    public Company isEmailValid(String emailToTest) throws Exception{
         return companyRepository.findCompanyByUserEmail(emailToTest).orElseThrow(() -> new Exception("Email doesn't match with a Company"));
         //Pattern pattern = Pattern.compile("^[\\w-\\.]+@"+ managedUserVM.getCompany().getEmailTemplate());
     }
@@ -199,7 +199,14 @@ public class UserService {
      * @param userDTO user to update.
      * @return updated user.
      */
-    public Optional<UserDTO> updateUser(UserDTO userDTO) {
+    public Optional<UserDTO> updateUser(UserDTO userDTO) throws Exception{
+        UserDTO currentUser = getUserWithAuthorities()
+            .map(UserDTO::new)
+            .orElseThrow(() -> new BadRequestAlertException("user not found", "USER", "id exists"));
+        if (currentUser.getCompany().getId() != userDTO.getCompany().getId() && !currentUser.getAuthorities().contains(AuthoritiesConstants.ADMIN)){
+            throw new Exception("Not authorize to edit this user");
+        }
+
         return Optional.of(userRepository
             .findById(userDTO.getId()))
             .filter(Optional::isPresent)
@@ -209,9 +216,9 @@ public class UserService {
                 user.setLogin(userDTO.getLogin().toLowerCase());
                 user.setFirstName(userDTO.getFirstName());
                 user.setLastName(userDTO.getLastName());
-                if (userDTO.getEmail() != null) {
+                /*if (userDTO.getEmail() != null) {
                     user.setEmail(userDTO.getEmail().toLowerCase());
-                }
+                }*/
                 user.setImageUrl(userDTO.getImageUrl());
                 user.setActivated(userDTO.isActivated());
                 user.setLangKey(userDTO.getLangKey());
