@@ -90,8 +90,8 @@ public class UserResource {
      * @throws BadRequestAlertException {@code 400 (Bad Request)} if the login or email is already in use.
      */
     @PostMapping("/users")
-    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
-    public ResponseEntity<User> createUser(@Valid @RequestBody UserDTO userDTO) throws URISyntaxException {
+    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.MANAGER + "\")")
+    public ResponseEntity<User> createUser(@Valid @RequestBody UserDTO userDTO) throws URISyntaxException, Exception {
         log.debug("REST request to save User : {}", userDTO);
 
         if (userDTO.getId() != null) {

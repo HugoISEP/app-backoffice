@@ -36,6 +36,12 @@ public class CompanyController {
         this.mapper = mapper;
     }
 
+    @GetMapping
+    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.USER + "\")")
+    public CompanyView getCurrentUserCompany(){
+        return service.getCompanyFromCurrentUser();
+    }
+
     @GetMapping("/all")
     public ResponseEntity<List<CompanyView>> getAllCompanies(Pageable pageable){
         Page page = service.getAllPaginated(pageable);

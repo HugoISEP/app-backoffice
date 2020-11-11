@@ -3,6 +3,8 @@ import { User } from '../../core/user/user.model';
 import { FormBuilder, Validators } from '@angular/forms';
 import { UserService } from '../../core/user/user.service';
 import { ActivatedRoute } from '@angular/router';
+import { ICompany } from '../../shared/model/company.model';
+import { CompanyService } from '../company/company.service';
 
 @Component({
   selector: 'jhi-user-management-update',
@@ -10,6 +12,7 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class UserManagementUpdateComponent implements OnInit {
   user!: User;
+  company?: ICompany;
   authorities: string[] = [];
   isSaving = false;
 
@@ -28,11 +31,15 @@ export class UserManagementUpdateComponent implements OnInit {
     lastName: ['', [Validators.maxLength(50)]],
     email: ['', [Validators.minLength(5), Validators.maxLength(254), Validators.email]],
     activated: [],
-    langKey: [],
-    authorities: [],
+    company: [],
   });
 
-  constructor(private userService: UserService, private route: ActivatedRoute, private fb: FormBuilder) {}
+  constructor(
+    private userService: UserService,
+    private companyService: CompanyService,
+    private route: ActivatedRoute,
+    private fb: FormBuilder
+  ) {}
 
   ngOnInit(): void {
     this.route.data.subscribe(({ user }) => {
@@ -44,8 +51,8 @@ export class UserManagementUpdateComponent implements OnInit {
         this.updateForm(user);
       }
     });
-    this.userService.authorities().subscribe(authorities => {
-      this.authorities = authorities;
+    this.companyService.getUserCompany().subscribe(company => {
+      this.company = company.body!;
     });
   }
 
@@ -62,7 +69,6 @@ export class UserManagementUpdateComponent implements OnInit {
         () => this.onSaveError()
       );
     } else {
-      this.user.langKey = 'en';
       this.userService.create(this.user).subscribe(
         () => this.onSaveSuccess(),
         () => this.onSaveError()
@@ -78,8 +84,6 @@ export class UserManagementUpdateComponent implements OnInit {
       lastName: user.lastName,
       email: user.email,
       activated: user.activated,
-      langKey: user.langKey,
-      authorities: user.authorities,
     });
   }
 
@@ -89,8 +93,7 @@ export class UserManagementUpdateComponent implements OnInit {
     user.lastName = this.editForm.get(['lastName'])!.value;
     user.email = this.editForm.get(['email'])!.value;
     user.activated = this.editForm.get(['activated'])!.value;
-    user.langKey = this.editForm.get(['langKey'])!.value;
-    user.authorities = this.editForm.get(['authorities'])!.value;
+    user.company = this.company;
   }
 
   private onSaveSuccess(): void {

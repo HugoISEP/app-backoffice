@@ -16,7 +16,7 @@ public class Company {
     private String name;
 
     @NotNull
-    @Column(name = "email_template", nullable = false)
+    @Column(name = "email_template", nullable = false, unique = true)
     private String emailTemplate;
 
     public Long getId() {

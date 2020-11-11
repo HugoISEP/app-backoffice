@@ -2,8 +2,10 @@ package com.mycompany.myapp.service;
 
 import com.mycompany.myapp.config.Constants;
 import com.mycompany.myapp.domain.Authority;
+import com.mycompany.myapp.domain.Company;
 import com.mycompany.myapp.domain.User;
 import com.mycompany.myapp.repository.AuthorityRepository;
+import com.mycompany.myapp.repository.CompanyRepository;
 import com.mycompany.myapp.repository.UserRepository;
 import com.mycompany.myapp.security.AuthoritiesConstants;
 import com.mycompany.myapp.security.SecurityUtils;
@@ -25,6 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
@@ -42,12 +45,15 @@ public class UserService {
 
     private final AuthorityRepository authorityRepository;
 
+    private final CompanyRepository companyRepository;
+
     private final CacheManager cacheManager;
 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, AuthorityRepository authorityRepository, CacheManager cacheManager) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, AuthorityRepository authorityRepository, CompanyRepository companyRepository, CacheManager cacheManager) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.authorityRepository = authorityRepository;
+        this.companyRepository = companyRepository;
         this.cacheManager = cacheManager;
     }
 
@@ -136,13 +142,24 @@ public class UserService {
         return true;
     }
 
-    public User createUser(UserDTO userDTO) {
+    public User createUser(UserDTO userDTO) throws Exception{
+        UserDTO currentUser = getUserWithAuthorities()
+            .map(UserDTO::new)
+            .orElseThrow(() -> new BadRequestAlertException("user not found", "USER", "id exists"));
+
         User user = new User();
         user.setLogin(userDTO.getLogin().toLowerCase());
         user.setFirstName(userDTO.getFirstName());
         user.setLastName(userDTO.getLastName());
         if (userDTO.getEmail() != null) {
+            Company company = this.isEmailValid(userDTO.getEmail());
+            if (currentUser.getCompany().getId() != company.getId()){
+                throw new Exception("Email match with the wrong company");
+            }
             user.setEmail(userDTO.getEmail().toLowerCase());
+            user.setCompany(company);
+        } else {
+            throw new Exception("Email is required");
         }
         user.setImageUrl(userDTO.getImageUrl());
         if (userDTO.getLangKey() == null) {
@@ -155,18 +172,25 @@ public class UserService {
         user.setResetKey(RandomUtil.generateResetKey());
         user.setResetDate(Instant.now());
         user.setActivated(true);
-        if (userDTO.getAuthorities() != null) {
+        if (userDTO.getAuthorities() != null && currentUser.getAuthorities().contains(AuthoritiesConstants.ADMIN)) {
             Set<Authority> authorities = userDTO.getAuthorities().stream()
                 .map(authorityRepository::findById)
                 .filter(Optional::isPresent)
                 .map(Optional::get)
                 .collect(Collectors.toSet());
             user.setAuthorities(authorities);
+        } else {
+            user.setAuthorities(Collections.singleton(authorityRepository.findAuthorityByName(AuthoritiesConstants.USER)));
         }
         userRepository.save(user);
         this.clearUserCaches(user);
         log.debug("Created Information for User: {}", user);
         return user;
+    }
+
+    public Company isEmailValid(String emailToTest) throws Exception {
+        return companyRepository.findCompanyByUserEmail(emailToTest).orElseThrow(() -> new Exception("Email doesn't match with a Company"));
+        //Pattern pattern = Pattern.compile("^[\\w-\\.]+@"+ managedUserVM.getCompany().getEmailTemplate());
     }
 
     /**
