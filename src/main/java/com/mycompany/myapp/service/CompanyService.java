@@ -31,7 +31,7 @@ public class CompanyService {
     public CompanyView getCompanyFromCurrentUser(){
         UserDTO user = userService.getUserWithAuthorities()
             .map(UserDTO::new)
-            .orElseThrow(() -> new BadRequestAlertException("user not found", ENTITY_NAME, "id exists"));
+            .orElseThrow(() -> new BadRequestAlertException("user not found", ENTITY_NAME, " id exists"));
         return repository.findCompanyFromCurrentUser(user.getId());
     }
 
@@ -46,6 +46,12 @@ public class CompanyService {
     public CompanyDTO edit(CompanyDTO updatedCompany){
         if (updatedCompany.getId() == null) {
             throw new BadRequestAlertException("Cannot edit ", ENTITY_NAME, " id doesn't exist");
+        }
+        UserDTO user = userService.getUserWithAuthorities()
+            .map(UserDTO::new)
+            .orElseThrow(() -> new BadRequestAlertException("user not found", ENTITY_NAME, "id exists"));
+        if (user.getCompany().getId() != updatedCompany.getId()){
+            throw new BadRequestAlertException("Cannot edit ", ENTITY_NAME, " wrong user");
         }
         Company company = repository.findById(updatedCompany.getId()).orElseThrow(() -> new BadRequestAlertException("company doesn't exist", ENTITY_NAME, "id doesn't exist"));
         mapper.updateCompany(updatedCompany, company);

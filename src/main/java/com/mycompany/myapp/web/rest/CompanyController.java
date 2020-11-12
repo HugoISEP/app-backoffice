@@ -62,7 +62,7 @@ public class CompanyController {
     }
 
     @PutMapping
-    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
+    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.MANAGER + "\")")
     public CompanyView editCompany(@Valid @RequestBody CompanyDTO updatedCompany){
         return service.edit(updatedCompany);
     }

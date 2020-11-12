@@ -44,6 +44,15 @@ export const companyRoute: Routes = [
     canActivate: [UserRouteAccessService],
   },
   {
+    path: 'own',
+    component: CompanyUpdateComponent,
+    data: {
+      authorities: [Authority.MANAGER],
+      pageTitle: 'Ma Junior-Entreprise',
+    },
+    canActivate: [UserRouteAccessService],
+  },
+  {
     path: ':companyId/edit',
     component: CompanyUpdateComponent,
     resolve: {

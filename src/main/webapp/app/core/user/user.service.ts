@@ -30,8 +30,6 @@ export class UserService {
   }
 
   getUsersByManager(req?: Pagination): Observable<HttpResponse<IUser[]>> {
-    // eslint-disable-next-line no-console
-    console.log('request');
     const options = createRequestOption(req);
     return this.http.get<IUser[]>(`${this.resourceUrl}/manager`, { params: options, observe: 'response' });
   }

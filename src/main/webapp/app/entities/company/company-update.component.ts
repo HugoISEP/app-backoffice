@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { HttpResponse } from '@angular/common/http';
 import { CompanyService } from 'app/entities/company/company.service';
@@ -19,12 +19,22 @@ export class CompanyUpdateComponent implements OnInit {
     emailTemplate: [null, [Validators.required]],
   });
 
-  constructor(protected companyService: CompanyService, protected activateRoute: ActivatedRoute, private fb: FormBuilder) {}
+  constructor(
+    protected companyService: CompanyService,
+    protected activateRoute: ActivatedRoute,
+    private fb: FormBuilder,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
     this.activateRoute.data.subscribe(({ company }) => {
       this.updateForm(company);
     });
+    if (this.router.url === '/company/own') {
+      this.companyService.getUserCompany().subscribe(company => {
+        this.updateForm(company.body!);
+      });
+    }
   }
 
   updateForm(company: ICompany): void {
@@ -65,7 +75,9 @@ export class CompanyUpdateComponent implements OnInit {
   }
 
   previousState(): void {
-    window.history.back();
+    if (this.router.url !== '/company/own') {
+      window.history.back();
+    }
   }
 
   save(): void {
