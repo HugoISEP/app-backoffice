@@ -109,4 +109,13 @@ export class UserManagementUpdateComponent implements OnInit {
   trackById(index: number, item: ICompany): any {
     return item.id;
   }
+
+  handleSelect(): void {
+    this.editForm.controls['email'].setValidators([
+      Validators.minLength(5),
+      Validators.maxLength(254),
+      Validators.email,
+      Validators.pattern(`^[\\w-\\.]+@${this.editForm.get(['company'])!.value.emailTemplate}$`),
+    ]);
+  }
 }

@@ -38,7 +38,7 @@ public class CompanyController {
     }
 
     @GetMapping("/user")
-    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.USER + "\")")
+    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.USER + "\") || hasAuthority(\"" + AuthoritiesConstants.MANAGER + "\")")
     public CompanyDetailsView getCurrentUserCompany(){
         return service.getCompanyFromCurrentUser();
     }

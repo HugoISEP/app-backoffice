@@ -1,10 +1,12 @@
 <?xml version="1.1" encoding="UTF-8" standalone="no"?>
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-3.9.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.9.xsd">
-    <changeSet author="hugo (generated)" id="1604681434768-2">
+    <changeSet author="hugo (generated)" id="1605284098298-2">
         <createTable tableName="company">
             <column autoIncrement="true" name="id" type="BIGINT">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="companyPK"/>
             </column>
+            <column name="create_date_time" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="deleted_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
             <column name="email_template" type="VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
@@ -13,11 +15,13 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="hugo (generated)" id="1604681434768-3">
+    <changeSet author="hugo (generated)" id="1605284098298-3">
         <createTable tableName="job_type">
             <column autoIncrement="true" name="id" type="BIGINT">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="job_typePK"/>
             </column>
+            <column name="create_date_time" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="deleted_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
             <column name="name" type="VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
@@ -26,11 +30,13 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="hugo (generated)" id="1604681434768-4">
+    <changeSet author="hugo (generated)" id="1605284098298-4">
         <createTable tableName="mission">
             <column autoIncrement="true" name="id" type="BIGINT">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="missionPK"/>
             </column>
+            <column name="create_date_time" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="deleted_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
             <column name="name" type="VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
@@ -39,7 +45,7 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="hugo (generated)" id="1604681434768-5">
+    <changeSet author="hugo (generated)" id="1605284098298-5">
         <createTable tableName="position">
             <column autoIncrement="true" name="id" type="BIGINT">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="positionPK"/>
@@ -47,6 +53,7 @@
             <column name="created_at" type="TIMESTAMP WITHOUT TIME ZONE">
                 <constraints nullable="false"/>
             </column>
+            <column name="deleted_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
             <column name="description" type="VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
@@ -66,27 +73,33 @@
             <column name="mission_id" type="BIGINT"/>
         </createTable>
     </changeSet>
-    <changeSet author="hugo (generated)" id="1604681434768-6">
+    <changeSet author="hugo (generated)" id="1605284098298-6">
         <addColumn tableName="jhi_user">
             <column name="company_id" type="int8"/>
         </addColumn>
     </changeSet>
-    <changeSet author="hugo (generated)" id="1604681434768-7">
+    <changeSet author="hugo (generated)" id="1605284098298-7">
+        <addUniqueConstraint columnNames="email_template" constraintName="UC_COMPANYEMAIL_TEMPLATE_COL" tableName="company"/>
+    </changeSet>
+    <changeSet author="hugo (generated)" id="1605284098298-8">
         <addForeignKeyConstraint baseColumnNames="company_id" baseTableName="jhi_user" constraintName="FK3ltrtkr6yv25sivkurwf9q8v9" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="company" validate="true"/>
     </changeSet>
-    <changeSet author="hugo (generated)" id="1604681434768-8">
+    <changeSet author="hugo (generated)" id="1605284098298-9">
         <addForeignKeyConstraint baseColumnNames="company_id" baseTableName="job_type" constraintName="FKgd2ymndgtnt1n0m8jd932uf38" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="company" validate="true"/>
     </changeSet>
-    <changeSet author="hugo (generated)" id="1604681434768-9">
+    <changeSet author="hugo (generated)" id="1605284098298-10">
         <addForeignKeyConstraint baseColumnNames="mission_id" baseTableName="position" constraintName="FKgepwke3ujb2vb7q2jdnrees45" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="mission" validate="true"/>
     </changeSet>
-    <changeSet author="hugo (generated)" id="1604681434768-10">
+    <changeSet author="hugo (generated)" id="1605284098298-11">
         <addForeignKeyConstraint baseColumnNames="company_id" baseTableName="mission" constraintName="FKhwsgolr29521w9wejsjv976n1" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="company" validate="true"/>
     </changeSet>
-    <changeSet author="hugo (generated)" id="1604681434768-11">
+    <changeSet author="hugo (generated)" id="1605284098298-12">
         <addForeignKeyConstraint baseColumnNames="job_type_id" baseTableName="position" constraintName="FKibc9yq315b75l0dlw89n9rawp" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="job_type" validate="true"/>
     </changeSet>
-    <changeSet author="hugo (generated)" id="1604681434768-1">
+    <changeSet author="hugo (generated)" id="1605284098298-13">
+        <dropUniqueConstraint constraintName="ux_user_login" tableName="jhi_user"/>
+    </changeSet>
+    <changeSet author="hugo (generated)" id="1605284098298-1">
         <alterSequence sequenceName="sequence_generator"/>
     </changeSet>
 </databaseChangeLog>

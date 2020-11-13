@@ -63,12 +63,16 @@
                                *ngIf="editForm.get('email')?.errors?.email">
                             Your email is invalid.
                         </small>
+                        <small class="form-text text-danger"
+                               *ngIf="editForm.get('email')?.errors?.pattern">
+                            Your email doesn't not match with email template
+                        </small>
                     </div>
                 </div>
 
                 <div class="form-group">
                     <label class="form-control-label" for="field_company">Junior-Entreprise</label>
-                    <select class="form-control" id="field_company" name="company" formControlName="company">
+                    <select class="form-control" id="field_company" name="company" formControlName="company" (ngModelChange)="handleSelect()">
                         <option *ngIf="!editForm.get('company')!.value" [ngValue]="null" selected></option>
                         <option [ngValue]="companyOption.id === editForm.get('company')!.value?.id ? editForm.get('company')!.value : companyOption" *ngFor="let companyOption of companies; trackBy: trackById">{{ companyOption.name }}</option>
                     </select>

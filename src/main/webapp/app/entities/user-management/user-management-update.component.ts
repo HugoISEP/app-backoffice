@@ -15,8 +15,14 @@ export class UserManagementUpdateComponent implements OnInit {
   company?: ICompany;
   authorities: string[] = [];
   isSaving = false;
-
-  editForm!: FormGroup;
+  editForm = this.fb.group({
+    id: [],
+    firstName: ['', [Validators.maxLength(50)]],
+    lastName: ['', [Validators.maxLength(50)]],
+    email: ['', [Validators.minLength(5), Validators.maxLength(254), Validators.email]],
+    activated: [],
+    company: [],
+  });
 
   constructor(
     private userService: UserService,
@@ -34,23 +40,12 @@ export class UserManagementUpdateComponent implements OnInit {
         }
         this.companyService.getUserCompany().subscribe(company => {
           this.company = company.body!;
-          this.editForm = this.fb.group({
-            id: [],
-            firstName: ['', [Validators.maxLength(50)]],
-            lastName: ['', [Validators.maxLength(50)]],
-            email: [
-              '',
-              [
-                Validators.minLength(5),
-                Validators.maxLength(254),
-                Validators.email,
-                Validators.pattern(`^[\\w-\\.]+@${this.company?.emailTemplate}$`),
-              ],
-            ],
-            activated: [],
-            company: [],
-          });
-
+          this.editForm.controls['email'].setValidators([
+            Validators.minLength(5),
+            Validators.maxLength(254),
+            Validators.email,
+            Validators.pattern(`^[\\w-\\.]+@${this.company.emailTemplate}$`),
+          ]);
           this.updateForm(user);
         });
       }
