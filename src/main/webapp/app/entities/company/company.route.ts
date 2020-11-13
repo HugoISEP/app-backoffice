@@ -9,7 +9,7 @@ import { Company, ICompany } from '../../shared/model/company.model';
 import { CompanyService } from './company.service';
 import { CompanyComponent } from './company.component';
 import { CompanyUpdateComponent } from './company-update.component';
-import { JobTypeResolve } from '../jobType/job-type.route';
+import { CompanyDetailComponent } from './company-detail.component';
 
 @Injectable({ providedIn: 'root' })
 export class CompanyResolve implements Resolve<ICompany> {
@@ -44,8 +44,17 @@ export const companyRoute: Routes = [
     canActivate: [UserRouteAccessService],
   },
   {
-    path: 'own',
+    path: 'own/update',
     component: CompanyUpdateComponent,
+    data: {
+      authorities: [Authority.MANAGER],
+      pageTitle: 'Ma Junior-Entreprise',
+    },
+    canActivate: [UserRouteAccessService],
+  },
+  {
+    path: 'own/view',
+    component: CompanyDetailComponent,
     data: {
       authorities: [Authority.MANAGER],
       pageTitle: 'Ma Junior-Entreprise',

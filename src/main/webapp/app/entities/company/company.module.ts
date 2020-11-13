@@ -5,10 +5,11 @@ import { companyRoute } from './company.route';
 import { CompanyComponent } from './company.component';
 import { CompanyUpdateComponent } from './company-update.component';
 import { CompanyDeleteDialogComponent } from './company-delete-dialog.component';
+import { CompanyDetailComponent } from './company-detail.component';
 
 @NgModule({
   imports: [HugoIsepSharedModule, RouterModule.forChild(companyRoute)],
-  declarations: [CompanyComponent, CompanyUpdateComponent, CompanyDeleteDialogComponent],
+  declarations: [CompanyComponent, CompanyUpdateComponent, CompanyDetailComponent, CompanyDeleteDialogComponent],
   entryComponents: [CompanyDeleteDialogComponent],
 })
 export class CompanyModule {}

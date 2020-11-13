@@ -17,7 +17,7 @@ public interface CompanyRepository extends JpaRepository<Company, Long> {
     Optional<Company> findCompanyByUserEmail(@Param("email") String email);
 
     @Query("select c from Company c join User u on u.company.id = c.id where u.id = :id")
-    CompanyView findCompanyFromCurrentUser(@Param("id") Long id);
+    CompanyDetailsView findCompanyFromCurrentUser(@Param("id") Long id);
 
     @Query("select c from Company c")
     Page<CompanyDetailsView> findAllPaginated(Pageable pageable);

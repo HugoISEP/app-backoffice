@@ -39,7 +39,7 @@ public class CompanyController {
 
     @GetMapping
     @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.USER + "\")")
-    public CompanyView getCurrentUserCompany(){
+    public CompanyDetailsView getCurrentUserCompany(){
         return service.getCompanyFromCurrentUser();
     }
 

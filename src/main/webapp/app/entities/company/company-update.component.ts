@@ -30,7 +30,7 @@ export class CompanyUpdateComponent implements OnInit {
     this.activateRoute.data.subscribe(({ company }) => {
       this.updateForm(company);
     });
-    if (this.router.url === '/company/own') {
+    if (this.router.url === '/company/own/update') {
       this.companyService.getUserCompany().subscribe(company => {
         this.updateForm(company.body!);
       });
@@ -75,7 +75,9 @@ export class CompanyUpdateComponent implements OnInit {
   }
 
   previousState(): void {
-    if (this.router.url !== '/company/own') {
+    if (this.router.url === '/company/own/update') {
+      this.router.navigate(['/company/own/view']);
+    } else {
       window.history.back();
     }
   }

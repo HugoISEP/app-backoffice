@@ -29,7 +29,7 @@ public class CompanyService {
         this.userService = userService;
     }
 
-    public CompanyView getCompanyFromCurrentUser(){
+    public CompanyDetailsView getCompanyFromCurrentUser(){
         UserDTO user = userService.getUserWithAuthorities()
             .map(UserDTO::new)
             .orElseThrow(() -> new BadRequestAlertException("user not found", ENTITY_NAME, " id exists"));

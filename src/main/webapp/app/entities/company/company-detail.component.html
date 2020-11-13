@@ -1,0 +1,32 @@
+<div class="row justify-content-center">
+    <div class="col-8">
+        <div *ngIf="company">
+            <h2><span>Junior-Entreprise: </span> {{ company.id }}</h2>
+
+            <hr>
+
+            <jhi-alert-error></jhi-alert-error>
+
+            <dl class="row-md jh-entity-details">
+                <dt><span>Nom</span></dt>
+                <dd>
+                    <span>{{ company.name }}</span>
+                </dd>
+                <dt><span>Modèle d'email</span></dt>
+                <dd>
+                    <span>{{ company.emailTemplate }}</span>
+                </dd>
+                <dt><span>Nombre d'utilisateurs inscrits</span></dt>
+                <dd>
+                    <span>{{ company.totalUsers }}</span>
+                </dd>
+            </dl>
+
+            <button type="button"
+                    [routerLink]="['/company/own/update']"
+                    class="btn btn-primary">
+                <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span>Edit</span>
+            </button>
+        </div>
+    </div>
+</div>
