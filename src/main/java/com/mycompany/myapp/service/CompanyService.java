@@ -5,6 +5,7 @@ import com.mycompany.myapp.repository.CompanyRepository;
 import com.mycompany.myapp.service.dto.CompanyDTO;
 import com.mycompany.myapp.service.dto.UserDTO;
 import com.mycompany.myapp.service.mapper.CompanyMapper;
+import com.mycompany.myapp.service.view.CompanyDetailsView;
 import com.mycompany.myapp.service.view.CompanyView;
 import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
 import org.springframework.data.domain.Page;
@@ -35,7 +36,7 @@ public class CompanyService {
         return repository.findCompanyFromCurrentUser(user.getId());
     }
 
-    public Page<CompanyView> getAllPaginated(Pageable pageable){
+    public Page<CompanyDetailsView> getAllPaginated(Pageable pageable){
         return repository.findAllPaginated(pageable);
     }
 

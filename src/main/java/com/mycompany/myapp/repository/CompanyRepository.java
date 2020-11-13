@@ -1,6 +1,7 @@
 package com.mycompany.myapp.repository;
 
 import com.mycompany.myapp.domain.Company;
+import com.mycompany.myapp.service.view.CompanyDetailsView;
 import com.mycompany.myapp.service.view.CompanyView;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -19,5 +20,5 @@ public interface CompanyRepository extends JpaRepository<Company, Long> {
     CompanyView findCompanyFromCurrentUser(@Param("id") Long id);
 
     @Query("select c from Company c")
-    Page<CompanyView> findAllPaginated(Pageable pageable);
+    Page<CompanyDetailsView> findAllPaginated(Pageable pageable);
 }

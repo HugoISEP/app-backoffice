@@ -1,5 +1,7 @@
 package com.mycompany.myapp.domain;
 
+import org.hibernate.annotations.Formula;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
@@ -18,6 +20,9 @@ public class Company {
     @NotNull
     @Column(name = "email_template", nullable = false, unique = true)
     private String emailTemplate;
+
+    @Formula("(select count(c.id) from company c join jhi_user u on c.id = u.company_id where c.id = id)")
+    private int totalUsers;
 
     public Long getId() {
         return id;
@@ -41,5 +46,13 @@ public class Company {
 
     public void setEmailTemplate(String emailTemplate) {
         this.emailTemplate = emailTemplate;
+    }
+
+    public int getTotalUsers() {
+        return totalUsers;
+    }
+
+    public void setTotalUsers(int totalUsers) {
+        this.totalUsers = totalUsers;
     }
 }

@@ -31,7 +31,7 @@
             <tr *ngFor="let company of companies ;trackBy: getId">
                 <td>{{ company.name }}</td>
                 <td>{{ company.emailTemplate }}</td>
-                <td>Ajouter nombre d'utilisateurs inscrits </td>
+                <td>{{company.totalUsers}}</td>
                 <td class="text-right">
                     <div class="btn-group">
                         <button type="submit"
