@@ -42,7 +42,7 @@ export class CompanyComponent implements OnInit, OnDestroy {
 
   loadAll(): void {
     this.companyService
-      .getAll({
+      .getAllPaginated({
         page: this.page - 1,
         size: this.itemsPerPage,
       })

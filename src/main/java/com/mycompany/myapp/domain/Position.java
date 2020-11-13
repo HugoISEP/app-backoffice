@@ -39,6 +39,8 @@ public class Position {
     @CreationTimestamp
     private LocalDateTime createdAt;
 
+    private LocalDateTime deletedAt;
+
     @Column(name = "status", nullable = false)
     private boolean status = false;
 
@@ -116,5 +118,13 @@ public class Position {
 
     public void setRemuneration(float remuneration) {
         this.remuneration = remuneration;
+    }
+
+    public LocalDateTime getDeletedAt() {
+        return deletedAt;
+    }
+
+    public void setDeletedAt(LocalDateTime deletedAt) {
+        this.deletedAt = deletedAt;
     }
 }

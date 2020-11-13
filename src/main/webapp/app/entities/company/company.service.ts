@@ -23,14 +23,18 @@ export class CompanyService {
   }
 
   getUserCompany(): Observable<EntityResponseType> {
-    return this.http.get<ICompany>(this.resourceUrl, { observe: 'response' });
+    return this.http.get<ICompany>(`${this.resourceUrl}/user`, { observe: 'response' });
   }
 
   getById(id: number): Observable<EntityResponseType> {
     return this.http.get<ICompany>(`${this.resourceUrl}/${id}`, { observe: 'response' });
   }
 
-  getAll(req?: Pagination): Observable<EntityArrayResponseType> {
+  getAll(): Observable<EntityArrayResponseType> {
+    return this.http.get<ICompany[]>(this.resourceUrl, { observe: 'response' });
+  }
+
+  getAllPaginated(req?: Pagination): Observable<EntityArrayResponseType> {
     const options = createRequestOption(req);
     return this.http.get<ICompany[]>(`${this.resourceUrl}/all`, { params: options, observe: 'response' });
   }

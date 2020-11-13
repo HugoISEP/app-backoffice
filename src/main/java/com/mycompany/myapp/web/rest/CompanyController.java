@@ -37,14 +37,21 @@ public class CompanyController {
         this.mapper = mapper;
     }
 
-    @GetMapping
+    @GetMapping("/user")
     @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.USER + "\")")
     public CompanyDetailsView getCurrentUserCompany(){
         return service.getCompanyFromCurrentUser();
     }
 
+    @GetMapping
+    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.USER + "\")")
+    public List<? extends CompanyView> getAllCompanies(){
+        return mapper.asListDTO(repository.findAll());
+    }
+
     @GetMapping("/all")
-    public ResponseEntity<List<CompanyDetailsView>> getAllCompanies(Pageable pageable){
+    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
+    public ResponseEntity<List<CompanyDetailsView>> getAllCompaniesPaginated(Pageable pageable){
         Page page = service.getAllPaginated(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
