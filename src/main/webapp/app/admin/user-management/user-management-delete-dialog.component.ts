@@ -18,8 +18,8 @@ export class UserManagementDeleteDialogComponent {
     this.activeModal.dismiss();
   }
 
-  confirmDelete(login: string): void {
-    this.userService.delete(login).subscribe(() => {
+  confirmDelete(id: number): void {
+    this.userService.delete(id).subscribe(() => {
       this.eventManager.broadcast('userListModification');
       this.activeModal.close();
     });

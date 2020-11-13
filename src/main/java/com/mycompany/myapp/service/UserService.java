@@ -236,12 +236,17 @@ public class UserService {
             .map(UserDTO::new);
     }
 
-    public void deleteUser(String login) {
-        userRepository.findOneByLogin(login).ifPresent(user -> {
+    public void deleteUser(Long id) {
+        UserDTO currentUser = getUserWithAuthorities()
+            .map(UserDTO::new)
+            .orElseThrow(() -> new BadRequestAlertException("current user not found", "USER", "id exists"));
+
+        User user = userRepository.findById(id).orElseThrow(() -> new BadRequestAlertException("User not found", "USER", "login doesn't exist"));
+        if (currentUser.getCompany().getId() == user.getCompany().getId() || currentUser.getAuthorities().contains(AuthoritiesConstants.ADMIN)){
             userRepository.delete(user);
             this.clearUserCaches(user);
             log.debug("Deleted User: {}", user);
-        });
+        }
     }
 
     /**
