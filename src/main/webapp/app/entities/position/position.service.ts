@@ -33,6 +33,10 @@ export class PositionService {
     return this.http.get<IPosition[]>(`${this.resourceUrl}/all`, { observe: 'response' });
   }
 
+  getAllActive(): Observable<EntityArrayResponseType> {
+    return this.http.get<IPosition[]>(`${this.resourceUrl}/active`, { observe: 'response' });
+  }
+
   delete(id: number): Observable<HttpResponse<{}>> {
     return this.http.delete(`${this.resourceUrl}/${id}`, { observe: 'response' });
   }

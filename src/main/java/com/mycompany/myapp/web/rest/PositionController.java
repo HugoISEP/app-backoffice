@@ -9,7 +9,8 @@ import com.mycompany.myapp.service.mapper.PositionMapper;
 import com.mycompany.myapp.service.view.MissionView;
 import com.mycompany.myapp.service.view.PositionView;
 import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
-import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -51,7 +52,7 @@ public class PositionController {
     @GetMapping("/active")
     //@PostAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\") " +
     //    "|| returnObject.size() != 0 ? returnObject.get(0).mission.user.login == principal.username : true  ")
-    public List<PositionView> getPositionsByMission(){
+    public List<PositionView> getActivePositionsByUser(){
         return service.getActivePositionsByUser();
     }
 

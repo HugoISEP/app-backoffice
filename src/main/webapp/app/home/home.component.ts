@@ -4,6 +4,8 @@ import { Subscription } from 'rxjs';
 import { LoginModalService } from 'app/core/login/login-modal.service';
 import { AccountService } from 'app/core/auth/account.service';
 import { Account } from 'app/core/user/account.model';
+import { IPosition } from 'app/shared/model/position.model';
+import { PositionService } from 'app/entities/position/position.service';
 
 @Component({
   selector: 'jhi-home',
@@ -12,12 +14,26 @@ import { Account } from 'app/core/user/account.model';
 })
 export class HomeComponent implements OnInit, OnDestroy {
   account: Account | null = null;
+  positions?: IPosition[];
   authSubscription?: Subscription;
 
-  constructor(private accountService: AccountService, private loginModalService: LoginModalService) {}
+  constructor(
+    private accountService: AccountService,
+    private positionService: PositionService,
+    private loginModalService: LoginModalService
+  ) {}
 
   ngOnInit(): void {
-    this.authSubscription = this.accountService.getAuthenticationState().subscribe(account => (this.account = account));
+    this.authSubscription = this.accountService.getAuthenticationState().subscribe(account => {
+      this.account = account;
+      if (account) {
+        this.positionService.getAll().subscribe(positions => {
+          this.positions = positions.body!;
+        });
+      } else {
+        this.positions = undefined;
+      }
+    });
   }
 
   isAuthenticated(): boolean {
@@ -26,6 +42,10 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   login(): void {
     this.loginModalService.open();
+  }
+
+  getPositionId(index: number, position: IPosition): number {
+    return position.id!;
   }
 
   ngOnDestroy(): void {
