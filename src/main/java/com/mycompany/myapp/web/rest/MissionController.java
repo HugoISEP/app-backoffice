@@ -1,6 +1,5 @@
 package com.mycompany.myapp.web.rest;
 
-import com.mycompany.myapp.domain.Mission;
 import com.mycompany.myapp.repository.PositionRepository;
 import com.mycompany.myapp.repository.MissionRepository;
 import com.mycompany.myapp.security.AuthoritiesConstants;
@@ -15,7 +14,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -26,7 +24,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("api/mission")
-@PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.MANAGER + "\")")
+@PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.MANAGER + "\") || hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
 public class MissionController {
 
     private static final String ENTITY_NAME = "mission";
@@ -42,8 +40,8 @@ public class MissionController {
     }
 
     @GetMapping("/{id}")
-    //@PostAuthorize("hasAuthority(\"" +AuthoritiesConstants.ADMIN + "\") || principal.username == returnObject.user.login ")
     public MissionView getById(@PathVariable Long id){
+        service.hasAuthorization(id);
         return mapper.asDTO(repository.findById(id).orElseThrow(() -> new BadRequestAlertException("mission doesn't exist", ENTITY_NAME, "id doesn't exist")));
     }
 
@@ -66,13 +64,14 @@ public class MissionController {
     }
 
     @PutMapping
-    //@PostAuthorize("hasAuthority(\"" +AuthoritiesConstants.ADMIN + "\") || principal. == returnObject.user.login ")
     public MissionView edit(@Valid @RequestBody MissionDTO mission){
+        service.hasAuthorization(mission.getId());
         return mapper.asDTO(service.editMission(mission));
     }
 
     @DeleteMapping("/{id}")
     public void delete(@PathVariable Long id){
-       service.deleteMission(id);
+        service.hasAuthorization(id);
+        service.deleteMission(id);
     }
 }

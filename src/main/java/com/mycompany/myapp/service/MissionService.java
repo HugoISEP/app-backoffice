@@ -1,6 +1,7 @@
 package com.mycompany.myapp.service;
 
 import com.mycompany.myapp.domain.Mission;
+import com.mycompany.myapp.domain.Position;
 import com.mycompany.myapp.repository.MissionRepository;
 import com.mycompany.myapp.repository.PositionRepository;
 import com.mycompany.myapp.security.AuthoritiesConstants;
@@ -34,6 +35,16 @@ public class MissionService {
         this.positionRepository = positionRepository;
     }
 
+    public void hasAuthorization(Long id){
+        UserDTO user = userService.getUserWithAuthorities()
+            .map(UserDTO::new)
+            .orElseThrow(() -> new BadRequestAlertException("User not found", ENTITY_NAME, "id doesn't exist"));
+        Mission mission = repository.findById(id).orElseThrow(() -> new BadRequestAlertException("Entity not found", ENTITY_NAME, "id doesn't exist"));
+        if(!user.getCompany().getId().equals(mission.getCompany().getId()) && !user.getAuthorities().contains(AuthoritiesConstants.ADMIN)){
+            throw new BadRequestAlertException("User not authorize ", ENTITY_NAME, " no permission");
+        }
+    }
+
     public Mission createMission(MissionDTO mission){
         if (mission.getId() != null) {
             throw new BadRequestAlertException("A new mission cannot already have an ID", ENTITY_NAME, "id exists");
@@ -47,20 +58,12 @@ public class MissionService {
     }
 
     public void deleteMission(Long id){
-        UserDTO user = userService.getUserWithAuthorities()
-            .map(UserDTO::new)
-            .orElseThrow(() -> new BadRequestAlertException("user not found", ENTITY_NAME, "id exists"));
         Mission missionToDelete = repository.findById(id).orElseThrow(() -> new BadRequestAlertException("Technologie doesn't exist", ENTITY_NAME, "id doesn't exist"));
-
-        if(missionToDelete.getCompany().getId() == user.getCompany().getId() || user.getAuthorities().contains(AuthoritiesConstants.ADMIN)){
-            missionToDelete.getPositions().forEach(position -> {
-                //positionRepository.delete(position);
-                positionRepository.delete(position.getId());
-            });
-            repository.delete(missionToDelete);
-        } else {
-            throw new BadRequestAlertException("no permission to delete", ENTITY_NAME, "wrong user");
-        }
+        missionToDelete.getPositions().forEach(position -> {
+            //positionRepository.delete(position);
+            positionRepository.delete(position.getId());
+        });
+        repository.delete(missionToDelete);
     }
 
     public Mission editMission(MissionDTO missionToEdit){

@@ -37,10 +37,9 @@ public class JobTypeService {
             .map(UserDTO::new)
             .orElseThrow(() -> new BadRequestAlertException("User not found", ENTITY_NAME, "id doesn't exist"));
         JobType jobType = repository.findById(id).orElseThrow(() -> new BadRequestAlertException("Entity not found", ENTITY_NAME, "id doesn't exist"));
-        if(user.getCompany().getId() != jobType.getCompany().getId() && !user.getAuthorities().contains(AuthoritiesConstants.ADMIN)){
+        if(!user.getCompany().getId().equals(jobType.getCompany().getId()) && !user.getAuthorities().contains(AuthoritiesConstants.ADMIN)){
             throw new BadRequestAlertException("User not authorize ", ENTITY_NAME, " no permission");
         }
-
     }
 
     public Page<JobTypeView> getAllJobTypeByUser(Pageable pageable){

@@ -36,6 +36,16 @@ public class PositionService {
         this.userService = userService;
     }
 
+    public void hasAuthorization(Long id){
+        UserDTO user = userService.getUserWithAuthorities()
+            .map(UserDTO::new)
+            .orElseThrow(() -> new BadRequestAlertException("User not found", ENTITY_NAME, "id doesn't exist"));
+        Position position = repository.findById(id).orElseThrow(() -> new BadRequestAlertException("Entity not found", ENTITY_NAME, "id doesn't exist"));
+        if(!user.getCompany().getId().equals(position.getMission().getCompany().getId()) && !user.getAuthorities().contains(AuthoritiesConstants.ADMIN)){
+            throw new BadRequestAlertException("User not authorize ", ENTITY_NAME, " no permission");
+        }
+    }
+
     public List<PositionView> getActivePositionsByUser(){
         UserDTO user = userService.getUserWithAuthorities()
             .map(UserDTO::new)
@@ -70,14 +80,8 @@ public class PositionService {
     }
 
     public void deletePosition(Long id){
-        UserDTO user = userService.getUserWithAuthorities()
-            .map(UserDTO::new)
-            .orElseThrow(() -> new BadRequestAlertException("user not found", ENTITY_NAME, "id exists"));
         Position positionToDelete = repository.findById(id).orElseThrow(() -> new BadRequestAlertException("Position doesn't exist", ENTITY_NAME, "id doesn't exist"));
-        if(positionToDelete.getMission().getCompany().getId() == user.getCompany().getId() || user.getAuthorities().contains(AuthoritiesConstants.ADMIN)){
-            repository.delete(positionToDelete.getId());
-        } else {
-            throw new BadRequestAlertException("no permission to delete", ENTITY_NAME, "wrong user");
-        }
+        repository.delete(positionToDelete.getId());
+
     }
 }
