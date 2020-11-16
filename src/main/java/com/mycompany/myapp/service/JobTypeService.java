@@ -14,7 +14,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 
 @Service
 @Transactional
@@ -31,6 +30,17 @@ public class JobTypeService {
         this.mapper = mapper;
         this.positionRepository = positionRepository;
         this.userService = userService;
+    }
+
+    public void hasAuthorization(Long id){
+        UserDTO user = userService.getUserWithAuthorities()
+            .map(UserDTO::new)
+            .orElseThrow(() -> new BadRequestAlertException("User not found", ENTITY_NAME, "id doesn't exist"));
+        JobType jobType = repository.findById(id).orElseThrow(() -> new BadRequestAlertException("Entity not found", ENTITY_NAME, "id doesn't exist"));
+        if(user.getCompany().getId() != jobType.getCompany().getId() && !user.getAuthorities().contains(AuthoritiesConstants.ADMIN)){
+            throw new BadRequestAlertException("User not authorize ", ENTITY_NAME, " no permission");
+        }
+
     }
 
     public Page<JobTypeView> getAllJobTypeByUser(Pageable pageable){
@@ -63,19 +73,15 @@ public class JobTypeService {
     }
 
     public void deleteJobType(Long id){
-        UserDTO user = userService.getUserWithAuthorities()
-            .map(UserDTO::new)
-            .orElseThrow(() -> new BadRequestAlertException("User not found", ENTITY_NAME, "id doesn't exist"));
+
         JobType jobTypeToDelete = repository.findById(id).orElseThrow(() -> new BadRequestAlertException("JobType doesn't exist", ENTITY_NAME, "id doesn't exist"));
-        if(jobTypeToDelete.getCompany().getId() == user.getCompany().getId() || user.getAuthorities().contains(AuthoritiesConstants.ADMIN)){
-            jobTypeToDelete.getPositions().forEach(position -> {
-                //positionRepository.delete(position);
-                positionRepository.delete(position.getId());
-            });
-            repository.delete(jobTypeToDelete);
-        } else {
-            throw new BadRequestAlertException("no permission to delete", ENTITY_NAME, "wrong user ");
-        }
+
+        jobTypeToDelete.getPositions().forEach(position -> {
+            //positionRepository.delete(position);
+            positionRepository.delete(position.getId());
+        });
+        repository.delete(jobTypeToDelete);
+
     }
 
 }

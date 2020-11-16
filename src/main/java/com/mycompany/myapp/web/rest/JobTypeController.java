@@ -1,14 +1,10 @@
 package com.mycompany.myapp.web.rest;
 
 import com.mycompany.myapp.repository.JobTypeRepository;
-import com.mycompany.myapp.repository.PositionRepository;
 import com.mycompany.myapp.security.AuthoritiesConstants;
 import com.mycompany.myapp.service.JobTypeService;
-import com.mycompany.myapp.service.UserService;
 import com.mycompany.myapp.service.dto.JobTypeDTO;
 import com.mycompany.myapp.service.mapper.JobTypeMapper;
-import com.mycompany.myapp.service.mapper.UserMapper;
-import com.mycompany.myapp.service.view.CompanyView;
 import com.mycompany.myapp.service.view.JobTypeView;
 import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
 import io.github.jhipster.web.util.PaginationUtil;
@@ -17,7 +13,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -43,8 +38,8 @@ public class JobTypeController {
     }
 
     @GetMapping("/{id}")
-    //@PostAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\") || principal.username == returnObject.user.login ")
     public JobTypeView getById(@PathVariable Long id){
+        service.hasAuthorization(id);
         return mapper.asDTO(repository.findById(id).orElseThrow(() -> new BadRequestAlertException("JobType doesn't exist", ENTITY_NAME, "id doesn't exist")));
     }
 
@@ -56,7 +51,7 @@ public class JobTypeController {
     }
 
     @GetMapping("/all")
-    @PostAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
+    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
     public List<? extends JobTypeView> getAll(){
         return mapper.asListDTO(repository.findAll());
     }
@@ -67,13 +62,14 @@ public class JobTypeController {
     }
 
     @PutMapping
-    //@PostAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\") || principal. == returnObject.user.login ")
     public JobTypeView edit(@Valid @RequestBody JobTypeDTO jobType){
+        service.hasAuthorization(jobType.getId());
         return service.editJobType(jobType);
     }
 
     @DeleteMapping("/{id}")
     public void delete(@PathVariable Long id){
+        service.hasAuthorization(id);
         service.deleteJobType(id);
     }
 }
