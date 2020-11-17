@@ -51,8 +51,8 @@ public class CompanyController {
 
     @GetMapping("/all")
     @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
-    public ResponseEntity<List<CompanyDetailsView>> getAllCompaniesPaginated(Pageable pageable){
-        Page page = service.getAllPaginated(pageable);
+    public ResponseEntity<List<CompanyDetailsView>> getAllCompaniesPaginated(Pageable pageable, @RequestParam(value = "searchTerm", defaultValue = "%%") String searchTerm){
+        Page page = service.getAllPaginated(pageable, searchTerm);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }

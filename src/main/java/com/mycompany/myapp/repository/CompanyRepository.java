@@ -19,6 +19,7 @@ public interface CompanyRepository extends JpaRepository<Company, Long> {
     @Query("select c from Company c join User u on u.company.id = c.id where u.id = :id")
     CompanyDetailsView findCompanyFromCurrentUser(@Param("id") Long id);
 
-    @Query("select c from Company c")
-    Page<CompanyDetailsView> findAllPaginated(Pageable pageable);
+    @Query("select c from Company c " +
+        "where (lower(c.name) like concat('%',:searchTerm,'%') or lower(c.emailTemplate) like concat('%',:searchTerm,'%'))")
+    Page<CompanyDetailsView> findAllPaginated(Pageable pageable, @Param("searchTerm") String searchTerm);
 }

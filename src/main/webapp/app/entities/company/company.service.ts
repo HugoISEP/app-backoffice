@@ -34,8 +34,11 @@ export class CompanyService {
     return this.http.get<ICompany[]>(this.resourceUrl, { observe: 'response' });
   }
 
-  getAllPaginated(req?: Pagination): Observable<EntityArrayResponseType> {
-    const options = createRequestOption(req);
+  getAllPaginated(req?: Pagination, searchTerm?: string): Observable<EntityArrayResponseType> {
+    let options = createRequestOption(req);
+    if (searchTerm) {
+      options = options.set('searchTerm', searchTerm);
+    }
     return this.http.get<ICompany[]>(`${this.resourceUrl}/all`, { params: options, observe: 'response' });
   }
 

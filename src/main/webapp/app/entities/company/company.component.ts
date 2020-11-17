@@ -17,6 +17,7 @@ import { Mission } from '../../shared/model/mission.model';
 export class CompanyComponent implements OnInit, OnDestroy {
   companies: Company[] | null = null;
   eventSubscriber?: Subscription;
+  searchTerm = '';
   totalItems = 0;
   itemsPerPage = ITEMS_PER_PAGE;
   page!: number;
@@ -42,10 +43,13 @@ export class CompanyComponent implements OnInit, OnDestroy {
 
   loadAll(): void {
     this.companyService
-      .getAllPaginated({
-        page: this.page - 1,
-        size: this.itemsPerPage,
-      })
+      .getAllPaginated(
+        {
+          page: this.page - 1,
+          size: this.itemsPerPage,
+        },
+        this.searchTerm
+      )
       .subscribe((response: HttpResponse<Company[]>) => this.onSuccess(response.body, response.headers));
   }
 

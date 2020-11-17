@@ -102,10 +102,6 @@ export class UserManagementComponent implements OnInit, OnDestroy {
     return result;
   }
 
-  sortUserList(): void {
-    this.loadAll();
-  }
-
   private onSuccess(users: User[] | null, headers: HttpHeaders): void {
     this.totalItems = Number(headers.get('X-Total-Count'));
     this.users = users;

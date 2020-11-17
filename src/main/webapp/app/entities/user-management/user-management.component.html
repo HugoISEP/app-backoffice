@@ -12,13 +12,14 @@
 
     <div class="float-right">
         <label for="research">Recherche</label>
-        <input type="text" class="form-control" id="research" [(ngModel)]="searchTerm" (ngModelChange)="sortUserList()">
+        <input type="text" class="form-control" id="research" [(ngModel)]="searchTerm" (ngModelChange)="loadAll()">
     </div>
     <div class="table-responsive" *ngIf="users">
         <table class="table table-striped" aria-describedby="user-management-page-heading">
             <thead>
             <tr jhiSort [(predicate)]="predicate" [(ascending)]="ascending" [callback]="transition.bind(this)">
-                <th scope="col"  jhiSortBy="login"><span>Login</span> <fa-icon icon="sort"></fa-icon></th>
+                <th scope="col"  jhiSortBy="login"><span>Prénom</span> <fa-icon icon="sort"></fa-icon></th>
+                <th scope="col"  jhiSortBy="login"><span>Nom</span> <fa-icon icon="sort"></fa-icon></th>
                 <th scope="col"  jhiSortBy="email"><span>Email</span> <fa-icon icon="sort"></fa-icon></th>
                 <th scope="col"></th>
                 <th scope="col" jhiSortBy="createdDate"><span>Created Date</span> <fa-icon icon="sort"></fa-icon></th>
@@ -29,7 +30,8 @@
             </thead>
             <tbody *ngIf="users">
             <tr *ngFor="let user of users; trackBy: trackIdentity">
-                <td>{{ user.login }}</td>
+                <td>{{ user.firstName }}</td>
+                <td>{{ user.lastName }}</td>
                 <td>{{ user.email }}</td>
                 <td>
                     <button class="btn btn-danger btn-sm" (click)="setActive(user, true)" *ngIf="!user.activated">Deactivated</button>

@@ -36,8 +36,8 @@ public class CompanyService {
         return repository.findCompanyFromCurrentUser(user.getId());
     }
 
-    public Page<CompanyDetailsView> getAllPaginated(Pageable pageable){
-        return repository.findAllPaginated(pageable);
+    public Page<CompanyDetailsView> getAllPaginated(Pageable pageable, String searchTerm){
+        return repository.findAllPaginated(pageable, searchTerm);
     }
 
     public CompanyDTO create(CompanyDTO company){

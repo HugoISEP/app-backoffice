@@ -18,6 +18,11 @@
         <span>Aucune Junior-Entreprise trouvée</span>
     </div>
 
+    <div class="float-right">
+        <label for="research">Recherche</label>
+        <input type="text" class="form-control" id="research" [(ngModel)]="searchTerm" (ngModelChange)="loadAll()">
+    </div>
+
     <div class="table-responsive" id="entities" *ngIf="companies && companies.length > 0">
         <table class="table table-striped" aria-describedby="page-heading">
             <thead>
@@ -25,6 +30,7 @@
                 <th scope="col" ><span>Nom</span></th>
                 <th scope="col" ><span>Template d'adresse email</span></th>
                 <th scope="col" ><span>Nombre d'utilisateurs inscrits</span></th>
+                <th scope="col" ><span>Gérer</span></th>
             </tr>
             </thead>
             <tbody>
