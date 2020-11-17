@@ -4,10 +4,6 @@ stages:
   - build
   - deploy
 
-services:
-  - docker:19.03-dind
-  - maven:3.6.3-jdk-11
-
 cache:
   paths:
     - node_modules/
