@@ -7,7 +7,12 @@ stages:
 cache:
   paths:
     - node_modules/
-    
+  
+  
+before_script:
+  - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
+
+  
 build:
   services:
     - ${CI_REGISTRY}/sysadmins/sysadmin-tools/maven:3.6.3-jdk-11
