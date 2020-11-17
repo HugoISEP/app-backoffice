@@ -1,6 +1,7 @@
 image: docker:19.03.0
 services:
   - docker:19.03-dind
+  - maven:3.6.3-jdk-11
 
 cache:
   paths:
@@ -10,7 +11,7 @@ build:
   stage: build
   script:
     - docker pull $CI_REGISTRY_IMAGE:prod || true
-    - sh mvnw -Pdev  jib:dockerBuild -Dimage=$CI_REGISTRY_IMAGE:prod
+    - ./mvnw -Pdev  jib:dockerBuild -Dimage=$CI_REGISTRY_IMAGE:prod
     - docker push $CI_REGISTRY_IMAGE:prod
   only:
     - master
