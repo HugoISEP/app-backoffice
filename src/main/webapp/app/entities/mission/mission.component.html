@@ -18,12 +18,19 @@
         <span>Aucune mission trouvée</span>
     </div>
 
+    <div class="float-right">
+        <label for="research">Recherche</label>
+        <input type="text" class="form-control" id="research" [(ngModel)]="searchTerm" (ngModelChange)="loadAll()">
+    </div>
+
     <div class="table-responsive" id="entities" *ngIf="missions && missions.length > 0">
         <table class="table table-striped" aria-describedby="page-heading">
             <thead>
             <tr>
                 <th scope="col" ><span>Nom</span></th>
-                <th scope="col" ><span>Nombre de positions</span></th>
+                <th scope="col" ><span>Date de création</span></th>
+                <th></th>
+                <th></th>
             </tr>
             </thead>
             <tbody>

@@ -46,8 +46,8 @@ public class MissionController {
     }
 
     @GetMapping
-    public ResponseEntity<List<MissionView>> getAllByCompany(Pageable pageable){
-        Page<MissionView> page = service.getAllMissionByCompany(pageable);
+    public ResponseEntity<List<MissionView>> getAllByCompany(Pageable pageable, @RequestParam(value = "searchTerm", defaultValue = "%%") String searchTerm){
+        Page<MissionView> page = service.getAllMissionByCompany(pageable, searchTerm);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }

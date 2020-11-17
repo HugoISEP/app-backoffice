@@ -16,6 +16,7 @@ import { ActivatedRoute, Data, ParamMap, Router } from '@angular/router';
 export class MissionComponent implements OnInit, OnDestroy {
   missions: Mission[] | null = null;
   eventSubscriber?: Subscription;
+  searchTerm = '';
   totalItems = 0;
   itemsPerPage = ITEMS_PER_PAGE;
   page!: number;
@@ -72,10 +73,13 @@ export class MissionComponent implements OnInit, OnDestroy {
 
   loadAll(): void {
     this.missionService
-      .getAllByUser({
-        page: this.page - 1,
-        size: this.itemsPerPage,
-      })
+      .getAllByUser(
+        {
+          page: this.page - 1,
+          size: this.itemsPerPage,
+        },
+        this.searchTerm
+      )
       .subscribe((response: HttpResponse<Mission[]>) => this.onSuccess(response.body, response.headers));
   }
 }

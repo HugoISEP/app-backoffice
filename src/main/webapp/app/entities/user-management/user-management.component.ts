@@ -81,7 +81,7 @@ export class UserManagementComponent implements OnInit, OnDestroy {
     }).subscribe();
   }
 
-  private loadAll(): void {
+  loadAll(): void {
     this.userService
       .getUsersByManager(
         {

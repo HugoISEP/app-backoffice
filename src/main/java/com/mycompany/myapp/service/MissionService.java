@@ -75,10 +75,10 @@ public class MissionService {
         return repository.save(mission);
     }
 
-    public Page<MissionView> getAllMissionByCompany(Pageable pageable){
+    public Page<MissionView> getAllMissionByCompany(Pageable pageable, String searchTerm){
         UserDTO user = userService.getUserWithAuthorities()
             .map(UserDTO::new)
             .orElseThrow(() -> new BadRequestAlertException("user not found", ENTITY_NAME, "id exists"));
-        return repository.findAllByCompanyId(user.getCompany().getId(), pageable);
+        return repository.findAllByCompanyId(user.getCompany().getId(), searchTerm, pageable);
     }
 }
