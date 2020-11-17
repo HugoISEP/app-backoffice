@@ -10,7 +10,7 @@ build:
   stage: build
   script:
     - docker pull $CI_REGISTRY_IMAGE:prod || true
-    - ./mvnw -Pdev  jib:dockerBuild -Dimage=$CI_REGISTRY_IMAGE:prod
+    - sh mvnw -Pdev  jib:dockerBuild -Dimage=$CI_REGISTRY_IMAGE:prod
     - docker push $CI_REGISTRY_IMAGE:prod
   only:
     - master
