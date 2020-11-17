@@ -1,0 +1,20 @@
+image: docker:19.03.0
+services:
+  - docker:19.03-dind
+
+cache:
+  paths:
+    - node_modules/
+    
+build:
+  stage: build
+  script:
+    script:
+    - docker pull $CI_REGISTRY_IMAGE:prod || true
+    - ./mvnw -Pdev  jib:dockerBuild -Dimage=$CI_REGISTRY_IMAGE:prod
+    - docker push $CI_REGISTRY_IMAGE:prod
+  only:
+    - master
+
+
+
