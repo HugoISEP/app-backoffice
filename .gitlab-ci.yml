@@ -1,4 +1,9 @@
 image: docker:19.03.0
+
+stages:
+  - build
+  - deploy
+
 services:
   - docker:19.03-dind
   - maven:3.6.3-jdk-11
@@ -8,13 +13,18 @@ cache:
     - node_modules/
     
 build:
+  services:
+    - maven:3.6.3-jdk-11
   stage: build
   script:
-    - docker pull $CI_REGISTRY_IMAGE:prod || true
     - ./mvnw -Pdev  jib:dockerBuild -Dimage=$CI_REGISTRY_IMAGE:prod
-    - docker push $CI_REGISTRY_IMAGE:prod
   only:
     - master
 
-
+deploy:
+  stage: deploy
+  services:
+    - docker:19.03-dind
+  script:
+    - docker push $CI_REGISTRY_IMAGE:prod
 
