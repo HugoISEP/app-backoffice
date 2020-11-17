@@ -10,7 +10,7 @@ cache:
     
 build:
   services:
-    - maven:3.6.3-jdk-11
+    - ${CI_REGISTRY}/sysadmins/sysadmin-tools/maven:3.6.3-jdk-11
   stage: build
   script:
     - ./mvnw -Pdev  jib:dockerBuild -Dimage=$CI_REGISTRY_IMAGE:prod
