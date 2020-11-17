@@ -297,11 +297,11 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public Page<UserDTO> getAllManagedUsersByManager(Pageable pageable) {
+    public Page<UserDTO> getAllManagedUsersByManager(Pageable pageable, String searchTerm) {
         UserDTO user = this.getUserWithAuthorities()
             .map(UserDTO::new)
             .orElseThrow(() -> new BadRequestAlertException("user not found", "USER", "id exists"));
-        return userRepository.findAllUsersByManager(pageable, user.getCompany().getId()).map(UserDTO::new);
+        return userRepository.findAllUsersByManager(pageable, user.getCompany().getId(), searchTerm).map(UserDTO::new);
     }
 
     @Transactional(readOnly = true)

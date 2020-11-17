@@ -19,6 +19,7 @@ export class UserManagementComponent implements OnInit, OnDestroy {
   currentAccount: Account | null = null;
   users: User[] | null = null;
   userListSubscription?: Subscription;
+  searchTerm = '';
   totalItems = 0;
   itemsPerPage = ITEMS_PER_PAGE;
   page!: number;
@@ -82,11 +83,14 @@ export class UserManagementComponent implements OnInit, OnDestroy {
 
   private loadAll(): void {
     this.userService
-      .getUsersByManager({
-        page: this.page - 1,
-        size: this.itemsPerPage,
-        sort: this.sort(),
-      })
+      .getUsersByManager(
+        {
+          page: this.page - 1,
+          size: this.itemsPerPage,
+          sort: this.sort(),
+        },
+        this.searchTerm
+      )
       .subscribe((res: HttpResponse<User[]>) => this.onSuccess(res.body, res.headers));
   }
 
@@ -96,6 +100,10 @@ export class UserManagementComponent implements OnInit, OnDestroy {
       result.push('id');
     }
     return result;
+  }
+
+  sortUserList(): void {
+    this.loadAll();
   }
 
   private onSuccess(users: User[] | null, headers: HttpHeaders): void {

@@ -29,8 +29,11 @@ export class UserService {
     return this.http.get<IUser[]>(this.resourceUrl, { params: options, observe: 'response' });
   }
 
-  getUsersByManager(req?: Pagination): Observable<HttpResponse<IUser[]>> {
-    const options = createRequestOption(req);
+  getUsersByManager(req?: Pagination, searchTerm?: string): Observable<HttpResponse<IUser[]>> {
+    let options = createRequestOption(req);
+    if (searchTerm) {
+      options = options.set('searchTerm', searchTerm);
+    }
     return this.http.get<IUser[]>(`${this.resourceUrl}/manager`, { params: options, observe: 'response' });
   }
 

@@ -148,8 +148,8 @@ public class UserResource {
     }
 
     @GetMapping("/users/manager")
-    public ResponseEntity<List<UserDTO>> getAllUsersByManager(Pageable pageable) {
-        final Page<UserDTO> page = userService.getAllManagedUsersByManager(pageable);
+    public ResponseEntity<List<UserDTO>> getAllUsersByManager(Pageable pageable, @RequestParam(value = "searchTerm", defaultValue = "%%") String searchTerm) {
+        final Page<UserDTO> page = userService.getAllManagedUsersByManager(pageable, searchTerm);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }

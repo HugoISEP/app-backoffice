@@ -10,6 +10,10 @@
 
     <jhi-alert></jhi-alert>
 
+    <div class="float-right">
+        <label for="research">Recherche</label>
+        <input type="text" class="form-control" id="research" [(ngModel)]="searchTerm" (ngModelChange)="sortUserList()">
+    </div>
     <div class="table-responsive" *ngIf="users">
         <table class="table table-striped" aria-describedby="user-management-page-heading">
             <thead>
