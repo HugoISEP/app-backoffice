@@ -15,7 +15,7 @@ before_script:
   
 build:
   services:
-    - ${CI_REGISTRY}/sysadmins/sysadmin-tools/maven:3.6.3-jdk-11
+    - maven:3.6.3-jdk-11
   stage: build
   script:
     - ./mvnw -Pdev  jib:dockerBuild -Dimage=$CI_REGISTRY_IMAGE:prod
