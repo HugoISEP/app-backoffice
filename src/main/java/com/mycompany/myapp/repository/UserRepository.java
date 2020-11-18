@@ -47,6 +47,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query("select u from User u join u.authorities a " +
         "where a.name like 'ROLE_USER' and size(u.authorities)=1 and u.company.id = :id " +
-        "and (lower(u.firstName) like concat('%',:searchTerm,'%') or lower(u.lastName) like concat('%',:searchTerm,'%') or lower(u.email) like concat('%',:searchTerm,'%'))")
+        "and (lower(u.firstName) like concat('%',lower(:searchTerm),'%') or lower(u.lastName) like concat('%',lower(:searchTerm),'%') or lower(u.email) like concat('%',lower(:searchTerm),'%'))")
     Page<User> findAllUsersByManager(Pageable pageable, @Param("id") Long id, @Param("searchTerm") String searchTerm);
 }

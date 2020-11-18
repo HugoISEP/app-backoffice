@@ -14,6 +14,6 @@ public interface MissionRepository extends JpaRepository<Mission, Long> {
     List<Mission> findAll();
 
     @Query("select m from Mission m join Company c on c.id = m.company.id " +
-        "where c.id = :id and lower(m.name) like concat('%',:searchTerm,'%')")
+        "where c.id = :id and lower(m.name) like concat('%',lower(:searchTerm),'%')")
     Page<MissionView> findAllByCompanyId(@Param("id") Long id, @Param("searchTerm") String searchTerm, Pageable pageable);
 }
