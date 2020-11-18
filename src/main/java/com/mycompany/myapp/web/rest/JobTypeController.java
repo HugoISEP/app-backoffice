@@ -44,8 +44,8 @@ public class JobTypeController {
     }
 
     @GetMapping
-    public ResponseEntity<List<JobTypeView>> getAllByUser(Pageable pageable){
-        Page page = service.getAllJobTypeByUser(pageable);
+    public ResponseEntity<List<JobTypeView>> getAllByUser(Pageable pageable, @RequestParam(value = "searchTerm", defaultValue = "%%") String searchTerm){
+        Page page = service.getAllJobTypeByUser(pageable, searchTerm);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }

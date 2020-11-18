@@ -18,6 +18,11 @@
         <span>Aucun type de poste trouvé</span>
     </div>
 
+    <div class="float-right">
+        <label for="research">Recherche</label>
+        <input type="text" class="form-control" id="research" [(ngModel)]="searchTerm" (ngModelChange)="loadAll()">
+    </div>
+
     <div class="table-responsive" id="entities" *ngIf="jobTypes && jobTypes.length > 0">
         <table class="table table-striped" aria-describedby="page-heading">
             <thead>

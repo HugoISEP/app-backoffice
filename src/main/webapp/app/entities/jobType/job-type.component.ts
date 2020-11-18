@@ -16,6 +16,7 @@ import { ActivatedRoute, Data, ParamMap, Router } from '@angular/router';
 export class JobTypeComponent implements OnInit, OnDestroy {
   jobTypes?: JobType[] | null = null;
   eventSubscriber?: Subscription;
+  searchTerm = '';
   totalItems = 0;
   itemsPerPage = ITEMS_PER_PAGE;
   page!: number;
@@ -41,10 +42,13 @@ export class JobTypeComponent implements OnInit, OnDestroy {
 
   loadAll(): void {
     this.jobTypeService
-      .getAllByUser({
-        page: this.page - 1,
-        size: this.itemsPerPage,
-      })
+      .getAllByUser(
+        {
+          page: this.page - 1,
+          size: this.itemsPerPage,
+        },
+        this.searchTerm
+      )
       .subscribe((response: HttpResponse<JobType[]>) => this.onSuccess(response.body, response.headers));
   }
 

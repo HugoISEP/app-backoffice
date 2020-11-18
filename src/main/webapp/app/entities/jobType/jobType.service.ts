@@ -27,9 +27,12 @@ export class JobTypeService {
     return this.http.get<IJobType>(`${this.resourceUrl}/${id}`, { observe: 'response' });
   }
 
-  getAllByUser(req?: Pagination): Observable<EntityArrayResponseType> {
-    const options = createRequestOption(req);
-    return this.http.get<IPosition[]>(`${this.resourceUrl}`, { params: options, observe: 'response' });
+  getAllByUser(req?: Pagination, searchTerm?: string): Observable<EntityArrayResponseType> {
+    let options = createRequestOption(req);
+    if (searchTerm) {
+      options = options.set('searchTerm', searchTerm);
+    }
+    return this.http.get<IJobType[]>(`${this.resourceUrl}`, { params: options, observe: 'response' });
   }
 
   delete(id: number): Observable<HttpResponse<{}>> {

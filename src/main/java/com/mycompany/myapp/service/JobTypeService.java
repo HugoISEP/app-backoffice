@@ -42,12 +42,12 @@ public class JobTypeService {
         }
     }
 
-    public Page<JobTypeView> getAllJobTypeByUser(Pageable pageable){
+    public Page<JobTypeView> getAllJobTypeByUser(Pageable pageable, String searchTerm){
         UserDTO user = userService.getUserWithAuthorities()
             .map(UserDTO::new)
             .orElseThrow(() -> new BadRequestAlertException("User not found", ENTITY_NAME, "id doesn't exist"));
 
-        return repository.findAllByCompanyId(user.getCompany().getId(), pageable);
+        return repository.findAllByCompanyId(user.getCompany().getId(), searchTerm, pageable);
     }
 
     public JobTypeDTO createJobType(JobTypeDTO jobTypeDTO){
