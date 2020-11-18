@@ -6,6 +6,8 @@ import { AccountService } from 'app/core/auth/account.service';
 import { LoginModalService } from 'app/core/login/login-modal.service';
 import { LoginService } from 'app/core/login/login.service';
 import { ProfileService } from 'app/layouts/profiles/profile.service';
+import { Subscription } from 'rxjs';
+import { Account } from 'app/core/user/account.model';
 
 @Component({
   selector: 'jhi-navbar',
@@ -15,6 +17,8 @@ import { ProfileService } from 'app/layouts/profiles/profile.service';
 export class NavbarComponent implements OnInit {
   inProduction?: boolean;
   isNavbarCollapsed = true;
+  account: Account | null = null;
+  authSubscription?: Subscription;
   swaggerEnabled?: boolean;
   version: string;
 
@@ -29,6 +33,7 @@ export class NavbarComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.authSubscription = this.accountService.getAuthenticationState().subscribe(account => (this.account = account));
     this.profileService.getProfileInfo().subscribe(profileInfo => {
       this.inProduction = profileInfo.inProduction;
       this.swaggerEnabled = profileInfo.swaggerEnabled;
@@ -59,5 +64,17 @@ export class NavbarComponent implements OnInit {
 
   getImageUrl(): string {
     return this.isAuthenticated() ? this.accountService.getImageUrl() : '';
+  }
+
+  canView(): boolean {
+    if (this.account) {
+      if (this.account.authorities.find(auth => auth === 'ROLE_ADMIN')) {
+        return false;
+      } else {
+        return true;
+      }
+    } else {
+      return false;
+    }
   }
 }

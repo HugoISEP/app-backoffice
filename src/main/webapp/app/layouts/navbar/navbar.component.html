@@ -16,7 +16,7 @@
                     </span>
                 </a>
             </li>
-            <li class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+            <li *ngIf="canView()" class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
                 <a class="nav-link" routerLink="company/own/view" (click)="collapseNavbar()">
                     <span>
                         <fa-icon icon="building"></fa-icon>
@@ -32,7 +32,7 @@
                     </span>
                 </a>
             </li>
-            <li class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+            <li *ngIf="canView()" class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
                 <a class="nav-link" routerLink="mission" (click)="collapseNavbar()">
                     <span>
                         <fa-icon icon="book" ></fa-icon>
@@ -40,15 +40,15 @@
                     </span>
                 </a>
             </li>
-            <li class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+            <li *ngIf="canView()" class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
                 <a class="nav-link" routerLink="job-type" (click)="collapseNavbar()">
                     <span>
                         <fa-icon icon="university"></fa-icon>
                         <span>Types de Poste</span>
-                    </span>
+                     </span>
                 </a>
             </li>
-            <li *jhiHasAnyAuthority="'ROLE_MANAGER'" class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+            <li *ngIf="canView()" class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
                 <a class="nav-link" routerLink="user-management" (click)="collapseNavbar()">
                     <span>
                         <fa-icon icon="users"></fa-icon>
