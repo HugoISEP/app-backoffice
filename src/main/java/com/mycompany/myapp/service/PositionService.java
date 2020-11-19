@@ -9,17 +9,23 @@ import com.mycompany.myapp.security.AuthoritiesConstants;
 import com.mycompany.myapp.service.dto.PositionDTO;
 import com.mycompany.myapp.service.dto.UserDTO;
 import com.mycompany.myapp.service.mapper.PositionMapper;
+import com.mycompany.myapp.service.notification.NotificationService;
 import com.mycompany.myapp.service.view.PositionView;
+import com.mycompany.myapp.web.rest.AccountResource;
 import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 @Service
 @Transactional
 public class PositionService {
 
+    private final Logger log = LoggerFactory.getLogger(PositionService.class);
     private static final String ENTITY_NAME = "position";
 
     private final PositionRepository repository;
@@ -27,13 +33,15 @@ public class PositionService {
     private final MissionRepository missionRepository;
     private final JobTypeRepository jobTypeRepository;
     private final UserService userService;
+    private final NotificationService notificationService;
 
-    public PositionService(PositionRepository repository, PositionMapper mapper, MissionRepository missionRepository, JobTypeRepository jobTypeRepository, UserService userService) {
+    public PositionService(PositionRepository repository, PositionMapper mapper, MissionRepository missionRepository, JobTypeRepository jobTypeRepository, UserService userService, NotificationService notificationService) {
         this.repository = repository;
         this.mapper = mapper;
         this.missionRepository = missionRepository;
         this.jobTypeRepository = jobTypeRepository;
         this.userService = userService;
+        this.notificationService = notificationService;
     }
 
     public void hasAuthorization(Long id){
@@ -61,12 +69,13 @@ public class PositionService {
             throw new BadRequestAlertException("A new Position cannot already have an ID", ENTITY_NAME, "id exists");
         }
         Mission mission = missionRepository.findById(missionId).orElseThrow(() -> new BadRequestAlertException("mission doesn't exist", ENTITY_NAME, "id doesn't exist"));
-        //JobType jobType = jobTypeRepository.findById(newPosition.getJobType().getId()).orElseThrow(() -> new BadRequestAlertException("jobType doesn't exist", ENTITY_NAME, "id doesn't exist"));
-        //newPosition.setJobType(jobType);
         newPosition.setMission(mission);
-        //jobType.getPositions().add(newPosition);
         mission.getPositions().add(newPosition);
-
+        try {
+            notificationService.sendMessage(newPosition);
+        } catch (InterruptedException | ExecutionException e) {
+            log.warn("Error when sending notification: " + e.toString());
+        }
         return missionRepository.save(mission);
     }
 
