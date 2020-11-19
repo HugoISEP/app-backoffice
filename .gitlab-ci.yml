@@ -37,4 +37,6 @@ deploy:
     - docker:19.03-dind
   script:
     - docker push $CI_REGISTRY_IMAGE:prod
+  only:
+    - master
 
