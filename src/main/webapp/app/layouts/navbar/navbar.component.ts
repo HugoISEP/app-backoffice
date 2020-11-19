@@ -20,7 +20,6 @@ export class NavbarComponent implements OnInit {
   account: Account | null = null;
   authSubscription?: Subscription;
   swaggerEnabled?: boolean;
-  version: string;
 
   constructor(
     private loginService: LoginService,
@@ -28,9 +27,7 @@ export class NavbarComponent implements OnInit {
     private loginModalService: LoginModalService,
     private profileService: ProfileService,
     private router: Router
-  ) {
-    this.version = VERSION ? (VERSION.toLowerCase().startsWith('v') ? VERSION : 'v' + VERSION) : '';
-  }
+  ) {}
 
   ngOnInit(): void {
     this.authSubscription = this.accountService.getAuthenticationState().subscribe(account => (this.account = account));

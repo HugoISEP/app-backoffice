@@ -311,7 +311,10 @@ public class UserService {
 
     @Transactional(readOnly = true)
     public Optional<User> getUserWithAuthorities() {
-        return SecurityUtils.getCurrentUserLogin().flatMap(userRepository::findOneWithAuthoritiesByLogin);
+        Optional<User> user = SecurityUtils.getCurrentUserLogin().flatMap(userRepository::findOneWithAuthoritiesByLogin);
+        System.out.println("SHOW USER FROM DB: " + user.get().getCompany());
+        System.out.println("SHOW USER FROM REPO: " + userRepository.findUserById(user.get().getId()).getCompany());
+        return user;
     }
 
     /**

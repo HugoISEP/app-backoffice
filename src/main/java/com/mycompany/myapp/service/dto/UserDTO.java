@@ -204,6 +204,7 @@ public class UserDTO implements UserView {
             ", lastModifiedBy='" + lastModifiedBy + '\'' +
             ", lastModifiedDate=" + lastModifiedDate +
             ", authorities=" + authorities +
+            ", company=" + company +
             "}";
     }
 }

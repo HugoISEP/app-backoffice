@@ -27,7 +27,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.authSubscription = this.accountService.getAuthenticationState().subscribe(account => {
       this.account = account;
       if (account) {
-        this.positionService.getAll().subscribe(positions => {
+        this.positionService.getAllActive().subscribe(positions => {
           this.positions = positions.body!;
         });
       } else {
