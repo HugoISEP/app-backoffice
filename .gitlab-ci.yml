@@ -20,6 +20,8 @@ cache:
     - node_modules/
 
 build:
+  tags:
+    - phoenix-runner
   services:
     - maven:3.6.3-jdk-11
   stage: build
