@@ -23,8 +23,8 @@ build:
   services:
     - maven:3.6.3-jdk-11
   stage: build
-  before_script:
-    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
+  #before_script:
+  #  - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
   script:
     - mvn -Pdev  jib:dockerBuild -Dimage=$CI_REGISTRY_IMAGE:prod
   only:
