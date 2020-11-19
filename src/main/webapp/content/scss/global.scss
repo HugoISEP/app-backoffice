@@ -195,3 +195,12 @@ ui bootstrap tweaks
 }
 
 /* jhipster-needle-scss-add-main JHipster will add new css style */
+
+.logo-isep-img {
+  height: 45px;
+  width: 45px;
+  display: inline-block;
+  vertical-align: middle;
+  background: url('../images/logo_centre_negatif.png') no-repeat center center;
+  background-size: contain;
+}
