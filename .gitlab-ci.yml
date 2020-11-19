@@ -17,11 +17,11 @@ cache:
 
 build:
   services:
-    #- docker:19.03-dind
+    - docker:19.03-dind
     - maven:3.6.3-jdk-11
   stage: build
-  #before_script:
-   # - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
+  before_script:
+    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
   script:
     - mvn -Pdev  jib:dockerBuild -Dimage=$CI_REGISTRY_IMAGE:prod
   only:
