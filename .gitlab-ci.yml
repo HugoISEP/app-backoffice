@@ -37,7 +37,7 @@ maven-package:
 docker-push:
     stage: release
     variables:
-        REGISTRY_URL: git.dev.juniorisep.com
+        REGISTRY_URL: registry.dev.juniorisep.com/application-consultants-globale/app-backoffice
         IMAGE_TAG: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG-$CI_COMMIT_SHA
     dependencies:
         - maven-package
