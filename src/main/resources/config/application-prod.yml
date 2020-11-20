@@ -46,7 +46,10 @@ spring:
   liquibase:
     contexts: prod
   mail:
-    base-url: http://127.0.0.1:8080
+    host: localhost
+    port: 25
+    username:
+    password:
     #host: ${MAIL_HOST}
     #port: 25
     #username: ${MAIL_USERNAME}
