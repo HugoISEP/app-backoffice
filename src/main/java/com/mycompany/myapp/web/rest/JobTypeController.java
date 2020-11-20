@@ -44,6 +44,7 @@ public class JobTypeController {
     }
 
     @GetMapping
+    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.MANAGER + "\")")
     public ResponseEntity<List<JobTypeView>> getAllByUser(Pageable pageable, @RequestParam(value = "searchTerm", defaultValue = "%%") String searchTerm){
         Page page = service.getAllJobTypeByUser(pageable, searchTerm);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
