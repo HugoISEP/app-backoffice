@@ -50,7 +50,7 @@ public class JobTypeController {
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
 
-    @GetMapping
+    @GetMapping("/user")
     @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.USER + "\")")
     public List<JobTypeView> getAllByUser(){
         return service.getAllJobTypeByUser();
