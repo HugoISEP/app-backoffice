@@ -44,11 +44,16 @@ public class JobTypeController {
     }
 
     @GetMapping
-    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.MANAGER + "\")")
-    public ResponseEntity<List<JobTypeView>> getAllByUser(Pageable pageable, @RequestParam(value = "searchTerm", defaultValue = "%%") String searchTerm){
-        Page page = service.getAllJobTypeByUser(pageable, searchTerm);
+    public ResponseEntity<List<JobTypeView>> getAllByUserPaginated(Pageable pageable, @RequestParam(value = "searchTerm", defaultValue = "%%") String searchTerm){
+        Page page = service.getAllJobTypeByUserPaginated(pageable, searchTerm);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+    }
+
+    @GetMapping
+    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.USER + "\")")
+    public List<JobTypeView> getAllByUser(){
+        return service.getAllJobTypeByUser();
     }
 
     @GetMapping("/all")

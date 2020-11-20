@@ -14,6 +14,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 
 @Service
 @Transactional
@@ -42,12 +44,19 @@ public class JobTypeService {
         }
     }
 
-    public Page<JobTypeView> getAllJobTypeByUser(Pageable pageable, String searchTerm){
+    public Page<JobTypeView> getAllJobTypeByUserPaginated(Pageable pageable, String searchTerm){
         UserDTO user = userService.getUserWithAuthorities()
             .map(UserDTO::new)
             .orElseThrow(() -> new BadRequestAlertException("User not found", ENTITY_NAME, "id doesn't exist"));
 
-        return repository.findAllByCompanyId(user.getCompany().getId(), searchTerm, pageable);
+        return repository.findAllByCompanyIdPaginated(user.getCompany().getId(), searchTerm, pageable);
+    }
+
+    public List<JobTypeView> getAllJobTypeByUser(){
+        UserDTO user = userService.getUserWithAuthorities()
+            .map(UserDTO::new)
+            .orElseThrow(() -> new BadRequestAlertException("User not found", ENTITY_NAME, "id doesn't exist"));
+        return repository.findAllByCompany_Id(user.getCompany().getId());
     }
 
     public JobTypeDTO createJobType(JobTypeDTO jobTypeDTO){

@@ -14,5 +14,7 @@ public interface JobTypeRepository extends JpaRepository<JobType, Long> {
 
     @Query("select j from JobType j join Company c on c.id = j.company.id " +
         "where c.id = :id and lower(j.name) like concat('%',lower(:searchTerm),'%')")
-    Page<JobTypeView> findAllByCompanyId(@Param("id") Long id, @Param("searchTerm") String searchTerm, Pageable pageable);
+    Page<JobTypeView> findAllByCompanyIdPaginated(@Param("id") Long id, @Param("searchTerm") String searchTerm, Pageable pageable);
+
+    List<JobTypeView> findAllByCompany_Id(Long id);
 }
