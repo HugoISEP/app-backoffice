@@ -35,12 +35,11 @@ maven-package:
     expire_in: 1 day
 
 docker-push:
-    stage: release
-    variables:
-        REGISTRY_URL: registry.dev.juniorisep.com/application-consultants-globale/app-backoffice
-        IMAGE_TAG: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG-$CI_COMMIT_SHA
-    dependencies:
-        - maven-package
-    script:
-        - ./mvnw -ntp compile jib:build -Pprod -Djib.to.image=$IMAGE_TAG -Djib.to.auth.username=gitlab-ci-token  -Djib.to.auth.password=$CI_BUILD_TOKEN -Dmaven.repo.local=$MAVEN_USER_HOME
-
+  stage: release
+  variables:
+    REGISTRY_URL: registry.dev.juniorisep.com/application-consultants-globale/app-backoffice
+    IMAGE_TAG: $CI_REGISTRY_IMAGE:prod
+  dependencies:
+    - maven-package
+  script:
+    - ./mvnw -ntp compile jib:build -Pprod -Djib.to.image=$IMAGE_TAG -Djib.to.auth.username=gitlab-ci-token  -Djib.to.auth.password=$CI_BUILD_TOKEN -Dmaven.repo.local=$MAVEN_USER_HOME

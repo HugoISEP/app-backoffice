@@ -46,10 +46,11 @@ spring:
   liquibase:
     contexts: prod
   mail:
-    host: ${MAIL_HOST}
-    port: 25
-    username: ${MAIL_USERNAME}
-    password: ${MAIL_PASSWORD}
+    base-url: http://127.0.0.1:8080
+    #host: ${MAIL_HOST}
+    #port: 25
+    #username: ${MAIL_USERNAME}
+    #password: ${MAIL_PASSWORD}
   thymeleaf:
     cache: true
 
