@@ -585,6 +585,10 @@
                     <configuration>
                         <from>
                             <image>adoptopenjdk:11-jre-hotspot</image>
+                            <auth>
+                                <username>${env.REGISTRY_USERNAME}</username>
+                                <password>${env.REGISTRY_PASSWORD}</password>
+                            </auth>c
                         </from>
                         <to>
                             <image>hugoisep:latest</image>

@@ -1,4 +1,4 @@
-image: $CI_REGISTRY_IMAGE/jhipster:latest  
+image: $CI_REGISTRY_IMAGE/jhipster:latest
 
 cache:
   key: '$CI_COMMIT_REF_NAME'
@@ -36,8 +36,11 @@ maven-package:
 
 docker-push:
   stage: release
+  environment:
+    - REGISTRY_USERNAME=$REG_USERNAME
+    - REGISTRY_PASSWORD=$REG_PASSWORD
   variables:
-    REGISTRY_URL: registry.dev.juniorisep.com/application-consultants-globale/app-backoffice
+    REGISTRY_URL: $CI_REGISTRY
     IMAGE_TAG: $CI_REGISTRY_IMAGE:prod
   dependencies:
     - maven-package
