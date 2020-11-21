@@ -1,6 +1,6 @@
 <div class="row justify-content-center">
     <div class="col-8">
-    <h1 class="display-4">{{account ? "Bienvenue, "+account.company?.name : "Back-Office application mobile"}}</h1>
+    <h1 class="display-4">{{account ? "Bienvenue, "+ (account.company?.name ? account.company?.name : "ADMIN") : "Back-Office application mobile"}}</h1>
 
     <div [ngSwitch]="isAuthenticated()">
         <div *ngIf="positions && positions.length > 0">
@@ -25,7 +25,7 @@
             </table>
         </div>
 
-        <div *ngIf="isAuthenticated() && !!positions">
+        <div *ngIf="isAuthenticated() && !positions">
             <h1 class="display-6">Pas de poste en cours</h1>
         </div>
 

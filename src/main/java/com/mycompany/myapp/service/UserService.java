@@ -153,8 +153,10 @@ public class UserService {
         user.setLastName(userDTO.getLastName());
         if (userDTO.getEmail() != null) {
             Company company = this.isEmailValid(userDTO.getEmail());
-            if (currentUser.getCompany().getId() != company.getId() && !currentUser.getAuthorities().contains(AuthoritiesConstants.ADMIN)){
-                throw new Exception("Email match with the wrong company");
+            if (!currentUser.getAuthorities().contains(AuthoritiesConstants.ADMIN)) {
+                if (currentUser.getCompany().getId() != company.getId()) {
+                    throw new Exception("Email match with the wrong company");
+                }
             }
             user.setEmail(userDTO.getEmail().toLowerCase());
             user.setCompany(company);

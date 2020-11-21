@@ -26,7 +26,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.authSubscription = this.accountService.getAuthenticationState().subscribe(account => {
       this.account = account;
-      if (account) {
+      if (account && !account.authorities.find(auth => auth === 'ROLE_ADMIN')) {
         this.positionService.getAllActive().subscribe(positions => {
           this.positions = positions.body!;
         });
