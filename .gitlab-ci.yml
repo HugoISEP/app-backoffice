@@ -1,4 +1,4 @@
-image: registry.dev.juniorisep.com/application-consultants-globale/app-backoffice/jhipster  
+image: $CI_REGISTRY_IMAGE/jhipster:latest  
 
 cache:
   key: '$CI_COMMIT_REF_NAME'
