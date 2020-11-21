@@ -1,4 +1,4 @@
-image: registry.dev.juniorisep.com/sysadmins/sysadmin-tools/jhipster:6.10.1
+image: registry.dev.juniorisep.com/application-consultants-globale/app-backoffice/jhipster  
 
 cache:
   key: '$CI_COMMIT_REF_NAME'
