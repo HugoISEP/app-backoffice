@@ -36,9 +36,6 @@ maven-package:
 
 docker-push:
   stage: release
-  environment:
-    - REGISTRY_USERNAME=$REG_USERNAME
-    - REGISTRY_PASSWORD=$REG_PASSWORD
   variables:
     REGISTRY_URL: $CI_REGISTRY
     IMAGE_TAG: $CI_REGISTRY_IMAGE:prod
