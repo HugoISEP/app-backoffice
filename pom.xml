@@ -588,7 +588,7 @@
                             <auth>
                                 <username>${env.REGISTRY_USERNAME}</username>
                                 <password>${env.REGISTRY_PASSWORD}</password>
-                            </auth>c
+                            </auth>
                         </from>
                         <to>
                             <image>hugoisep:latest</image>
