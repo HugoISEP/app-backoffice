@@ -10,6 +10,7 @@ import java.util.List;
 public interface MissionView {
     Long getId();
     String getName();
+    String getProjectManagerEmail();
     List<? extends PositionView> getPositions();
     @JsonIgnore
     Company getCompany();
