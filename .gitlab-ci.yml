@@ -24,6 +24,10 @@ maven-compile:
       - target/generated-sources/
     expire_in: 1 day
 
+sonarqube:
+  stage: analyze
+  script: ./mvnw verify -DskipTests sonar:sonar -Dsonar.host.url=$SONAR_HOST -Dsonar.login=$SONAR_TOKEN -Dsonar.projectKey=$SONAR_PROJECT_KEY -Dsonar.projectName=$SONAR_PROJECT_NAME
+
 maven-package:
   stage: package
   script:
