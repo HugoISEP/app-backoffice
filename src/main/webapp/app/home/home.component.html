@@ -25,7 +25,7 @@
             </table>
         </div>
 
-        <div *ngIf="isAuthenticated() && !positions">
+        <div *ngIf="isAuthenticated() && ( positions && positions.length < 1)">
             <h1 class="display-6">Pas de poste en cours</h1>
         </div>
 
