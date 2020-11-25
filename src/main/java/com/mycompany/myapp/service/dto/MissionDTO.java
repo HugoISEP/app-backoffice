@@ -14,6 +14,7 @@ import java.util.List;
 public class MissionDTO implements MissionView {
     private Long id;
     private String name;
+    private String projectManagerEmail;
     private List<PositionDTO> positions;
     private Company company;
 

@@ -24,6 +24,9 @@ public class Mission {
     @Column(name = "name", nullable = false)
     private String name;
 
+    private String projectManagerEmail;
+
+
     @OneToMany(mappedBy = "mission", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @OrderBy("id")
     @JsonIgnoreProperties(value = "mission")

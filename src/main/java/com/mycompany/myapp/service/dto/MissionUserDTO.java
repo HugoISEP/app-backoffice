@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 public class MissionUserDTO implements MissionUserView {
     private Long id;
     private String name;
-    private Company company;
+    private String projectManagerEmail;
+    private CompanyDTO company;
 
 }
