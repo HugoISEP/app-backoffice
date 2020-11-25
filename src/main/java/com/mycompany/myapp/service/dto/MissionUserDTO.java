@@ -6,14 +6,16 @@ import com.mycompany.myapp.service.view.MissionUserView;
 public class MissionUserDTO implements MissionUserView {
     private Long id;
     private String name;
-    private Company company;
+    private String projectManagerEmail;
+    private CompanyDTO company;
 
     public MissionUserDTO() {
     }
 
-    public MissionUserDTO(Long id, String name, Company company) {
+    public MissionUserDTO(Long id, String name, String projectManagerEmail, CompanyDTO company) {
         this.id = id;
         this.name = name;
+        this.projectManagerEmail = projectManagerEmail;
         this.company = company;
     }
 
@@ -34,11 +36,20 @@ public class MissionUserDTO implements MissionUserView {
     }
 
     @Override
-    public Company getCompany() {
+    public CompanyDTO getCompany() {
         return company;
     }
 
-    public void setCompany(Company company) {
+    public void setCompany(CompanyDTO company) {
         this.company = company;
+    }
+
+    @Override
+    public String getProjectManagerEmail() {
+        return projectManagerEmail;
+    }
+
+    public void setProjectManagerEmail(String projectManagerEmail) {
+        this.projectManagerEmail = projectManagerEmail;
     }
 }

@@ -22,6 +22,9 @@ public class Mission {
     @Column(name = "name", nullable = false)
     private String name;
 
+    private String projectManagerEmail;
+
+
     @OneToMany(mappedBy = "mission", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @OrderBy("id")
     @JsonIgnoreProperties(value = "mission")
@@ -83,5 +86,13 @@ public class Mission {
 
     public void setDeletedAt(LocalDateTime deletedAt) {
         this.deletedAt = deletedAt;
+    }
+
+    public String getProjectManagerEmail() {
+        return projectManagerEmail;
+    }
+
+    public void setProjectManagerEmail(String projectManagerEmail) {
+        this.projectManagerEmail = projectManagerEmail;
     }
 }

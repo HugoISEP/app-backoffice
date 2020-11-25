@@ -8,12 +8,14 @@ import java.util.List;
 public class MissionDTO implements MissionView {
     private Long id;
     private String name;
+    private String projectManagerEmail;
     private List<PositionDTO> positions;
     private Company company;
 
-    public MissionDTO(Long id, String name, List<PositionDTO> positions, Company company) {
+    public MissionDTO(Long id, String name, String projectManagerEmail, List<PositionDTO> positions, Company company) {
         this.id = id;
         this.name = name;
+        this.projectManagerEmail = projectManagerEmail;
         this.positions = positions;
         this.company = company;
     }
@@ -51,5 +53,13 @@ public class MissionDTO implements MissionView {
 
     public void setCompany(Company company) {
         this.company = company;
+    }
+
+    public String getProjectManagerEmail() {
+        return projectManagerEmail;
+    }
+
+    public void setProjectManagerEmail(String projectManagerEmail) {
+        this.projectManagerEmail = projectManagerEmail;
     }
 }
