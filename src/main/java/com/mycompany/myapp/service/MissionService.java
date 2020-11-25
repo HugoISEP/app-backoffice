@@ -38,7 +38,7 @@ public class MissionService {
             .map(UserDTO::new)
             .orElseThrow(() -> new BadRequestAlertException("User not found", ENTITY_NAME, "id doesn't exist"));
         Mission mission = repository.findById(id).orElseThrow(() -> new BadRequestAlertException("Entity not found", ENTITY_NAME, "id doesn't exist"));
-        if(!user.getCompany().getId().equals(mission.getCompany().getId()) && !user.getAuthorities().contains(AuthoritiesConstants.ADMIN)){
+        if(!user.getAuthorities().contains(AuthoritiesConstants.ADMIN) && !user.getCompany().getId().equals(mission.getCompany().getId())){
             throw new BadRequestAlertException("User not authorize ", ENTITY_NAME, " no permission");
         }
     }

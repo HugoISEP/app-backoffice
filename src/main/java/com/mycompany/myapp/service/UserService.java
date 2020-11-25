@@ -27,7 +27,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
@@ -205,7 +204,7 @@ public class UserService {
         UserDTO currentUser = getUserWithAuthorities()
             .map(UserDTO::new)
             .orElseThrow(() -> new BadRequestAlertException("user not found", "USER", "id exists"));
-        if (currentUser.getCompany().getId() != userDTO.getCompany().getId() && !currentUser.getAuthorities().contains(AuthoritiesConstants.ADMIN)){
+        if (!currentUser.getAuthorities().contains(AuthoritiesConstants.ADMIN) && !currentUser.getCompany().getId().equals(userDTO.getCompany().getId())){
             throw new Exception("Not authorize to edit this user");
         }
 
@@ -308,14 +307,16 @@ public class UserService {
 
     @Transactional(readOnly = true)
     public Optional<User> getUserWithAuthoritiesByLogin(String login) {
-        return userRepository.findOneWithAuthoritiesByLogin(login);
+        //return userRepository.findOneWithAuthoritiesByLogin(login);  //TODO: A Modifier, permet d'outrepasser un lazy-loading/session fermée
+        Optional<User> user = userRepository.findOneWithAuthoritiesByLogin(login);
+        System.out.println( "TEST GET JOBTYPES" + user.orElseThrow(() -> new BadRequestAlertException("", "", "")).getJobTypes());
+        return user;
     }
 
     @Transactional(readOnly = true)
     public Optional<User> getUserWithAuthorities() {
         Optional<User> user = SecurityUtils.getCurrentUserLogin().flatMap(userRepository::findOneWithAuthoritiesByLogin);
-        System.out.println("SHOW USER FROM DB: " + user.get().getCompany());
-        System.out.println("SHOW USER FROM REPO: " + userRepository.findUserById(user.get().getId()).getCompany());
+        System.out.println( "TEST GET JOBTYPES" + user.orElseThrow(() -> new BadRequestAlertException("", "", "")).getJobTypes());   //TODO: A Modifier, permet d'outrepasser un lazy-loading/session fermée
         return user;
     }
 

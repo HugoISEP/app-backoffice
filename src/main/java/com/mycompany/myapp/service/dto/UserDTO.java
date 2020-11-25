@@ -4,11 +4,13 @@ import com.mycompany.myapp.config.Constants;
 
 import com.mycompany.myapp.domain.Authority;
 import com.mycompany.myapp.domain.Company;
+import com.mycompany.myapp.domain.JobType;
 import com.mycompany.myapp.domain.User;
 import com.mycompany.myapp.service.view.UserView;
 
 import javax.validation.constraints.*;
 import java.time.Instant;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -53,6 +55,8 @@ public class UserDTO implements UserView {
 
     private Company company;
 
+    private List<JobType> jobTypes;
+
     public UserDTO() {
         // Empty constructor needed for Jackson.
     }
@@ -74,6 +78,7 @@ public class UserDTO implements UserView {
             .map(Authority::getName)
             .collect(Collectors.toSet());
         this.company = user.getCompany();
+        this.jobTypes = user.getJobTypes();
     }
 
     public Long getId() {
@@ -188,6 +193,14 @@ public class UserDTO implements UserView {
         this.company = company;
     }
 
+    public List<JobType> getJobTypes() {
+        return jobTypes;
+    }
+
+    public void setJobTypes(List<JobType> jobTypes) {
+        this.jobTypes = jobTypes;
+    }
+
     // prettier-ignore
     @Override
     public String toString() {
@@ -205,6 +218,7 @@ public class UserDTO implements UserView {
             ", lastModifiedDate=" + lastModifiedDate +
             ", authorities=" + authorities +
             ", company=" + company +
+            ", jobTypes=" + jobTypes +
             "}";
     }
 }

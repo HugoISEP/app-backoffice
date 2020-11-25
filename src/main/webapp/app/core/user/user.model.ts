@@ -1,4 +1,5 @@
 import { ICompany } from '../../shared/model/company.model';
+import { IJobType } from '../../shared/model/jobType.model';
 
 export interface IUser {
   id?: any;
@@ -15,6 +16,7 @@ export interface IUser {
   lastModifiedDate?: Date;
   password?: string;
   company?: ICompany;
+  jobTypes?: IJobType[];
 }
 
 export class User implements IUser {
@@ -32,6 +34,7 @@ export class User implements IUser {
     public lastModifiedBy?: string,
     public lastModifiedDate?: Date,
     public password?: string,
-    public company?: ICompany
+    public company?: ICompany,
+    public jobTypes?: IJobType[]
   ) {}
 }

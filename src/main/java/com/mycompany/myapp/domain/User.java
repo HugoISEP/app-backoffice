@@ -14,6 +14,7 @@ import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.time.Instant;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
@@ -90,8 +91,11 @@ public class User extends AbstractAuditingEntity implements Serializable {
     @BatchSize(size = 20)
     private Set<Authority> authorities = new HashSet<>();
 
-    @ManyToOne
+    @ManyToOne(fetch=FetchType.EAGER)
     private Company company;
+
+    @ManyToMany(fetch=FetchType.EAGER)
+    private List<JobType> jobTypes;
 
 
     public Long getId() {
@@ -205,6 +209,14 @@ public class User extends AbstractAuditingEntity implements Serializable {
 
     public void setCompany(Company company) {
         this.company = company;
+    }
+
+    public List<JobType> getJobTypes() {
+        return jobTypes;
+    }
+
+    public void setJobTypes(List<JobType> jobTypes) {
+        this.jobTypes = jobTypes;
     }
 
     @Override
