@@ -3,14 +3,18 @@ package com.mycompany.myapp.service;
 import com.mycompany.myapp.config.Constants;
 import com.mycompany.myapp.domain.Authority;
 import com.mycompany.myapp.domain.Company;
+import com.mycompany.myapp.domain.JobType;
 import com.mycompany.myapp.domain.User;
 import com.mycompany.myapp.repository.AuthorityRepository;
 import com.mycompany.myapp.repository.CompanyRepository;
+import com.mycompany.myapp.repository.JobTypeRepository;
 import com.mycompany.myapp.repository.UserRepository;
 import com.mycompany.myapp.security.AuthoritiesConstants;
 import com.mycompany.myapp.security.SecurityUtils;
+import com.mycompany.myapp.service.dto.JobTypeDTO;
 import com.mycompany.myapp.service.dto.UserDTO;
 
+import com.mycompany.myapp.service.mapper.JobTypeMapper;
 import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
 import io.github.jhipster.security.RandomUtil;
 
@@ -46,13 +50,19 @@ public class UserService {
 
     private final CompanyRepository companyRepository;
 
+    private final JobTypeRepository jobTypeRepository;
+
+    private final JobTypeMapper jobTypeMapper;
+
     private final CacheManager cacheManager;
 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, AuthorityRepository authorityRepository, CompanyRepository companyRepository, CacheManager cacheManager) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, AuthorityRepository authorityRepository, CompanyRepository companyRepository, JobTypeRepository jobTypeRepository, JobTypeMapper jobTypeMapper, CacheManager cacheManager) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.authorityRepository = authorityRepository;
         this.companyRepository = companyRepository;
+        this.jobTypeRepository = jobTypeRepository;
+        this.jobTypeMapper = jobTypeMapper;
         this.cacheManager = cacheManager;
     }
 
@@ -153,7 +163,7 @@ public class UserService {
         if (userDTO.getEmail() != null) {
             Company company = this.isEmailValid(userDTO.getEmail());
             if (!currentUser.getAuthorities().contains(AuthoritiesConstants.ADMIN)) {
-                if (currentUser.getCompany().getId() != company.getId()) {
+                if (!currentUser.getCompany().getId().equals(company.getId())) {
                     throw new Exception("Email match with the wrong company");
                 }
             }
@@ -343,6 +353,18 @@ public class UserService {
     @Transactional(readOnly = true)
     public List<String> getAuthorities() {
         return authorityRepository.findAll().stream().map(Authority::getName).collect(Collectors.toList());
+    }
+
+    public List<JobTypeDTO> updateNotificationPreferences(Long id, List<JobTypeDTO> jobTypes){
+        User user = userRepository.findById(id).orElseThrow(() -> new BadRequestAlertException("user not found ", "USER", " id exists"));
+        user.getJobTypes().clear();
+        List<JobType> newJobTypes = jobTypes.stream()
+            .map(jobType -> jobTypeRepository.findById(jobType.getId()))
+            .filter(Optional::isPresent)
+            .map(Optional::get)
+            .collect(Collectors.toList());
+        user.setJobTypes(newJobTypes);
+        return jobTypeMapper.asListDTO(new UserDTO(user).getJobTypes());
     }
 
 
