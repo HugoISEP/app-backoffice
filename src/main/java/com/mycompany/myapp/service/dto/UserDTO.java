@@ -4,6 +4,7 @@ import com.mycompany.myapp.config.Constants;
 
 import com.mycompany.myapp.domain.Authority;
 import com.mycompany.myapp.domain.Company;
+import com.mycompany.myapp.domain.JobType;
 import com.mycompany.myapp.domain.User;
 import com.mycompany.myapp.service.view.UserView;
 import lombok.Data;
@@ -11,6 +12,7 @@ import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.*;
 import java.time.Instant;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -57,6 +59,8 @@ public class UserDTO implements UserView {
 
     private Company company;
 
+    private List<JobType> jobTypes;
+
     public UserDTO(User user) {
         this.id = user.getId();
         this.login = user.getLogin();
@@ -74,5 +78,7 @@ public class UserDTO implements UserView {
             .map(Authority::getName)
             .collect(Collectors.toSet());
         this.company = user.getCompany();
+        this.jobTypes = user.getJobTypes();
     }
+
 }

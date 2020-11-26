@@ -50,7 +50,7 @@ public class PositionController {
     }
 
     @GetMapping("/active")
-    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.USER + "\")")
+    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.USER + "\") || hasAuthority(\"" + AuthoritiesConstants.MANAGER + "\")")
     public List<PositionView> getActivePositionsByUser(){
         return service.getActivePositionsByUser();
     }

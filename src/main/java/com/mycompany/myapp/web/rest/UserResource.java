@@ -6,7 +6,10 @@ import com.mycompany.myapp.repository.UserRepository;
 import com.mycompany.myapp.security.AuthoritiesConstants;
 import com.mycompany.myapp.service.MailService;
 import com.mycompany.myapp.service.UserService;
+import com.mycompany.myapp.service.dto.JobTypeDTO;
 import com.mycompany.myapp.service.dto.UserDTO;
+import com.mycompany.myapp.service.view.JobTypeView;
+import com.mycompany.myapp.service.view.UserView;
 import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
 import com.mycompany.myapp.web.rest.errors.EmailAlreadyUsedException;
 import com.mycompany.myapp.web.rest.errors.LoginAlreadyUsedException;
@@ -135,6 +138,17 @@ public class UserResource {
     }
 
     /**
+     * {@code PUT /users/:id/job-types} : edit user's jobTypes.
+     *
+     * @param id the login of the user to find.
+     * @return the {@link List<? extends JobTypeView>} with status {@code 200 (OK)} and with list of jobTypes.
+     */
+    @PutMapping("/users/{id}")
+    public List<? extends JobTypeView> editJobTypes(@PathVariable("id") Long id, @Valid @RequestBody List<JobTypeDTO> jobTypes) {
+        return userService.updateNotificationPreferences(id, jobTypes);
+    }
+
+    /**
      * {@code GET /users} : get all users.
      *
      * @param pageable the pagination information.
@@ -171,7 +185,7 @@ public class UserResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the "login" user, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/users/{login:" + Constants.LOGIN_REGEX + "}")
-    public ResponseEntity<UserDTO> getUser(@PathVariable String login) {
+    public ResponseEntity<UserView> getUser(@PathVariable String login) {
         log.debug("REST request to get User : {}", login);
         return ResponseUtil.wrapOrNotFound(
             userService.getUserWithAuthoritiesByLogin(login)

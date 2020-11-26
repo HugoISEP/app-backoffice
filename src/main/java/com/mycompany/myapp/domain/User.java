@@ -3,6 +3,7 @@ package com.mycompany.myapp.domain;
 import com.mycompany.myapp.config.Constants;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.ToString;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.annotations.BatchSize;
 
@@ -14,12 +15,14 @@ import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.time.Instant;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
 /**
  * A user.
  */
+@ToString
 @Entity
 @Table(name = "jhi_user")
 public class User extends AbstractAuditingEntity implements Serializable {
@@ -90,8 +93,11 @@ public class User extends AbstractAuditingEntity implements Serializable {
     @BatchSize(size = 20)
     private Set<Authority> authorities = new HashSet<>();
 
-    @ManyToOne
+    @ManyToOne(fetch=FetchType.EAGER)
     private Company company;
+
+    @ManyToMany(fetch=FetchType.EAGER)
+    private List<JobType> jobTypes;
 
 
     public Long getId() {
@@ -207,6 +213,14 @@ public class User extends AbstractAuditingEntity implements Serializable {
         this.company = company;
     }
 
+    public List<JobType> getJobTypes() {
+        return jobTypes;
+    }
+
+    public void setJobTypes(List<JobType> jobTypes) {
+        this.jobTypes = jobTypes;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -223,19 +237,4 @@ public class User extends AbstractAuditingEntity implements Serializable {
         return 31;
     }
 
-    // prettier-ignore
-    @Override
-    public String toString() {
-        return "User{" +
-            "login='" + login + '\'' +
-            ", firstName='" + firstName + '\'' +
-            ", lastName='" + lastName + '\'' +
-            ", email='" + email + '\'' +
-            ", imageUrl='" + imageUrl + '\'' +
-            ", activated='" + activated + '\'' +
-            ", langKey='" + langKey + '\'' +
-            ", activationKey='" + activationKey + '\'' +
-            ", company='" + company + '\'' +
-            "}";
-    }
 }

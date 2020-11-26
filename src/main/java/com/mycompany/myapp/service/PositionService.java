@@ -11,15 +11,14 @@ import com.mycompany.myapp.service.dto.UserDTO;
 import com.mycompany.myapp.service.mapper.PositionMapper;
 import com.mycompany.myapp.service.notification.NotificationService;
 import com.mycompany.myapp.service.view.PositionView;
-import com.mycompany.myapp.web.rest.AccountResource;
 import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 @Service
 @Transactional
@@ -49,8 +48,8 @@ public class PositionService {
             .map(UserDTO::new)
             .orElseThrow(() -> new BadRequestAlertException("User not found", ENTITY_NAME, "id doesn't exist"));
         Position position = repository.findById(id).orElseThrow(() -> new BadRequestAlertException("Entity not found", ENTITY_NAME, "id doesn't exist"));
-        if(!user.getCompany().getId().equals(position.getMission().getCompany().getId()) && !user.getAuthorities().contains(AuthoritiesConstants.ADMIN)){
-            throw new BadRequestAlertException("User not authorize ", ENTITY_NAME, " no permission");
+        if(!user.getAuthorities().contains(AuthoritiesConstants.ADMIN) && !user.getCompany().getId().equals(position.getMission().getCompany().getId())){
+            throw new AccessDeniedException("user not authorize");
         }
     }
 
