@@ -14,29 +14,29 @@ before_script:
   - export NG_CLI_ANALYTICS="false"
   - export MAVEN_USER_HOME=`pwd`/.maven
 
-#maven-compile:
-#  stage: build
-#  script:
-#    - ./mvnw -ntp compile -P-webpack -Dmaven.repo.local=$MAVEN_USER_HOME
-#  artifacts:
-#    paths:
-#      - target/classes/
-#      - target/generated-sources/
-#    expire_in: 1 day
-#  only:
-#    - master
+maven-compile:
+  stage: build
+  script:
+    - ./mvnw -ntp compile -P-webpack -Dmaven.repo.local=$MAVEN_USER_HOME
+  artifacts:
+    paths:
+      - target/classes/
+      - target/generated-sources/
+    expire_in: 1 day
+  only:
+    - master
 
-#maven-package:
-#  stage: package
-#  script:
-#    - ./mvnw -ntp verify -Pprod -DskipTests -Dmaven.repo.local=$MAVEN_USER_HOME
-#  artifacts:
-#    paths:
-#      - target/*.jar
-#      - target/classes
-#    expire_in: 1 day
-#  only:
-#    - master
+maven-package:
+  stage: package
+  script:
+    - ./mvnw -ntp verify -Pprod -DskipTests -Dmaven.repo.local=$MAVEN_USER_HOME
+  artifacts:
+    paths:
+      - target/*.jar
+      - target/classes
+    expire_in: 1 day
+  only:
+    - master
 
 docker-push:
   stage: release
