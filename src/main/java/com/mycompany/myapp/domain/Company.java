@@ -1,5 +1,6 @@
 package com.mycompany.myapp.domain;
 
+import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.Formula;
 
@@ -7,6 +8,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
+@Data
 @Entity
 @Table(name = "company")
 public class Company {
@@ -31,51 +33,4 @@ public class Company {
     @Formula("(select count(c.id) from company c join jhi_user u on c.id = u.company_id where c.id = id)")
     private int totalUsers;
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getEmailTemplate() {
-        return emailTemplate;
-    }
-
-    public void setEmailTemplate(String emailTemplate) {
-        this.emailTemplate = emailTemplate;
-    }
-
-    public int getTotalUsers() {
-        return totalUsers;
-    }
-
-    public void setTotalUsers(int totalUsers) {
-        this.totalUsers = totalUsers;
-    }
-
-    public LocalDateTime getCreateDateTime() {
-        return createDateTime;
-    }
-
-    public void setCreateDateTime(LocalDateTime createDateTime) {
-        this.createDateTime = createDateTime;
-    }
-
-    public LocalDateTime getDeletedAt() {
-        return deletedAt;
-    }
-
-    public void setDeletedAt(LocalDateTime deletedAt) {
-        this.deletedAt = deletedAt;
-    }
 }
