@@ -24,6 +24,7 @@ public class Mission {
     @Column(name = "name", nullable = false)
     private String name;
 
+    @NotNull
     private String projectManagerEmail;
 
 
