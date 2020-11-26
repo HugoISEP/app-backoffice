@@ -12,6 +12,7 @@ import com.mycompany.myapp.service.view.JobTypeView;
 import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -43,7 +44,7 @@ public class JobTypeService {
             .orElseThrow(() -> new BadRequestAlertException("User not found", ENTITY_NAME, "id doesn't exist"));
         JobType jobType = repository.findById(id).orElseThrow(() -> new BadRequestAlertException("Entity not found", ENTITY_NAME, "id doesn't exist"));
         if(!user.getAuthorities().contains(AuthoritiesConstants.ADMIN) && !user.getCompany().getId().equals(jobType.getCompany().getId())){
-            throw new BadRequestAlertException("User not authorize ", ENTITY_NAME, " no permission");
+            throw new AccessDeniedException("user not authorize");
         }
     }
 
