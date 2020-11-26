@@ -11,6 +11,7 @@ import com.mycompany.myapp.service.view.MissionView;
 import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,8 +39,8 @@ public class MissionService {
             .map(UserDTO::new)
             .orElseThrow(() -> new BadRequestAlertException("User not found", ENTITY_NAME, "id doesn't exist"));
         Mission mission = repository.findById(id).orElseThrow(() -> new BadRequestAlertException("Entity not found", ENTITY_NAME, "id doesn't exist"));
-        if(!user.getCompany().getId().equals(mission.getCompany().getId()) && !user.getAuthorities().contains(AuthoritiesConstants.ADMIN)){
-            throw new BadRequestAlertException("User not authorize ", ENTITY_NAME, " no permission");
+        if(!user.getAuthorities().contains(AuthoritiesConstants.ADMIN) && !user.getCompany().getId().equals(mission.getCompany().getId())){
+            throw new AccessDeniedException("user not authorize");
         }
     }
 

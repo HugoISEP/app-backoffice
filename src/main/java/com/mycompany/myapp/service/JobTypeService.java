@@ -3,6 +3,7 @@ package com.mycompany.myapp.service;
 import com.mycompany.myapp.domain.JobType;
 import com.mycompany.myapp.repository.JobTypeRepository;
 import com.mycompany.myapp.repository.PositionRepository;
+import com.mycompany.myapp.repository.UserRepository;
 import com.mycompany.myapp.security.AuthoritiesConstants;
 import com.mycompany.myapp.service.dto.JobTypeDTO;
 import com.mycompany.myapp.service.dto.UserDTO;
@@ -11,6 +12,7 @@ import com.mycompany.myapp.service.view.JobTypeView;
 import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,12 +28,14 @@ public class JobTypeService {
     private final JobTypeMapper mapper;
     private final PositionRepository positionRepository;
     private final UserService userService;
+    private final UserRepository userRepository;
 
-    public JobTypeService(JobTypeRepository repository, JobTypeMapper mapper, PositionRepository positionRepository, UserService userService) {
+    public JobTypeService(JobTypeRepository repository, JobTypeMapper mapper, PositionRepository positionRepository, UserService userService, UserRepository userRepository) {
         this.repository = repository;
         this.mapper = mapper;
         this.positionRepository = positionRepository;
         this.userService = userService;
+        this.userRepository = userRepository;
     }
 
     public void hasAuthorization(Long id){
@@ -39,8 +43,8 @@ public class JobTypeService {
             .map(UserDTO::new)
             .orElseThrow(() -> new BadRequestAlertException("User not found", ENTITY_NAME, "id doesn't exist"));
         JobType jobType = repository.findById(id).orElseThrow(() -> new BadRequestAlertException("Entity not found", ENTITY_NAME, "id doesn't exist"));
-        if(!user.getCompany().getId().equals(jobType.getCompany().getId()) && !user.getAuthorities().contains(AuthoritiesConstants.ADMIN)){
-            throw new BadRequestAlertException("User not authorize ", ENTITY_NAME, " no permission");
+        if(!user.getAuthorities().contains(AuthoritiesConstants.ADMIN) && !user.getCompany().getId().equals(jobType.getCompany().getId())){
+            throw new AccessDeniedException("user not authorize");
         }
     }
 

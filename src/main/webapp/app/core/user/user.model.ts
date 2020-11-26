@@ -1,4 +1,5 @@
 import { ICompany } from '../../shared/model/company.model';
+import { IJobType } from '../../shared/model/jobType.model';
 
 export interface IUser {
   id?: any;
