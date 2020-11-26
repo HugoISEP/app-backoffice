@@ -16,6 +16,21 @@
                         </small>
                     </div>
                 </div>
+                <div class="form-group">
+                    <label class="form-control-label" for="field_projectManagerEmail">Nom</label>
+                    <input type="email" class="form-control" name="projectManagerEmail" id="field_projectManagerEmail"
+                           formControlName="projectManagerEmail"/>
+                    <div *ngIf="editForm.get('projectManagerEmail')!.invalid && (editForm.get('projectManagerEmail')!.dirty || editForm.get('projectManagerEmail')!.touched)">
+                        <small class="form-text text-danger"
+                               *ngIf="editForm.get('projectManagerEmail')?.errors?.required">
+                            Ce champs est requis
+                        </small>
+                        <small class="form-text text-danger"
+                               *ngIf="editForm.get('projectManagerEmail')?.errors?.email">
+                            Email invalide
+                        </small>
+                    </div>
+                </div>
             </div>
             <div>
                 <button type="button" id="cancel-save" class="btn btn-secondary" (click)="previousState()">
