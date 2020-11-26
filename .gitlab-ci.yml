@@ -23,6 +23,8 @@ maven-compile:
       - target/classes/
       - target/generated-sources/
     expire_in: 1 day
+  only:
+    - master
 
 maven-package:
   stage: package
@@ -33,6 +35,8 @@ maven-package:
       - target/*.jar
       - target/classes
     expire_in: 1 day
+  only:
+    - master
 
 docker-push:
   stage: release
@@ -43,3 +47,5 @@ docker-push:
     - maven-package
   script:
     - ./mvnw -ntp compile jib:build -Pprod -Djib.to.image=$IMAGE_TAG -Djib.to.auth.username=gitlab-ci-token  -Djib.to.auth.password=$CI_BUILD_TOKEN -Dmaven.repo.local=$MAVEN_USER_HOME
+  only:
+    - master

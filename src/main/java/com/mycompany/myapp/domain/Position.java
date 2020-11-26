@@ -1,12 +1,14 @@
 package com.mycompany.myapp.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
+@Data
 @Entity
 @Table(name = "position")
 public class Position {
@@ -47,84 +49,4 @@ public class Position {
     @ManyToOne
     @JsonIgnoreProperties(value = "positions")
     private JobType jobType;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public int getDuration() {
-        return duration;
-    }
-
-    public void setDuration(int duration) {
-        this.duration = duration;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public Mission getMission() {
-        return mission;
-    }
-
-    public void setMission(Mission mission) {
-        this.mission = mission;
-    }
-
-    public JobType getJobType() {
-        return jobType;
-    }
-
-    public void setJobType(JobType technology) {
-        this.jobType = technology;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public boolean isStatus() {
-        return status;
-    }
-
-    public void setStatus(boolean status) {
-        this.status = status;
-    }
-
-    public int getPlacesNumber() {
-        return placesNumber;
-    }
-
-    public void setPlacesNumber(int placesNumber) {
-        this.placesNumber = placesNumber;
-    }
-
-    public float getRemuneration() {
-        return remuneration;
-    }
-
-    public void setRemuneration(float remuneration) {
-        this.remuneration = remuneration;
-    }
-
-    public LocalDateTime getDeletedAt() {
-        return deletedAt;
-    }
-
-    public void setDeletedAt(LocalDateTime deletedAt) {
-        this.deletedAt = deletedAt;
-    }
 }

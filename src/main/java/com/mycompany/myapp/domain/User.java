@@ -3,6 +3,7 @@ package com.mycompany.myapp.domain;
 import com.mycompany.myapp.config.Constants;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.ToString;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.annotations.BatchSize;
 
@@ -21,6 +22,7 @@ import java.util.Set;
 /**
  * A user.
  */
+@ToString
 @Entity
 @Table(name = "jhi_user")
 public class User extends AbstractAuditingEntity implements Serializable {
@@ -235,18 +237,4 @@ public class User extends AbstractAuditingEntity implements Serializable {
         return 31;
     }
 
-    // prettier-ignore
-    @Override
-    public String toString() {
-        return "User{" +
-            "login='" + login + '\'' +
-            ", firstName='" + firstName + '\'' +
-            ", lastName='" + lastName + '\'' +
-            ", email='" + email + '\'' +
-            ", imageUrl='" + imageUrl + '\'' +
-            ", activated='" + activated + '\'' +
-            ", langKey='" + langKey + '\'' +
-            ", activationKey='" + activationKey + '\'' +
-            "}";
-    }
 }
