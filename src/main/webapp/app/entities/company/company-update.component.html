@@ -23,6 +23,7 @@
                            id="field_color"
                            formControlName="color"
                            [cpOutputFormat] = "'hex'"
+                           [cpPosition]="'left'"
                            [colorPicker]="editForm.get('color')!.value"
                            (colorPickerChange)="editForm.get('color')!.setValue($event)"
                            />
