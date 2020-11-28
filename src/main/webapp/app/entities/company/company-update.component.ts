@@ -14,15 +14,12 @@ export class CompanyUpdateComponent implements OnInit {
   isSaving = false;
   color = '';
 
-  editForm = this.fb.group(
-    {
-      id: [],
-      name: [null, [Validators.required]],
-      emailTemplate: [null, [Validators.required]],
-      color: [null, [Validators.required, Validators.pattern('^#(?:[0-9a-fA-F]{3}){1,2}$')]],
-    },
-    Validators.pattern('^#(?:[0-9a-fA-F]{3}){1,2}$')
-  );
+  editForm = this.fb.group({
+    id: [],
+    name: [null, [Validators.required]],
+    emailTemplate: [null, [Validators.required]],
+    color: [null, [Validators.required, Validators.pattern('^#(?:[0-9a-fA-F]{3}){1,2}$')]],
+  });
 
   constructor(
     protected companyService: CompanyService,
