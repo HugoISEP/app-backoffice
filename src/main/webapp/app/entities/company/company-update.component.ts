@@ -12,12 +12,17 @@ import { Company, ICompany } from 'app/shared/model/company.model';
 })
 export class CompanyUpdateComponent implements OnInit {
   isSaving = false;
+  color = '';
 
-  editForm = this.fb.group({
-    id: [],
-    name: [null, [Validators.required]],
-    emailTemplate: [null, [Validators.required]],
-  });
+  editForm = this.fb.group(
+    {
+      id: [],
+      name: [null, [Validators.required]],
+      emailTemplate: [null, [Validators.required]],
+      color: [null, [Validators.required, Validators.pattern('^#(?:[0-9a-fA-F]{3}){1,2}$')]],
+    },
+    Validators.pattern('^#(?:[0-9a-fA-F]{3}){1,2}$')
+  );
 
   constructor(
     protected companyService: CompanyService,
@@ -42,6 +47,7 @@ export class CompanyUpdateComponent implements OnInit {
       id: company.id,
       name: company.name,
       emailTemplate: company.emailTemplate,
+      color: company.color,
     });
   }
 
@@ -51,6 +57,7 @@ export class CompanyUpdateComponent implements OnInit {
       id: this.editForm.get(['id'])!.value,
       name: this.editForm.get(['name'])!.value,
       emailTemplate: this.editForm.get(['emailTemplate'])!.value,
+      color: this.editForm.get(['color'])!.value,
     };
   }
 

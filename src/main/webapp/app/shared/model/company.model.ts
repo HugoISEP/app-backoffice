@@ -2,6 +2,7 @@ export interface ICompany {
   id?: number;
   name?: string;
   emailTemplate?: string;
+  color?: string;
   totalUsers?: number;
 }
 

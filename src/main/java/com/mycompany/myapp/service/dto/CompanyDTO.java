@@ -15,5 +15,6 @@ public class CompanyDTO implements CompanyView {
     private Long id;
     private String name;
     private String emailTemplate;
+    private String color;
 
 }
