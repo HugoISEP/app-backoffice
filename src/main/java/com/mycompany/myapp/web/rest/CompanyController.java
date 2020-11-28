@@ -9,6 +9,7 @@ import com.mycompany.myapp.service.view.CompanyDetailsView;
 import com.mycompany.myapp.service.view.CompanyView;
 import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
 import io.github.jhipster.web.util.PaginationUtil;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
@@ -16,9 +17,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
 
 @RestController
@@ -81,5 +85,38 @@ public class CompanyController {
     public void deleteCompany(@PathVariable Long id){
         service.delete(id);
     }
+
+    @PostMapping("/{id}/image")
+    public ResponseEntity<ResponseMessage> uploadFile(@PathVariable("id") Long id, @RequestParam("file") MultipartFile file) {
+        String message = "";
+        try {
+            service.storeInFileSystem(file, id);
+
+            message = "Uploaded the file successfully: ";
+            return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage(message));
+        } catch (Exception e) {
+            message = "Could not upload the file: " + file.getOriginalFilename() + "!";
+            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(new ResponseMessage(message));
+        }
+    }
+
+    @GetMapping("/{id}/image")
+    public ResponseEntity<ByteArrayResource> getFile(@PathVariable("id") Long companyId) {
+        try {
+            Path path = service.getFile(companyId);
+            byte[] data = Files.readAllBytes(path);
+            ByteArrayResource resource = new ByteArrayResource(data);
+            return ResponseEntity.ok()
+                // Content-Disposition
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + path.getFileName().toString())
+                // Content-Lengh
+                .contentLength(data.length)
+                .body(resource);
+
+        } catch (Exception e) {
+            throw new BadRequestAlertException("can't get image ", "IMAGE", " image not found");
+        }
+    }
+
 
 }

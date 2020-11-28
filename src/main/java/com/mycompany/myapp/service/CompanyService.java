@@ -13,6 +13,14 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
+import static com.mycompany.myapp.config.Constants.IMAGE_COMPANY_FOLDER_PATH;
 
 
 @Service
@@ -68,5 +76,21 @@ public class CompanyService {
     public void delete(Long id){
         Company companyToDelete = repository.findById(id).orElseThrow(() -> new BadRequestAlertException("company doesn't exist", ENTITY_NAME, "id doesn't exist"));
         repository.delete(companyToDelete);
+    }
+
+    public void storeInFileSystem(MultipartFile image, Long companyId) throws IOException {
+        if (!image.getContentType().equals("image/png")) {
+            throw new BadRequestAlertException("file type isn't a png ", "IMAGE", " wrong image type");
+        }
+        Company company = repository.findById(companyId).orElseThrow(() -> new BadRequestAlertException("company not found" , "COMPANY", " id doesn't exist"));
+        byte[] file = image.getBytes();
+        Path path = Paths.get(IMAGE_COMPANY_FOLDER_PATH + company.getId().toString() + ".png");
+        Files.write(path, file);
+        company.setImagePath(path.toString());
+    }
+
+    public Path getFile(Long companyId) {
+        Company company = repository.findById(companyId).orElseThrow(() -> new BadRequestAlertException("company not found" , "COMPANY", " id doesn't exist"));
+        return Paths.get(company.getImagePath());
     }
 }

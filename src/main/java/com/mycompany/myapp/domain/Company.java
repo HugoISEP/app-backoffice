@@ -1,4 +1,5 @@
 package com.mycompany.myapp.domain;
+
 import com.mycompany.myapp.config.Constants;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
@@ -29,6 +30,10 @@ public class Company {
     @NotNull
     @Pattern(regexp = Constants.HEX_COLOR_REGEX)
     private String color;
+
+    @NotNull
+    @Column(name = "image_path",nullable = false, unique = true)
+    private String imagePath;
 
     @Column(updatable = false)
     @CreationTimestamp
