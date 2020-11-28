@@ -36,7 +36,7 @@ sonar-analysis:
     paths:
       - .sonar/cache
   script:
-    - ./mvnw -Pprod sonar:sonar -Dsonar.host.url=$SONAR_HOST -Dsonar.login=$SONAR_TOKEN -Dsonar.projectKey=$SONAR_PROJECT_KEY -Dsonar.projectName=$SONAR_PROJECT_NAME_PROD
+    - ./mvnw clean -Pprod sonar:sonar -Dsonar.host.url=$SONAR_HOST -Dsonar.login=$SONAR_TOKEN -Dsonar.projectKey=$SONAR_PROJECT_KEY -Dsonar.projectName=$SONAR_PROJECT_NAME_PROD
   only:
     - feat/add-sonarqube
 
