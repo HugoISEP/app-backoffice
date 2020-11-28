@@ -28,7 +28,7 @@ maven-compile:
 
 sonar-analysis:
   image: sonarsource/sonar-scanner-cli:4.5
-  stage: analyse
+  stage: analyze
   variables:
     SONAR_USER_HOME: '${CI_PROJECT_DIR}/.sonar'
     GIT_DEPTH: '0'
