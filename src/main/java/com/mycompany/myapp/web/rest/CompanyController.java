@@ -87,16 +87,12 @@ public class CompanyController {
     }
 
     @PostMapping("/{id}/image")
-    public ResponseEntity<String> uploadFile(@PathVariable("id") Long id, @RequestParam("file") MultipartFile file) {
-        String message = "";
+    @ResponseStatus(HttpStatus.OK)
+    public void uploadFile(@PathVariable("id") Long id, @RequestParam("file") MultipartFile file) {
         try {
             service.storeInFileSystem(file, id);
-
-            message = "Uploaded the file successfully: ";
-            return ResponseEntity.status(HttpStatus.OK).body(message);
         } catch (Exception e) {
-            message = "Could not upload the file: " + file.getOriginalFilename() + "!";
-            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(message);
+            throw new BadRequestAlertException("Could not upload the file ", ENTITY_NAME, file.getName());
         }
     }
 
