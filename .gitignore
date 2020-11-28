@@ -150,4 +150,5 @@ Desktop.ini
 ######################
 # IMAGES
 ######################
-/src/main/resources/images/company/
+/src/main/resources/images/company/*
+!/src/main/resources/images/company/.gitkeep
