@@ -1,8 +1,5 @@
 package com.mycompany.myapp.service.view;
 
-import com.mycompany.myapp.domain.Company;
-import com.mycompany.myapp.domain.JobType;
-
 import java.time.Instant;
 import java.util.List;
 import java.util.Set;
@@ -22,6 +19,6 @@ public interface UserView {
     String getLastModifiedBy();
     Instant getLastModifiedDate();
     Set<String> getAuthorities();
-    Company getCompany();
-    List<JobType> getJobTypes();
+    CompanyView getCompany();
+    List<? extends JobTypeView> getJobTypes();
 }

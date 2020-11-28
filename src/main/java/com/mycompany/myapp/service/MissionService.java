@@ -6,6 +6,7 @@ import com.mycompany.myapp.repository.PositionRepository;
 import com.mycompany.myapp.security.AuthoritiesConstants;
 import com.mycompany.myapp.service.dto.MissionDTO;
 import com.mycompany.myapp.service.dto.UserDTO;
+import com.mycompany.myapp.service.mapper.CompanyMapper;
 import com.mycompany.myapp.service.mapper.MissionMapper;
 import com.mycompany.myapp.service.view.MissionView;
 import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
@@ -25,12 +26,14 @@ public class MissionService {
     private final MissionRepository repository;
     private final MissionMapper mapper;
     private final UserService userService;
+    private final CompanyMapper companyMapper;
     private final PositionRepository positionRepository;
 
-    public MissionService(MissionRepository repository, MissionMapper mapper, UserService userService, PositionRepository positionRepository) {
+    public MissionService(MissionRepository repository, MissionMapper mapper, UserService userService, CompanyMapper companyMapper, PositionRepository positionRepository) {
         this.repository = repository;
         this.mapper = mapper;
         this.userService = userService;
+        this.companyMapper = companyMapper;
         this.positionRepository = positionRepository;
     }
 
@@ -52,7 +55,7 @@ public class MissionService {
             .map(UserDTO::new)
             .orElseThrow(() -> new BadRequestAlertException("user not found", ENTITY_NAME, "id exists"));
         Mission newMission = mapper.fromDTO(mission);
-        newMission.setCompany(user.getCompany());
+        newMission.setCompany(companyMapper.fromDTO(user.getCompany()));
         return repository.save(newMission);
     }
 
