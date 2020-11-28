@@ -20,8 +20,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import static com.mycompany.myapp.config.Constants.IMAGE_COMPANY_FOLDER_PATH;
-
 
 @Service
 @Transactional
@@ -82,9 +80,12 @@ public class CompanyService {
         if (!image.getContentType().equals("image/png")) {
             throw new BadRequestAlertException("file type isn't a png ", "IMAGE", " wrong image type");
         }
+
         Company company = repository.findById(companyId).orElseThrow(() -> new BadRequestAlertException("company not found" , "COMPANY", " id doesn't exist"));
+        String currentPath = Paths.get("").toAbsolutePath().toString() + "/src/main/resources/images/company/";
+
         byte[] file = image.getBytes();
-        Path path = Paths.get(IMAGE_COMPANY_FOLDER_PATH + company.getId().toString() + ".png");
+        Path path = Paths.get(currentPath + company.getId().toString() + ".png");
         Files.write(path, file);
         company.setImagePath(path.toString());
     }
