@@ -26,13 +26,18 @@ maven-compile:
   only:
     - master
 
-sonarqube:
-  stage: analyze
+sonar-analysis:
+  image: sonarsource/sonar-scanner-cli:4.5
+  stage: analysis
+  variables:
+    SONAR_USER_HOME: '${CI_PROJECT_DIR}/.sonar'
+    GIT_DEPTH: '0'
   cache:
     key: ${CI_JOB_NAME}
     paths:
       - .sonar/cache
-  script: ./mvnw verify -DskipTests sonar:sonar -Dsonar.host.url=$SONAR_HOST -Dsonar.login=$SONAR_TOKEN -Dsonar.projectKey=$SONAR_PROJECT_KEY -Dsonar.projectName=$SONAR_PROJECT_NAME
+  script:
+    - sonar-scanner -Dsonar.host.url=$SONAR_HOST -Dsonar.login=$SONAR_TOKEN -Dsonar.projectKey=$SONAR_PROJECT_KEY -Dsonar.projectName=$SONAR_PROJECT_NAME_PROD
   only:
     - feat/add-sonarqube
 
