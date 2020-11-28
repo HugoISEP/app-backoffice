@@ -87,9 +87,11 @@ public class CompanyController {
     }
 
     @PostMapping("/{id}/image")
+    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\") || hasAuthority(\"" + AuthoritiesConstants.MANAGER + "\")")
     @ResponseStatus(HttpStatus.OK)
     public void uploadFile(@PathVariable("id") Long id, @RequestParam("file") MultipartFile file) {
         try {
+            service.hasAuthorization(id);
             service.storeInFileSystem(file, id);
         } catch (Exception e) {
             throw new BadRequestAlertException("Could not upload the file ", ENTITY_NAME, file.getName());
@@ -97,6 +99,7 @@ public class CompanyController {
     }
 
     @GetMapping("/{id}/image")
+    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\") || hasAuthority(\"" + AuthoritiesConstants.MANAGER + "\") || hasAuthority(\"" + AuthoritiesConstants.USER + "\")")
     public ResponseEntity<ByteArrayResource> getFile(@PathVariable("id") Long companyId) {
         try {
             Path path = service.getFile(companyId);
