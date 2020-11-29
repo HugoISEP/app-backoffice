@@ -13,7 +13,6 @@ import { Company, ICompany } from 'app/shared/model/company.model';
 export class CompanyUpdateComponent implements OnInit {
   isSaving = false;
   file: File | null = null;
-  color = '';
 
   editForm = this.fb.group({
     id: [],
