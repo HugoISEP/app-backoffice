@@ -32,7 +32,7 @@ public class Company {
     private String color;
 
     @NotNull
-    @Column(name = "image_path",nullable = false, unique = true)
+    @Column(name = "image_path", nullable = false, unique = true)
     private String imagePath;
 
     @Column(updatable = false)

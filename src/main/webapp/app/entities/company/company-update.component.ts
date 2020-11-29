@@ -12,6 +12,7 @@ import { Company, ICompany } from 'app/shared/model/company.model';
 })
 export class CompanyUpdateComponent implements OnInit {
   isSaving = false;
+  file: File | null = null;
   color = '';
 
   editForm = this.fb.group({
@@ -19,6 +20,7 @@ export class CompanyUpdateComponent implements OnInit {
     name: [null, [Validators.required]],
     emailTemplate: [null, [Validators.required]],
     color: [null, [Validators.required, Validators.pattern('^#(?:[0-9a-fA-F]{3}){1,2}$')]],
+    file: [null /*[Validators.required /!*requiredFileType('png')*!/]*/], //TODO: ajouter une validation pour le type de fichier
   });
 
   constructor(
@@ -49,6 +51,7 @@ export class CompanyUpdateComponent implements OnInit {
   }
 
   private createForm(): ICompany {
+    this.file = this.editForm.get(['file'])!.value;
     return {
       ...new Company(),
       id: this.editForm.get(['id'])!.value,
@@ -92,7 +95,15 @@ export class CompanyUpdateComponent implements OnInit {
     if (company.id !== undefined) {
       this.subscribeToSaveResponse(this.companyService.update(company));
     } else {
-      this.subscribeToSaveResponse(this.companyService.create(company));
+      this.subscribeToSaveResponse(this.companyService.create(company, this.editForm.get(['file'])!.value));
+    }
+  }
+
+  handleFile(e: Event): void {
+    if ((e.target as HTMLInputElement).files) {
+      this.editForm.controls['file'].setValue((e.target as HTMLInputElement).files![0]);
+    } else {
+      this.editForm.controls['file'].setValue(null);
     }
   }
 }

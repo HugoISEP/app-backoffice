@@ -1,5 +1,6 @@
 package com.mycompany.myapp.web.rest;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mycompany.myapp.repository.CompanyRepository;
 import com.mycompany.myapp.security.AuthoritiesConstants;
 import com.mycompany.myapp.service.CompanyService;
@@ -21,6 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
@@ -69,8 +71,10 @@ public class CompanyController {
 
     @PostMapping
     @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
-    public CompanyView createCompany(@Valid @RequestBody CompanyDTO company){
-        return service.create(company);
+    public CompanyView createCompany(@Valid @RequestParam("company") String companyJson, @RequestParam("file") MultipartFile file) throws IOException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        CompanyDTO companyDTO = objectMapper.readValue(companyJson, CompanyDTO.class);
+        return service.create(companyDTO, file);
     }
 
     @PutMapping
@@ -83,7 +87,11 @@ public class CompanyController {
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
     public void deleteCompany(@PathVariable Long id){
-        service.delete(id);
+        try {
+            service.delete(id);
+        } catch (Exception e) {
+            throw new BadRequestAlertException("Could not delete the file", ENTITY_NAME, e.toString());
+        }
     }
 
     @PostMapping("/{id}/image")
@@ -92,7 +100,7 @@ public class CompanyController {
     public void uploadFile(@PathVariable("id") Long id, @RequestParam("file") MultipartFile file) {
         try {
             service.hasAuthorization(id);
-            service.storeInFileSystem(file, id);
+            service.editFile(file, id);
         } catch (Exception e) {
             throw new BadRequestAlertException("Could not upload the file ", ENTITY_NAME, file.getName());
         }
