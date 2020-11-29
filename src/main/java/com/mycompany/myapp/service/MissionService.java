@@ -10,6 +10,7 @@ import com.mycompany.myapp.service.mapper.CompanyMapper;
 import com.mycompany.myapp.service.mapper.MissionMapper;
 import com.mycompany.myapp.service.view.MissionView;
 import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
+import com.mycompany.myapp.web.rest.errors.ResourceNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.AccessDeniedException;
@@ -41,7 +42,7 @@ public class MissionService {
         UserDTO user = userService.getUserWithAuthorities()
             .map(UserDTO::new)
             .orElseThrow(() -> new BadRequestAlertException("User not found", ENTITY_NAME, "id doesn't exist"));
-        Mission mission = repository.findById(id).orElseThrow(() -> new BadRequestAlertException("Entity not found", ENTITY_NAME, "id doesn't exist"));
+        Mission mission = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Entity not found", ENTITY_NAME, "id doesn't exist"));
         if(!user.getAuthorities().contains(AuthoritiesConstants.ADMIN) && !user.getCompany().getId().equals(mission.getCompany().getId())){
             throw new AccessDeniedException("user not authorize");
         }
@@ -60,7 +61,7 @@ public class MissionService {
     }
 
     public void deleteMission(Long id){
-        Mission missionToDelete = repository.findById(id).orElseThrow(() -> new BadRequestAlertException("Technologie doesn't exist", ENTITY_NAME, "id doesn't exist"));
+        Mission missionToDelete = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Entity doesn't exist", ENTITY_NAME, "id doesn't exist"));
         missionToDelete.getPositions().forEach(position -> {
             //positionRepository.delete(position);
             positionRepository.delete(position.getId());
@@ -72,7 +73,7 @@ public class MissionService {
         if (missionToEdit.getId() == null) {
             throw new BadRequestAlertException("Cannot edit ", ENTITY_NAME, " id doesn't exist");
         }
-        Mission mission = repository.findById(missionToEdit.getId()).orElseThrow(() -> new BadRequestAlertException("mission doesn't exist", ENTITY_NAME, "id doesn't exist"));
+        Mission mission = repository.findById(missionToEdit.getId()).orElseThrow(() -> new ResourceNotFoundException("mission doesn't exist", ENTITY_NAME, "id doesn't exist"));
         mapper.updateMission(mapper.fromDTO(missionToEdit), mission);
         return repository.save(mission);
     }

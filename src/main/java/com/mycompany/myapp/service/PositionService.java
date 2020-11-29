@@ -12,6 +12,7 @@ import com.mycompany.myapp.service.mapper.PositionMapper;
 import com.mycompany.myapp.service.notification.NotificationService;
 import com.mycompany.myapp.service.view.PositionView;
 import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
+import com.mycompany.myapp.web.rest.errors.ResourceNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.access.AccessDeniedException;
@@ -47,7 +48,7 @@ public class PositionService {
         UserDTO user = userService.getUserWithAuthorities()
             .map(UserDTO::new)
             .orElseThrow(() -> new BadRequestAlertException("User not found", ENTITY_NAME, "id doesn't exist"));
-        Position position = repository.findById(id).orElseThrow(() -> new BadRequestAlertException("Entity not found", ENTITY_NAME, "id doesn't exist"));
+        Position position = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Entity not found", ENTITY_NAME, "id doesn't exist"));
         if(!user.getAuthorities().contains(AuthoritiesConstants.ADMIN) && !user.getCompany().getId().equals(position.getMission().getCompany().getId())){
             throw new AccessDeniedException("user not authorize");
         }
@@ -67,7 +68,7 @@ public class PositionService {
         if (newPosition.getId() != null) {
             throw new BadRequestAlertException("A new Position cannot already have an ID", ENTITY_NAME, "id exists");
         }
-        Mission mission = missionRepository.findById(missionId).orElseThrow(() -> new BadRequestAlertException("mission doesn't exist", ENTITY_NAME, "id doesn't exist"));
+        Mission mission = missionRepository.findById(missionId).orElseThrow(() -> new ResourceNotFoundException("mission doesn't exist", ENTITY_NAME, "id doesn't exist"));
         newPosition.setMission(mission);
         mission.getPositions().add(newPosition);
         /*try {
@@ -82,13 +83,13 @@ public class PositionService {
         if (updatedPosition.getId() == null) {
             throw new BadRequestAlertException("Cannot edit ", ENTITY_NAME, " id doesn't exist");
         }
-        Position position = repository.findById(updatedPosition.getId()).orElseThrow(() -> new BadRequestAlertException("position doesn't exist", ENTITY_NAME, "id doesn't exist"));
+        Position position = repository.findById(updatedPosition.getId()).orElseThrow(() -> new ResourceNotFoundException("position doesn't exist", ENTITY_NAME, "id doesn't exist"));
         mapper.updatePosition(mapper.fromDTO(updatedPosition), position);
         return repository.save(position);
     }
 
     public void deletePosition(Long id){
-        Position positionToDelete = repository.findById(id).orElseThrow(() -> new BadRequestAlertException("Position doesn't exist", ENTITY_NAME, "id doesn't exist"));
+        Position positionToDelete = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Position doesn't exist", ENTITY_NAME, "id doesn't exist"));
         repository.delete(positionToDelete.getId());
 
     }

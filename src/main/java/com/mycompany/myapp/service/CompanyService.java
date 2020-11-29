@@ -8,6 +8,9 @@ import com.mycompany.myapp.service.dto.UserDTO;
 import com.mycompany.myapp.service.mapper.CompanyMapper;
 import com.mycompany.myapp.service.view.CompanyDetailsView;
 import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
+import com.mycompany.myapp.web.rest.errors.ResourceNotFoundException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.AccessDeniedException;
@@ -18,9 +21,11 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 
 @Service
@@ -33,6 +38,9 @@ public class CompanyService {
     private final CompanyMapper mapper;
     private final UserService userService;
 
+    private static final Logger log = LoggerFactory.getLogger(CompanyService.class);
+
+
     public CompanyService(CompanyRepository repository, CompanyMapper mapper, UserService userService) {
         this.repository = repository;
         this.mapper = mapper;
@@ -43,7 +51,7 @@ public class CompanyService {
         UserDTO user = userService.getUserWithAuthorities()
             .map(UserDTO::new)
             .orElseThrow(() -> new BadRequestAlertException("User not found", ENTITY_NAME, "id doesn't exist"));
-        Company company = repository.findById(id).orElseThrow(() -> new BadRequestAlertException("Entity not found", ENTITY_NAME, "id doesn't exist"));
+        Company company = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Entity not found", ENTITY_NAME, "id doesn't exist"));
         if(!user.getAuthorities().contains(AuthoritiesConstants.ADMIN) && !user.getCompany().getId().equals(company.getId())){
             throw new AccessDeniedException("user not authorize");
         }
@@ -52,7 +60,7 @@ public class CompanyService {
     public CompanyDetailsView getCompanyFromCurrentUser(){
         UserDTO user = userService.getUserWithAuthorities()
             .map(UserDTO::new)
-            .orElseThrow(() -> new BadRequestAlertException("user not found", ENTITY_NAME, " id exists"));
+            .orElseThrow(() -> new ResourceNotFoundException("user not found", ENTITY_NAME, " id exists"));
         return repository.findCompanyFromCurrentUser(user.getId());
     }
 
@@ -72,20 +80,24 @@ public class CompanyService {
         if (updatedCompany.getId() == null) {
             throw new BadRequestAlertException("Cannot edit ", ENTITY_NAME, " id doesn't exist");
         }
-        Company company = repository.findById(updatedCompany.getId()).orElseThrow(() -> new BadRequestAlertException("company doesn't exist", ENTITY_NAME, "id doesn't exist"));
+        Company company = repository.findById(updatedCompany.getId()).orElseThrow(() -> new ResourceNotFoundException("company doesn't exist", ENTITY_NAME, "id doesn't exist"));
         mapper.updateCompany(updatedCompany, company);
         return mapper.asDTO(company);
     }
 
     public void delete(Long id) throws IOException {
-        Company companyToDelete = repository.findById(id).orElseThrow(() -> new BadRequestAlertException("company doesn't exist", ENTITY_NAME, "id doesn't exist"));
-        Files.delete(Paths.get(companyToDelete.getImagePath()));
+        Company companyToDelete = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("company doesn't exist", ENTITY_NAME, "id doesn't exist"));
+        try {
+            Files.delete(Paths.get(companyToDelete.getImagePath()));
+        } catch ( NoSuchFileException e){
+            log.warn("Picture not found while trying to deleting it");
+        }
         repository.delete(companyToDelete);
     }
 
     public void editFile(MultipartFile image, Long companyId) throws IOException {
         String timestamp = LocalDateTime.now().toString();
-        Company company = repository.findById(companyId).orElseThrow(() -> new BadRequestAlertException("company not found" , "COMPANY", " id doesn't exist"));
+        Company company = repository.findById(companyId).orElseThrow(() -> new ResourceNotFoundException("company not found" , "COMPANY", " id doesn't exist"));
 
         Files.delete(Paths.get(company.getImagePath()));
 
@@ -94,18 +106,23 @@ public class CompanyService {
     }
 
     public Path getFile(Long companyId) {
-        Company company = repository.findById(companyId).orElseThrow(() -> new BadRequestAlertException("company not found" , "COMPANY", " id doesn't exist"));
+        Company company = repository.findById(companyId).orElseThrow(() -> new ResourceNotFoundException("company not found" , "COMPANY", " id doesn't exist"));
         return Paths.get(company.getImagePath());
     }
 
-    private File storeFile(MultipartFile image, String timestamp) throws IOException{
-        if (!image.getContentType().equals("image/png")) {
+    private File storeFile(MultipartFile image, String timestamp) {
+        if (!Objects.equals(image.getContentType(), "image/png")) {
             throw new BadRequestAlertException("file type isn't a png ", "IMAGE", " wrong image type");
         }
         String currentPath = Paths.get("").toAbsolutePath().toString();
 
-        byte[] file = image.getBytes();
-        Path path = Paths.get(currentPath + "/src/main/resources/images/company/" + timestamp + ".png");
-        return Files.write(path, file).toFile();
+        try {
+            byte[] file = image.getBytes();
+            Path path = Paths.get(currentPath + "/src/main/resources/images/company/" + timestamp + ".png");
+            return Files.write(path, file).toFile();
+        } catch (IOException e){
+            throw new CompanyPictureNotFoundException("temp picture not found", "");
+        }
+
     }
 }
