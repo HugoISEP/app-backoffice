@@ -364,7 +364,7 @@ public class UserService {
             .map(Optional::get)
             .collect(Collectors.toList());
         user.setJobTypes(newJobTypes);
-        return jobTypeMapper.asListDTO(new UserDTO(user).getJobTypes());
+        return new UserDTO(user).getJobTypes();
     }
 
 

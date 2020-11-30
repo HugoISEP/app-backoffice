@@ -14,8 +14,11 @@ export class CompanyService {
 
   constructor(protected http: HttpClient) {}
 
-  create(company: ICompany): Observable<EntityResponseType> {
-    return this.http.post<ICompany>(this.resourceUrl, company, { observe: 'response' });
+  create(company: ICompany, file: File): Observable<EntityResponseType> {
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('company', JSON.stringify(company));
+    return this.http.post<ICompany>(this.resourceUrl, formData, { observe: 'response' });
   }
 
   update(company: ICompany): Observable<EntityResponseType> {
