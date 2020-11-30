@@ -16,6 +16,11 @@
                 <dd>
                     <span>{{ company.emailTemplate }}</span>
                 </dd>
+                <dt><span>Couleur</span></dt>
+                <dd>
+                    <span>{{ company.color }}</span>
+                    <span><button type="button" class="btn btn-primary" [ngStyle]="{'background-color': company.color}"></button></span>
+                </dd>
                 <dt><span>Nombre d'utilisateurs inscrits</span></dt>
                 <dd>
                     <span>{{ company.totalUsers }}</span>

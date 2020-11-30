@@ -7,6 +7,7 @@ import com.mycompany.myapp.repository.UserRepository;
 import com.mycompany.myapp.security.AuthoritiesConstants;
 import com.mycompany.myapp.service.dto.JobTypeDTO;
 import com.mycompany.myapp.service.dto.UserDTO;
+import com.mycompany.myapp.service.mapper.CompanyMapper;
 import com.mycompany.myapp.service.mapper.JobTypeMapper;
 import com.mycompany.myapp.service.view.JobTypeView;
 import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
@@ -28,13 +29,15 @@ public class JobTypeService {
     private final JobTypeMapper mapper;
     private final PositionRepository positionRepository;
     private final UserService userService;
+    private final CompanyMapper companyMapper;
     private final UserRepository userRepository;
 
-    public JobTypeService(JobTypeRepository repository, JobTypeMapper mapper, PositionRepository positionRepository, UserService userService, UserRepository userRepository) {
+    public JobTypeService(JobTypeRepository repository, JobTypeMapper mapper, PositionRepository positionRepository, UserService userService, CompanyMapper companyMapper, UserRepository userRepository) {
         this.repository = repository;
         this.mapper = mapper;
         this.positionRepository = positionRepository;
         this.userService = userService;
+        this.companyMapper = companyMapper;
         this.userRepository = userRepository;
     }
 
@@ -71,7 +74,7 @@ public class JobTypeService {
         UserDTO user = userService.getUserWithAuthorities()
             .map(UserDTO::new)
             .orElseThrow(() -> new BadRequestAlertException("User not found", ENTITY_NAME, "id doesn't exist"));
-        newJobType.setCompany(user.getCompany());
+        newJobType.setCompany(companyMapper.fromDTO(user.getCompany()));
         return mapper.asDTO(repository.save(newJobType));
     }
 

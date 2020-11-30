@@ -6,9 +6,10 @@ import { CompanyComponent } from './company.component';
 import { CompanyUpdateComponent } from './company-update.component';
 import { CompanyDeleteDialogComponent } from './company-delete-dialog.component';
 import { CompanyDetailComponent } from './company-detail.component';
+import { ColorPickerModule } from 'ngx-color-picker';
 
 @NgModule({
-  imports: [HugoIsepSharedModule, RouterModule.forChild(companyRoute)],
+  imports: [HugoIsepSharedModule, ColorPickerModule, RouterModule.forChild(companyRoute)],
   declarations: [CompanyComponent, CompanyUpdateComponent, CompanyDetailComponent, CompanyDeleteDialogComponent],
   entryComponents: [CompanyDeleteDialogComponent],
 })

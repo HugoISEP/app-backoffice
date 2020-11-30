@@ -7,4 +7,5 @@ public interface CompanyView {
     Long getId();
     String getName();
     String getEmailTemplate();
+    String getColor();
 }

@@ -9,5 +9,5 @@ public interface JobTypeView {
     Long getId();
     String getName();
     @JsonIgnore
-    Company getCompany();
+    CompanyView getCompany();
 }

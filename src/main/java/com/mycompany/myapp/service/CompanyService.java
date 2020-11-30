@@ -13,6 +13,14 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.time.LocalDateTime;
 
 
 @Service
@@ -52,7 +60,11 @@ public class CompanyService {
         return repository.findAllPaginated(pageable, searchTerm);
     }
 
-    public CompanyDTO create(CompanyDTO company){
+    public CompanyDTO create(CompanyDTO company, MultipartFile file) throws IOException{
+        String timestamp = LocalDateTime.now().toString();
+
+        File image = storeFile(file, timestamp);
+        company.setImagePath(image.getPath());
         return mapper.asDTO(repository.save(mapper.fromDTO(company)));
     }
 
@@ -65,8 +77,35 @@ public class CompanyService {
         return mapper.asDTO(company);
     }
 
-    public void delete(Long id){
+    public void delete(Long id) throws IOException {
         Company companyToDelete = repository.findById(id).orElseThrow(() -> new BadRequestAlertException("company doesn't exist", ENTITY_NAME, "id doesn't exist"));
+        Files.delete(Paths.get(companyToDelete.getImagePath()));
         repository.delete(companyToDelete);
+    }
+
+    public void editFile(MultipartFile image, Long companyId) throws IOException {
+        String timestamp = LocalDateTime.now().toString();
+        Company company = repository.findById(companyId).orElseThrow(() -> new BadRequestAlertException("company not found" , "COMPANY", " id doesn't exist"));
+
+        Files.delete(Paths.get(company.getImagePath()));
+
+        Path path = storeFile(image, timestamp).toPath();
+        company.setImagePath(path.toString());
+    }
+
+    public Path getFile(Long companyId) {
+        Company company = repository.findById(companyId).orElseThrow(() -> new BadRequestAlertException("company not found" , "COMPANY", " id doesn't exist"));
+        return Paths.get(company.getImagePath());
+    }
+
+    private File storeFile(MultipartFile image, String timestamp) throws IOException{
+        if (!image.getContentType().equals("image/png")) {
+            throw new BadRequestAlertException("file type isn't a png ", "IMAGE", " wrong image type");
+        }
+        String currentPath = Paths.get("").toAbsolutePath().toString();
+
+        byte[] file = image.getBytes();
+        Path path = Paths.get(currentPath + "/src/main/resources/images/company/" + timestamp + ".png");
+        return Files.write(path, file).toFile();
     }
 }

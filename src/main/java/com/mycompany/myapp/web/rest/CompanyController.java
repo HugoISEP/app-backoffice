@@ -1,5 +1,6 @@
 package com.mycompany.myapp.web.rest;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mycompany.myapp.repository.CompanyRepository;
 import com.mycompany.myapp.security.AuthoritiesConstants;
 import com.mycompany.myapp.service.CompanyService;
@@ -9,6 +10,7 @@ import com.mycompany.myapp.service.view.CompanyDetailsView;
 import com.mycompany.myapp.service.view.CompanyView;
 import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
 import io.github.jhipster.web.util.PaginationUtil;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
@@ -16,9 +18,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
 
 @RestController
@@ -65,8 +71,10 @@ public class CompanyController {
 
     @PostMapping
     @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
-    public CompanyView createCompany(@Valid @RequestBody CompanyDTO company){
-        return service.create(company);
+    public CompanyView createCompany(@Valid @RequestParam("company") String companyJson, @RequestParam("file") MultipartFile file) throws IOException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        CompanyDTO companyDTO = objectMapper.readValue(companyJson, CompanyDTO.class);
+        return service.create(companyDTO, file);
     }
 
     @PutMapping
@@ -79,7 +87,43 @@ public class CompanyController {
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
     public void deleteCompany(@PathVariable Long id){
-        service.delete(id);
+        try {
+            service.delete(id);
+        } catch (Exception e) {
+            throw new BadRequestAlertException("Could not delete the file", ENTITY_NAME, e.toString());
+        }
     }
+
+    @PostMapping("/{id}/image")
+    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\") || hasAuthority(\"" + AuthoritiesConstants.MANAGER + "\")")
+    @ResponseStatus(HttpStatus.OK)
+    public void uploadFile(@PathVariable("id") Long id, @RequestParam("file") MultipartFile file) {
+        try {
+            service.hasAuthorization(id);
+            service.editFile(file, id);
+        } catch (Exception e) {
+            throw new BadRequestAlertException("Could not upload the file ", ENTITY_NAME, file.getName());
+        }
+    }
+
+    @GetMapping("/{id}/image")
+    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\") || hasAuthority(\"" + AuthoritiesConstants.MANAGER + "\") || hasAuthority(\"" + AuthoritiesConstants.USER + "\")")
+    public ResponseEntity<ByteArrayResource> getFile(@PathVariable("id") Long companyId) {
+        try {
+            Path path = service.getFile(companyId);
+            byte[] data = Files.readAllBytes(path);
+            ByteArrayResource resource = new ByteArrayResource(data);
+            return ResponseEntity.ok()
+                // Content-Disposition
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + path.getFileName().toString())
+                // Content-Lengh
+                .contentLength(data.length)
+                .body(resource);
+
+        } catch (Exception e) {
+            throw new BadRequestAlertException("can't get image ", "IMAGE", " image not found");
+        }
+    }
+
 
 }

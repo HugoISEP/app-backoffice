@@ -12,6 +12,6 @@ import lombok.NoArgsConstructor;
 public class JobTypeDTO implements JobTypeView {
     private Long id;
     private String name;
-    private Company company;
+    private CompanyDTO company;
 
 }

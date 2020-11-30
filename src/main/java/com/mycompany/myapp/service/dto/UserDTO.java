@@ -57,9 +57,9 @@ public class UserDTO implements UserView {
 
     private Set<String> authorities;
 
-    private Company company;
+    private CompanyDTO company;
 
-    private List<JobType> jobTypes;
+    private List<JobTypeDTO> jobTypes;
 
     public UserDTO(User user) {
         this.id = user.getId();
@@ -77,8 +77,11 @@ public class UserDTO implements UserView {
         this.authorities = user.getAuthorities().stream()
             .map(Authority::getName)
             .collect(Collectors.toSet());
-        this.company = user.getCompany();
-        this.jobTypes = user.getJobTypes();
+        if (user.getCompany() != null){
+            this.company = new CompanyDTO(user.getCompany().getId(), user.getCompany().getName(), user.getCompany().getEmailTemplate(), user.getCompany().getColor(), user.getCompany().getImagePath());
+        }
+        this.jobTypes = user.getJobTypes().stream()
+            .map(j -> new JobTypeDTO(j.getId(), j.getName(), this.company)).collect(Collectors.toList());
     }
 
 }
