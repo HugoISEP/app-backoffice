@@ -105,7 +105,7 @@ public class CompanyService {
         String currentPath = Paths.get("").toAbsolutePath().toString();
 
         byte[] file = image.getBytes();
-        Path path = Paths.get(currentPath + "/src/main/resources/images/company/" + timestamp + ".png");
+        Path path = Paths.get(currentPath + "/images/company/" + timestamp + ".png");
         return Files.write(path, file).toFile();
     }
 }
