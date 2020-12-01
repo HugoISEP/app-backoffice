@@ -1,13 +1,19 @@
 package com.mycompany.myapp.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 
+@TypeDef(name = "jsonb", typeClass = JsonBinaryType.class)
 @Data
 @Entity
 @Table(name = "position")
@@ -32,6 +38,10 @@ public class Position {
     @NotNull
     @Column(name = "description", nullable = false)
     private String description;
+
+    @Type(type = "jsonb")
+    @Column(columnDefinition = "jsonb")
+    private Map<String, String> texts = new HashMap<>();
 
     @ManyToOne
     @JsonIgnoreProperties(value = "positions")
