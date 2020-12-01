@@ -628,7 +628,6 @@
                         </container>
                         <extraDirectories>
                             <paths>src/main/jib</paths>
-                            <paths>/images/company</paths>
                             <permissions>
                                 <permission>
                                     <file>/entrypoint.sh</file>
