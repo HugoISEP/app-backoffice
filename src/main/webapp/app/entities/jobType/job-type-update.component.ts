@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
 import { HttpResponse } from '@angular/common/http';
 import { JobTypeService } from './jobType.service';
 import { IJobType, JobType } from '../../shared/model/jobType.model';
+import { Language } from '../../shared/constants/language.constants';
 
 @Component({
   selector: 'jhi-job-type-update',
@@ -12,10 +13,14 @@ import { IJobType, JobType } from '../../shared/model/jobType.model';
 })
 export class JobTypeUpdateComponent implements OnInit {
   isSaving = false;
+  toggleNameInput = false;
+  allLanguages = Object.keys(Language)
+    .filter(k => typeof Language[k as any] === 'string')
+    .map(k => Language[k as any]);
 
   editForm = this.fb.group({
     id: [],
-    name: [null, [Validators.required]],
+    //name: [null, [Validators.required]],
   });
 
   constructor(protected jobTypeService: JobTypeService, protected activateRoute: ActivatedRoute, private fb: FormBuilder) {}
@@ -24,6 +29,9 @@ export class JobTypeUpdateComponent implements OnInit {
     this.activateRoute.data.subscribe(({ jobType }) => {
       this.updateForm(jobType);
     });
+    this.allLanguages.map(l => {
+      this.editForm.addControl(l, new FormControl('', Validators.required));
+    });
   }
 
   updateForm(jobType: IJobType): void {
@@ -31,13 +39,26 @@ export class JobTypeUpdateComponent implements OnInit {
       id: jobType.id,
       name: jobType.name,
     });
+    this.allLanguages.map(l => {
+      this.editForm.addControl(l, new FormControl(jobType.nameTranslations![l], Validators.required));
+    });
   }
 
   private createForm(): IJobType {
+    const dict: { [x: string]: string } = {};
+    let name = '';
+    this.allLanguages.map(l => {
+      if (l === 'FR') {
+        //a modifier of course
+        name = this.editForm.get([l])!.value;
+      }
+      dict[l] = this.editForm.get([l])!.value;
+    });
     return {
       ...new JobType(),
       id: this.editForm.get(['id'])!.value,
-      name: this.editForm.get(['name'])!.value,
+      nameTranslations: dict,
+      name,
     };
   }
 
@@ -67,11 +88,11 @@ export class JobTypeUpdateComponent implements OnInit {
 
   save(): void {
     this.isSaving = true;
-    const mission = this.createForm();
-    if (mission.id !== undefined) {
-      this.subscribeToSaveResponse(this.jobTypeService.update(mission));
+    const jobType = this.createForm();
+    if (jobType.id !== undefined) {
+      this.subscribeToSaveResponse(this.jobTypeService.update(jobType));
     } else {
-      this.subscribeToSaveResponse(this.jobTypeService.create(mission));
+      this.subscribeToSaveResponse(this.jobTypeService.create(jobType));
     }
   }
 }

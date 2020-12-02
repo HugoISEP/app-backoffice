@@ -5,17 +5,38 @@
 
             <div>
                 <jhi-alert-error></jhi-alert-error>
+
                 <div class="form-group">
-                    <label class="form-control-label" for="field_name">Nom</label>
-                    <input type="text" class="form-control" name="name" id="field_name"
-                           formControlName="name"/>
-                    <div *ngIf="editForm.get('name')!.invalid && (editForm.get('name')!.dirty || editForm.get('name')!.touched)">
+                    <label class="form-control-label" for="field_nameTranslations">Nom</label>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text" id="basic-addon1" (click)="toggleNameInput = !toggleNameInput"><fa-icon [icon]="toggleNameInput ? 'chevron-up' : 'chevron-down' "></fa-icon></span>
+                        <input type="text" class="form-control" name="FR" id="field_nameTranslations" formControlName="FR" />
+                    </div>
+                    <div *ngIf="editForm.get('FR')!.invalid && (editForm.get('FR')!.dirty || editForm.get('FR')!.touched)">
                         <small class="form-text text-danger"
-                               *ngIf="editForm.get('name')?.errors?.required">
+                               *ngIf="editForm.get('FR')?.errors?.required">
                             Ce champs est requis
                         </small>
                     </div>
                 </div>
+
+                <div class="form-group" *ngIf="toggleNameInput" >
+                    <div *ngFor="let language of allLanguages">
+                        <div *ngIf="language !== 'FR'">
+                            <div class="input-group mb-3">
+                                <span class="input-group-text" id="basic-addon2">EN</span>
+                                <input type="text" class="form-control" name="{{language}}" id="'field_' + {{language}}" formControlName="{{language}}"/>
+                            </div>
+                            <div *ngIf="editForm.get(language)!.invalid && (editForm.get(language)!.dirty || editForm.get(language)!.touched)">
+                                <small class="form-text text-danger"
+                                       *ngIf="editForm.get(language)?.errors?.required">
+                                    Ce champs est requis
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
             <div>
                 <button type="button" id="cancel-save" class="btn btn-secondary" (click)="previousState()">

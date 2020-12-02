@@ -2,7 +2,8 @@ package com.mycompany.myapp.service.view;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.mycompany.myapp.domain.Company;
+
+import java.util.Map;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public interface JobTypeView {
@@ -10,4 +11,5 @@ public interface JobTypeView {
     String getName();
     @JsonIgnore
     CompanyView getCompany();
+    Map<String, String> getNameTranslations();
 }

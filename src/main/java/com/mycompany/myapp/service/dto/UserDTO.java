@@ -81,7 +81,7 @@ public class UserDTO implements UserView {
             this.company = new CompanyDTO(user.getCompany().getId(), user.getCompany().getName(), user.getCompany().getEmailTemplate(), user.getCompany().getColor(), user.getCompany().getImagePath());
         }
         this.jobTypes = user.getJobTypes().stream()
-            .map(j -> new JobTypeDTO(j.getId(), j.getName(), this.company)).collect(Collectors.toList());
+            .map(j -> new JobTypeDTO(j.getId(), j.getName(), this.company, j.getNameTranslations())).collect(Collectors.toList());
     }
 
 }
