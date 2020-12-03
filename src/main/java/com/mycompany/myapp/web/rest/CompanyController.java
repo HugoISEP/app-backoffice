@@ -1,6 +1,5 @@
 package com.mycompany.myapp.web.rest;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mycompany.myapp.repository.CompanyRepository;
 import com.mycompany.myapp.security.AuthoritiesConstants;
 import com.mycompany.myapp.service.CompanyService;
@@ -72,15 +71,12 @@ public class CompanyController {
     @PostMapping
     @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
     public CompanyView createCompany(@Valid @RequestParam("company") String companyJson, @RequestParam("file") MultipartFile file) throws IOException {
-        ObjectMapper objectMapper = new ObjectMapper();
-        CompanyDTO companyDTO = objectMapper.readValue(companyJson, CompanyDTO.class);
-        return service.create(companyDTO, file);
+        return service.create(companyJson, file);
     }
 
     @PutMapping
     @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.MANAGER + "\")")
     public CompanyView editCompany(@Valid @RequestBody CompanyDTO updatedCompany){
-        service.hasAuthorization(updatedCompany.getId());
         return service.edit(updatedCompany);
     }
 
@@ -99,7 +95,6 @@ public class CompanyController {
     @ResponseStatus(HttpStatus.OK)
     public void uploadFile(@PathVariable("id") Long id, @RequestParam("file") MultipartFile file) {
         try {
-            service.hasAuthorization(id);
             service.editFile(file, id);
         } catch (Exception e) {
             throw new BadRequestAlertException("Could not upload the file ", ENTITY_NAME, file.getName());
@@ -124,6 +119,5 @@ public class CompanyController {
             throw new BadRequestAlertException("can't get image ", "IMAGE", " image not found");
         }
     }
-
 
 }

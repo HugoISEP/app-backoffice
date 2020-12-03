@@ -6,7 +6,6 @@ import com.mycompany.myapp.service.JobTypeService;
 import com.mycompany.myapp.service.dto.JobTypeDTO;
 import com.mycompany.myapp.service.mapper.JobTypeMapper;
 import com.mycompany.myapp.service.view.JobTypeView;
-import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
 import io.github.jhipster.web.util.PaginationUtil;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -25,8 +24,6 @@ import java.util.List;
 @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.MANAGER + "\") || hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
 public class JobTypeController {
 
-    private static final String ENTITY_NAME = "jobType";
-
     private final JobTypeRepository repository;
     private final JobTypeMapper mapper;
     private final JobTypeService service;
@@ -39,8 +36,7 @@ public class JobTypeController {
 
     @GetMapping("/{id}")
     public JobTypeView getById(@PathVariable Long id){
-        service.hasAuthorization(id);
-        return mapper.asDTO(repository.findById(id).orElseThrow(() -> new BadRequestAlertException("JobType doesn't exist", ENTITY_NAME, "id doesn't exist")));
+        return service.getById(id);
     }
 
     @GetMapping
@@ -69,13 +65,11 @@ public class JobTypeController {
 
     @PutMapping
     public JobTypeView edit(@Valid @RequestBody JobTypeDTO jobType){
-        service.hasAuthorization(jobType.getId());
         return service.editJobType(jobType);
     }
 
     @DeleteMapping("/{id}")
     public void delete(@PathVariable Long id){
-        service.hasAuthorization(id);
         service.deleteJobType(id);
     }
 }
