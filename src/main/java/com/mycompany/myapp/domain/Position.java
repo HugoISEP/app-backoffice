@@ -35,13 +35,12 @@ public class Position {
     @Column(name = "remuneration", nullable = false)
     private float remuneration;
 
-    @NotNull
-    @Column(name = "description", nullable = false)
+    @Column(name = "description")
     private String description;
 
     @Type(type = "jsonb")
     @Column(columnDefinition = "jsonb")
-    private Map<String, String> texts = new HashMap<>();
+    private Map<String, String> descriptionTranslations = new HashMap<>();
 
     @ManyToOne
     @JsonIgnoreProperties(value = "positions")
@@ -59,4 +58,5 @@ public class Position {
     @ManyToOne
     @JsonIgnoreProperties(value = "positions")
     private JobType jobType;
+
 }

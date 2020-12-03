@@ -20,45 +20,37 @@ export class JobTypeUpdateComponent implements OnInit {
 
   editForm = this.fb.group({
     id: [],
-    //name: [null, [Validators.required]],
   });
 
   constructor(protected jobTypeService: JobTypeService, protected activateRoute: ActivatedRoute, private fb: FormBuilder) {}
 
   ngOnInit(): void {
-    this.activateRoute.data.subscribe(({ jobType }) => {
-      this.updateForm(jobType);
-    });
     this.allLanguages.map(l => {
       this.editForm.addControl(l, new FormControl('', Validators.required));
+    });
+    this.activateRoute.data.subscribe(({ jobType }) => {
+      this.updateForm(jobType);
     });
   }
 
   updateForm(jobType: IJobType): void {
     this.editForm.patchValue({
       id: jobType.id,
-      name: jobType.name,
     });
     this.allLanguages.map(l => {
-      this.editForm.addControl(l, new FormControl(jobType.nameTranslations![l], Validators.required));
+      this.editForm.controls[l].setValue(jobType.nameTranslations![l]);
     });
   }
 
   private createForm(): IJobType {
     const dict: { [x: string]: string } = {};
-    let name = '';
     this.allLanguages.map(l => {
-      if (l === 'FR') {
-        //a modifier of course
-        name = this.editForm.get([l])!.value;
-      }
       dict[l] = this.editForm.get([l])!.value;
     });
     return {
       ...new JobType(),
       id: this.editForm.get(['id'])!.value,
       nameTranslations: dict,
-      name,
     };
   }
 

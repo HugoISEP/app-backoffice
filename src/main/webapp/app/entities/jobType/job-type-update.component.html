@@ -24,7 +24,7 @@
                     <div *ngFor="let language of allLanguages">
                         <div *ngIf="language !== 'FR'">
                             <div class="input-group mb-3">
-                                <span class="input-group-text" id="basic-addon2">EN</span>
+                                <span class="input-group-text" id="basic-addon2">{{language}}</span>
                                 <input type="text" class="form-control" name="{{language}}" id="'field_' + {{language}}" formControlName="{{language}}"/>
                             </div>
                             <div *ngIf="editForm.get(language)!.invalid && (editForm.get(language)!.dirty || editForm.get(language)!.touched)">

@@ -67,6 +67,9 @@ public class PositionService {
         if (newPosition.getId() != null) {
             throw new BadRequestAlertException("A new Position cannot already have an ID", ENTITY_NAME, "id exists");
         }
+
+        //AJOUT VERIFICATION DES TRADUCTIONS
+
         Mission mission = missionRepository.findById(missionId).orElseThrow(() -> new BadRequestAlertException("mission doesn't exist", ENTITY_NAME, "id doesn't exist"));
         newPosition.setMission(mission);
         mission.getPositions().add(newPosition);

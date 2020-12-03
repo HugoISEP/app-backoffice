@@ -8,6 +8,7 @@ export interface IPosition {
   placesNumber?: number;
   remuneration?: number;
   description?: string;
+  descriptionTranslations?: { [x: string]: string };
   status?: boolean;
   createdAt?: Moment;
   jobType?: JobType;
@@ -21,6 +22,7 @@ export class Position implements IPosition {
     public placesNumber?: number,
     public remuneration?: number,
     public description?: string,
+    public descriptionTranslations?: { [x: string]: string },
     public status?: boolean,
     public createdAt?: Moment,
     public jobType?: JobType,
