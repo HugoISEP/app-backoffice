@@ -6,12 +6,16 @@ import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
+import org.springframework.context.i18n.LocaleContextHolder;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+
+import static com.mycompany.myapp.config.Constants.DEFAULT_LANGUAGE_TRANSLATION;
 
 @TypeDef(name = "jsonb", typeClass = JsonBinaryType.class)
 @Data
@@ -35,7 +39,7 @@ public class Position {
     @Column(name = "remuneration", nullable = false)
     private float remuneration;
 
-    @Column(name = "description")
+    @Transient
     private String description;
 
     @Type(type = "jsonb")
@@ -59,4 +63,11 @@ public class Position {
     @JsonIgnoreProperties(value = "positions")
     private JobType jobType;
 
+    public String getDescription() {
+        if (Arrays.asList(Language.values()).toString().contains(LocaleContextHolder.getLocale().getLanguage().toUpperCase())){
+            return descriptionTranslations.get(LocaleContextHolder.getLocale().getLanguage().toUpperCase());
+        } else {
+            return descriptionTranslations.get(DEFAULT_LANGUAGE_TRANSLATION);
+        }
+    }
 }

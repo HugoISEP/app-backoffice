@@ -13,6 +13,8 @@ public final class Constants {
     public static final String ANONYMOUS_USER = "anonymoususer";
 
     public static final String HEX_COLOR_REGEX = "^#(?:[0-9a-fA-F]{3}){1,2}$";
+    public static final String DEFAULT_LANGUAGE_TRANSLATION = "FR";
+
 
     private Constants() {
     }
