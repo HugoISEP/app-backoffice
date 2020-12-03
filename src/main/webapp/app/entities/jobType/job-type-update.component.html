@@ -7,14 +7,14 @@
                 <jhi-alert-error></jhi-alert-error>
 
                 <div class="form-group">
-                    <label class="form-control-label" for="field_nameTranslations">Nom</label>
+                    <label class="form-control-label" for="default_name">Nom</label>
                     <div class="input-group mb-3">
                         <span class="input-group-text" id="basic-addon1" (click)="toggleNameInput = !toggleNameInput"><fa-icon [icon]="toggleNameInput ? 'chevron-up' : 'chevron-down' "></fa-icon></span>
-                        <input type="text" class="form-control" name="FR" id="field_nameTranslations" formControlName="FR" />
+                        <input type="text" class="form-control" name="default_name" id="default_name" formControlName="{{defaultLanguage}}" />
                     </div>
-                    <div *ngIf="editForm.get('FR')!.invalid && (editForm.get('FR')!.dirty || editForm.get('FR')!.touched)">
+                    <div *ngIf="editForm.get(defaultLanguage)!.invalid && (editForm.get(defaultLanguage)!.dirty || editForm.get(defaultLanguage)!.touched)">
                         <small class="form-text text-danger"
-                               *ngIf="editForm.get('FR')?.errors?.required">
+                               *ngIf="editForm.get(defaultLanguage)?.errors?.required">
                             Ce champs est requis
                         </small>
                     </div>
@@ -22,7 +22,7 @@
 
                 <div class="form-group" *ngIf="toggleNameInput" >
                     <div *ngFor="let language of allLanguages">
-                        <div *ngIf="language !== 'FR'">
+                        <div *ngIf="language !== defaultLanguage">
                             <div class="input-group mb-3">
                                 <span class="input-group-text" id="basic-addon2">{{language}}</span>
                                 <input type="text" class="form-control" name="{{language}}" id="'field_' + {{language}}" formControlName="{{language}}"/>

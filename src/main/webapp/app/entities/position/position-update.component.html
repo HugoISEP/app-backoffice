@@ -54,15 +54,15 @@
                 </div>
 
                 <div class="form-group">
-                    <label class="form-control-label" for="field_FR">Description</label>
+                    <label class="form-control-label" for="default_description">Description</label>
                     <div class="input-group mb-3">
                         <span class="input-group-text" id="basic-addon1" (click)="toggleDescriptionInput = !toggleDescriptionInput"><fa-icon [icon]="toggleDescriptionInput ? 'chevron-up' : 'chevron-down' "></fa-icon></span>
-                        <textarea class="form-control" name="FR" id="field_FR"
-                                  formControlName="FR" rows="3"></textarea>
+                        <textarea class="form-control" name="default_description" id="default_description"
+                                  formControlName="{{defaultLanguage}}" rows="3"></textarea>
                     </div>
-                        <div *ngIf="editForm.get('FR')!.invalid && (editForm.get('FR')!.dirty || editForm.get('FR')!.touched)">
+                        <div *ngIf="editForm.get(defaultLanguage)!.invalid && (editForm.get(defaultLanguage)!.dirty || editForm.get(defaultLanguage)!.touched)">
                         <small class="form-text text-danger"
-                               *ngIf="editForm.get('FR')?.errors?.required">
+                               *ngIf="editForm.get(defaultLanguage)?.errors?.required">
                             Ce champs est requis
                         </small>
                     </div>
@@ -70,7 +70,7 @@
 
                 <div class="form-group" *ngIf="toggleDescriptionInput">
                     <div *ngFor="let language of allLanguages">
-                        <div *ngIf="language !== 'FR'">
+                        <div *ngIf="language !== defaultLanguage">
                             <div class="input-group mb-3">
                                 <span class="input-group-text" id="basic-addon2">{{language}}</span>
                                 <textarea class="form-control" name="description" id="'field_' + {{language}}"

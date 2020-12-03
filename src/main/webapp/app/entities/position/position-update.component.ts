@@ -7,7 +7,7 @@ import { IJobType } from '../../shared/model/jobType.model';
 import { JobTypeService } from '../jobType/jobType.service';
 import { PositionService } from './position.service';
 import { IPosition, Position } from '../../shared/model/position.model';
-import { Language } from '../../shared/constants/language.constants';
+import { Language, defaultLanguage } from '../../shared/constants/language.constants';
 
 @Component({
   selector: 'jhi-position-update',
@@ -17,6 +17,7 @@ export class PositionUpdateComponent implements OnInit {
   isSaving = false;
   missionId?: number;
   jobTypes: IJobType[] = [];
+  defaultLanguage = defaultLanguage;
   toggleDescriptionInput = false;
   allLanguages = Object.keys(Language)
     .filter(k => typeof Language[k as any] === 'string')

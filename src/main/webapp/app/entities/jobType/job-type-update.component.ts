@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 import { HttpResponse } from '@angular/common/http';
 import { JobTypeService } from './jobType.service';
 import { IJobType, JobType } from '../../shared/model/jobType.model';
-import { Language } from '../../shared/constants/language.constants';
+import { Language, defaultLanguage } from '../../shared/constants/language.constants';
 
 @Component({
   selector: 'jhi-job-type-update',
@@ -14,6 +14,7 @@ import { Language } from '../../shared/constants/language.constants';
 export class JobTypeUpdateComponent implements OnInit {
   isSaving = false;
   toggleNameInput = false;
+  defaultLanguage = defaultLanguage;
   allLanguages = Object.keys(Language)
     .filter(k => typeof Language[k as any] === 'string')
     .map(k => Language[k as any]);
