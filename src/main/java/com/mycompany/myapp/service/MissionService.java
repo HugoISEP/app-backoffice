@@ -47,7 +47,12 @@ public class MissionService {
         }
     }
 
-    public Mission createMission(MissionDTO mission){
+    public MissionDTO getById(Long id){
+        hasAuthorization(id);
+        return mapper.asDTO(repository.findById(id).orElseThrow(() -> new BadRequestAlertException("position doesn't exist", ENTITY_NAME, "id doesn't exist")));
+    }
+
+    public MissionDTO createMission(MissionDTO mission){
         if (mission.getId() != null) {
             throw new BadRequestAlertException("A new mission cannot already have an ID", ENTITY_NAME, "id exists");
         }
@@ -56,10 +61,12 @@ public class MissionService {
             .orElseThrow(() -> new BadRequestAlertException("user not found", ENTITY_NAME, "id exists"));
         Mission newMission = mapper.fromDTO(mission);
         newMission.setCompany(companyMapper.fromDTO(user.getCompany()));
-        return repository.save(newMission);
+        return mapper.asDTO(repository.save(newMission));
     }
 
     public void deleteMission(Long id){
+        hasAuthorization(id);
+
         Mission missionToDelete = repository.findById(id).orElseThrow(() -> new BadRequestAlertException("Technologie doesn't exist", ENTITY_NAME, "id doesn't exist"));
         missionToDelete.getPositions().forEach(position -> {
             //positionRepository.delete(position);
@@ -68,13 +75,15 @@ public class MissionService {
         repository.delete(missionToDelete);
     }
 
-    public Mission editMission(MissionDTO missionToEdit){
+    public MissionDTO editMission(MissionDTO missionToEdit){
         if (missionToEdit.getId() == null) {
             throw new BadRequestAlertException("Cannot edit ", ENTITY_NAME, " id doesn't exist");
         }
+        hasAuthorization(missionToEdit.getId());
+
         Mission mission = repository.findById(missionToEdit.getId()).orElseThrow(() -> new BadRequestAlertException("mission doesn't exist", ENTITY_NAME, "id doesn't exist"));
         mapper.updateMission(mapper.fromDTO(missionToEdit), mission);
-        return repository.save(mission);
+        return mapper.asDTO(repository.save(mission));
     }
 
     public Page<MissionView> getAllMissionByCompany(Pageable pageable, String searchTerm){

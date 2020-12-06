@@ -7,7 +7,6 @@ import com.mycompany.myapp.service.MissionService;
 import com.mycompany.myapp.service.dto.MissionDTO;
 import com.mycompany.myapp.service.mapper.MissionMapper;
 import com.mycompany.myapp.service.view.MissionView;
-import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
 import io.github.jhipster.web.util.PaginationUtil;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -27,8 +26,6 @@ import java.util.List;
 @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.MANAGER + "\") || hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
 public class MissionController {
 
-    private static final String ENTITY_NAME = "mission";
-
     private final MissionRepository repository;
     private final MissionMapper mapper;
     private final MissionService service;
@@ -41,8 +38,7 @@ public class MissionController {
 
     @GetMapping("/{id}")
     public MissionView getById(@PathVariable Long id){
-        service.hasAuthorization(id);
-        return mapper.asDTO(repository.findById(id).orElseThrow(() -> new BadRequestAlertException("mission doesn't exist", ENTITY_NAME, "id doesn't exist")));
+        return service.getById(id);
     }
 
     @GetMapping
@@ -60,18 +56,16 @@ public class MissionController {
 
     @PostMapping
     public MissionView create(@Valid @RequestBody MissionDTO mission){
-        return mapper.asDTO(service.createMission(mission));
+        return service.createMission(mission);
     }
 
     @PutMapping
     public MissionView edit(@Valid @RequestBody MissionDTO mission){
-        service.hasAuthorization(mission.getId());
-        return mapper.asDTO(service.editMission(mission));
+        return service.editMission(mission);
     }
 
     @DeleteMapping("/{id}")
     public void delete(@PathVariable Long id){
-        service.hasAuthorization(id);
         service.deleteMission(id);
     }
 }

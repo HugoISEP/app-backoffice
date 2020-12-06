@@ -317,17 +317,12 @@ public class UserService {
 
     @Transactional(readOnly = true)
     public Optional<User> getUserWithAuthoritiesByLogin(String login) {
-        //return userRepository.findOneWithAuthoritiesByLogin(login);  //TODO: A Modifier, permet d'outrepasser un lazy-loading/session fermée
-        Optional<User> user = userRepository.findOneWithAuthoritiesByLogin(login);
-        log.debug( "TEST GET JOBTYPES" + user.orElseThrow(() -> new BadRequestAlertException("", "", "")).getJobTypes());
-        return user;
+        return userRepository.findOneWithAuthoritiesByLogin(login);
     }
 
     @Transactional(readOnly = true)
     public Optional<User> getUserWithAuthorities() {
-        Optional<User> user = SecurityUtils.getCurrentUserLogin().flatMap(userRepository::findOneWithAuthoritiesByLogin);
-        log.debug( "TEST GET JOBTYPES" + user.orElseThrow(() -> new BadRequestAlertException("", "", "")).getJobTypes());   //TODO: A Modifier, permet d'outrepasser un lazy-loading/session fermée
-        return user;
+        return SecurityUtils.getCurrentUserLogin().flatMap(userRepository::findOneWithAuthoritiesByLogin);
     }
 
     /**
