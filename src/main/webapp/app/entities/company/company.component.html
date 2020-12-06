@@ -28,6 +28,7 @@
             <thead>
             <tr jhiSort [(predicate)]="predicate" [(ascending)]="ascending" [callback]="transition.bind(this)" >
                 <th scope="col" jhiSortBy="name" class="text-center"><span>Nom</span><fa-icon icon="sort"></fa-icon></th>
+                <th scope="col" jhiSortBy="createdAt" class="text-center"><span>Date de création</span><fa-icon icon="sort"></fa-icon></th>
                 <th scope="col" jhiSortBy="emailTemplate" class="text-center"><span>Template d'adresse email</span><fa-icon icon="sort"></fa-icon></th>
                 <th scope="col" jhiSortBy="totalUsers" class="text-center"><span>Nombre d'utilisateurs inscrits</span><fa-icon icon="sort"></fa-icon></th>
                 <th></th>
@@ -36,6 +37,7 @@
             <tbody>
             <tr *ngFor="let company of companies ;trackBy: getId">
                 <td class="text-center">{{ company.name }}</td>
+                <td class="text-center">{{ company.createdAt | date:'dd/MM/yy HH:mm' }}</td>
                 <td class="text-center">{{ company.emailTemplate }}</td>
                 <td class="text-center">{{company.totalUsers}}</td>
                 <td class="text-right">

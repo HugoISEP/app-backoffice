@@ -37,7 +37,7 @@ public class Company {
 
     @Column(updatable = false)
     @CreationTimestamp
-    private LocalDateTime createDateTime;
+    private LocalDateTime createdAt;
     private LocalDateTime deletedAt;
 
     @Formula("(select count(c.id) from company c join jhi_user u on c.id = u.company_id where c.id = id)")
