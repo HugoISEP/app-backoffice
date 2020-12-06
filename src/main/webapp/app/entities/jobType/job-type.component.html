@@ -26,8 +26,8 @@
     <div class="table-responsive" id="entities" *ngIf="jobTypes && jobTypes.length > 0">
         <table class="table table-striped" aria-describedby="page-heading">
             <thead>
-            <tr>
-                <th scope="col" ><span>Nom</span></th>
+            <tr jhiSort [(predicate)]="predicate" [(ascending)]="ascending" [callback]="transition.bind(this)">
+                <th scope="col" jhiSortBy="name"><span>Nom</span><fa-icon icon="sort"></fa-icon></th>
             </tr>
             </thead>
             <tbody>

@@ -40,6 +40,7 @@ export const jobTypeRoute: Routes = [
     data: {
       authorities: [Authority.MANAGER],
       pageTitle: 'Types de poste',
+      defaultSort: 'id,asc',
     },
     canActivate: [UserRouteAccessService],
   },
