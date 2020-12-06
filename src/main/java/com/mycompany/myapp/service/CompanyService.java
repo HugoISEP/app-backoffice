@@ -1,5 +1,6 @@
 package com.mycompany.myapp.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mycompany.myapp.domain.Company;
 import com.mycompany.myapp.repository.CompanyRepository;
 import com.mycompany.myapp.security.AuthoritiesConstants;
@@ -60,8 +61,11 @@ public class CompanyService {
         return repository.findAllPaginated(pageable, searchTerm);
     }
 
-    public CompanyDTO create(CompanyDTO company, MultipartFile file) throws IOException{
+    public CompanyDTO create(String companyJson, MultipartFile file) throws IOException{
         String timestamp = LocalDateTime.now().toString();
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        CompanyDTO company = objectMapper.readValue(companyJson, CompanyDTO.class);
 
         File image = storeFile(file, timestamp);
         company.setImagePath(image.getPath());
@@ -72,12 +76,16 @@ public class CompanyService {
         if (updatedCompany.getId() == null) {
             throw new BadRequestAlertException("Cannot edit ", ENTITY_NAME, " id doesn't exist");
         }
+        hasAuthorization(updatedCompany.getId());
+
         Company company = repository.findById(updatedCompany.getId()).orElseThrow(() -> new BadRequestAlertException("company doesn't exist", ENTITY_NAME, "id doesn't exist"));
         mapper.updateCompany(updatedCompany, company);
         return mapper.asDTO(company);
     }
 
     public void delete(Long id) throws IOException {
+        hasAuthorization(id);
+
         Company companyToDelete = repository.findById(id).orElseThrow(() -> new BadRequestAlertException("company doesn't exist", ENTITY_NAME, "id doesn't exist"));
         Files.delete(Paths.get(companyToDelete.getImagePath()));
         repository.delete(companyToDelete);
@@ -85,6 +93,8 @@ public class CompanyService {
 
     public void editFile(MultipartFile image, Long companyId) throws IOException {
         String timestamp = LocalDateTime.now().toString();
+
+        hasAuthorization(companyId);
         Company company = repository.findById(companyId).orElseThrow(() -> new BadRequestAlertException("company not found" , "COMPANY", " id doesn't exist"));
 
         Files.delete(Paths.get(company.getImagePath()));
