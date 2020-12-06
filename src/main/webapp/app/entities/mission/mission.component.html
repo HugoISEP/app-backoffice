@@ -26,9 +26,9 @@
     <div class="table-responsive" id="entities" *ngIf="missions && missions.length > 0">
         <table class="table table-striped" aria-describedby="page-heading">
             <thead>
-            <tr>
-                <th scope="col" ><span>Nom</span></th>
-                <th scope="col" ><span>Date de création</span></th>
+            <tr jhiSort [(predicate)]="predicate" [(ascending)]="ascending" [callback]="transition.bind(this)">
+                <th scope="col" jhiSortBy="name"><span>Nom</span><fa-icon icon="sort"></fa-icon></th>
+                <th scope="col" jhiSortBy="id"><span>Date de création</span></th>
                 <th></th>
                 <th></th>
             </tr>
