@@ -27,12 +27,15 @@
         <table class="table table-striped" aria-describedby="page-heading">
             <thead>
             <tr jhiSort [(predicate)]="predicate" [(ascending)]="ascending" [callback]="transition.bind(this)">
-                <th scope="col" jhiSortBy="name"><span>Nom</span><fa-icon icon="sort"></fa-icon></th>
+                <th scope="col" jhiSortBy="name" class="text-center"><span>Nom</span><fa-icon icon="sort"></fa-icon></th>
+                <th scope="col" jhiSortBy="createdAt" class="text-center"><span>Date de création</span><fa-icon icon="sort"></fa-icon></th>
+                <th></th>
             </tr>
             </thead>
             <tbody>
             <tr *ngFor="let jobType of jobTypes ;trackBy: getId">
-                <td><a [routerLink]="['/mission', jobType.id, 'view']">{{ jobType.name }}</a></td>
+                <td class="text-center"><a [routerLink]="['/mission', jobType.id, 'view']">{{ jobType.name }}</a></td>
+                <td class="text-center">{{ jobType.createdAt | date:'dd/MM/yy HH:mm' }}</td>
                 <td class="text-right">
                     <div class="btn-group">
                         <button type="submit"

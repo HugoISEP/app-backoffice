@@ -27,17 +27,17 @@
         <table class="table table-striped" aria-describedby="page-heading">
             <thead>
             <tr jhiSort [(predicate)]="predicate" [(ascending)]="ascending" [callback]="transition.bind(this)" >
-                <th scope="col" jhiSortBy="name"><span>Nom</span><fa-icon icon="sort"></fa-icon></th>
-                <th scope="col" jhiSortBy="emailTemplate"><span>Template d'adresse email</span><fa-icon icon="sort"></fa-icon></th>
-                <th scope="col" jhiSortBy="totalUsers"><span>Nombre d'utilisateurs inscrits</span><fa-icon icon="sort"></fa-icon></th>
-                <th scope="col"><span>Gérer</span></th>
+                <th scope="col" jhiSortBy="name" class="text-center"><span>Nom</span><fa-icon icon="sort"></fa-icon></th>
+                <th scope="col" jhiSortBy="emailTemplate" class="text-center"><span>Template d'adresse email</span><fa-icon icon="sort"></fa-icon></th>
+                <th scope="col" jhiSortBy="totalUsers" class="text-center"><span>Nombre d'utilisateurs inscrits</span><fa-icon icon="sort"></fa-icon></th>
+                <th></th>
             </tr>
             </thead>
             <tbody>
             <tr *ngFor="let company of companies ;trackBy: getId">
-                <td>{{ company.name }}</td>
-                <td>{{ company.emailTemplate }}</td>
-                <td>{{company.totalUsers}}</td>
+                <td class="text-center">{{ company.name }}</td>
+                <td class="text-center">{{ company.emailTemplate }}</td>
+                <td class="text-center">{{company.totalUsers}}</td>
                 <td class="text-right">
                     <div class="btn-group">
                         <button type="submit"
