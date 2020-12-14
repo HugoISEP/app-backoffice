@@ -1,5 +1,6 @@
 package com.mycompany.myapp.web.rest;
 
+import com.mycompany.myapp.domain.Mission;
 import com.mycompany.myapp.repository.PositionRepository;
 import com.mycompany.myapp.repository.MissionRepository;
 import com.mycompany.myapp.security.AuthoritiesConstants;
@@ -65,7 +66,7 @@ public class MissionController {
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable Long id){
-        service.deleteMission(id);
+    public void delete(@PathVariable("id") Mission mission){
+        service.deleteMission(mission);
     }
 }

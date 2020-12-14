@@ -1,7 +1,6 @@
 package com.mycompany.myapp.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -27,19 +26,18 @@ public class Mission {
     @NotNull
     private String projectManagerEmail;
 
-
-    @OneToMany(mappedBy = "mission", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @OrderBy("id")
-    @JsonIgnoreProperties(value = "mission")
+    @OneToMany(mappedBy = "mission", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<Position> positions = new ArrayList<>();
 
     @NotNull
-    @ManyToOne(optional = false)
     @JsonIgnore
+    @ManyToOne(optional = false)
     private Company company;
 
     @Column(updatable = false)
     @CreationTimestamp
     private LocalDateTime createDateTime;
     private LocalDateTime deletedAt;
+
 }

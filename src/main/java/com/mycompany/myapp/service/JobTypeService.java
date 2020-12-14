@@ -94,11 +94,6 @@ public class JobTypeService {
     public void deleteJobType(Long id){
         JobType jobTypeToDelete = repository.findById(id).orElseThrow(() -> new BadRequestAlertException("JobType doesn't exist", ENTITY_NAME, "id doesn't exist"));
         hasAuthorization(id);
-
-        jobTypeToDelete.getPositions().forEach(position -> {
-            //positionRepository.delete(position);
-            positionRepository.delete(position.getId());
-        });
         repository.delete(jobTypeToDelete);
 
     }

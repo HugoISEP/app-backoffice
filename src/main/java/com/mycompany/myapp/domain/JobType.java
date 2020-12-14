@@ -23,8 +23,8 @@ public class JobType {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @OneToMany(mappedBy = "jobType", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
+    @OneToMany(mappedBy = "jobType", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Position> positions = new ArrayList<>();
 
     @Column(updatable = false)
@@ -32,7 +32,8 @@ public class JobType {
     private LocalDateTime createDateTime;
     private LocalDateTime deletedAt;
 
-    @ManyToOne(optional = false)
     @JsonIgnore
+    @ManyToOne(optional = false)
     private Company company;
+
 }
