@@ -13,7 +13,7 @@ import java.util.List;
 public interface MissionRepository extends JpaRepository<Mission, Long> {
     List<Mission> findAll();
 
-    @Query("select m from Mission m join Company c on c.id = m.company.id " +
-        "where c.id = :id and lower(m.name) like concat('%',lower(:searchTerm),'%')")
+    @Query("select m from Mission m left join m.positions " +
+        "where m.company.id = :id and lower(m.name) like concat('%',lower(:searchTerm),'%') group by m.id")
     Page<MissionView> findAllByCompanyId(@Param("id") Long id, @Param("searchTerm") String searchTerm, Pageable pageable);
 }

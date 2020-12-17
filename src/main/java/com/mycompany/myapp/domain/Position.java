@@ -1,6 +1,6 @@
 package com.mycompany.myapp.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.ToString;
 import org.hibernate.annotations.CreationTimestamp;
@@ -35,8 +35,8 @@ public class Position {
     @Column(name = "description", nullable = false)
     private String description;
 
-    @ManyToOne
-    @JsonIgnoreProperties(value = "positions")
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
     private Mission mission;
 
     @Column(name = "created_at", nullable = false)
@@ -49,7 +49,6 @@ public class Position {
     private boolean status = false;
 
     @ManyToOne
-    @JsonIgnoreProperties(value = "positions")
     private JobType jobType;
 
 }
