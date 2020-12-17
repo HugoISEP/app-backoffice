@@ -26,20 +26,18 @@
     <div class="table-responsive" id="entities" *ngIf="missions && missions.length > 0">
         <table class="table table-striped" aria-describedby="page-heading">
             <thead>
-            <tr>
-                <th scope="col" ><span>Nom</span></th>
-                <th scope="col" ><span>Date de création</span></th>
-                <th></th>
+            <tr jhiSort [(predicate)]="predicate" [(ascending)]="ascending" [callback]="transition.bind(this)">
+                <th scope="col" jhiSortBy="name" class="text-center"><span>Nom</span><fa-icon icon="sort"></fa-icon></th>
+                <th scope="col" jhiSortBy="createdAt" class="text-center"><span>Date de création</span><fa-icon icon="sort"></fa-icon></th>
+                <th scope="col" class="text-center"><span>Nombre de postes</span></th>
                 <th></th>
             </tr>
             </thead>
             <tbody>
             <tr *ngFor="let mission of missions ;trackBy: getId">
-                <td><a [routerLink]="['/mission', mission.id, 'view']">{{ mission.name }}</a></td>
-                <td>{{ mission.positions?.length }}</td>
-                <td>
-                    Ajouter une date ?
-                </td>
+                <td class="text-center"><a [routerLink]="['/mission', mission.id, 'view']">{{ mission.name }}</a></td>
+                <td class="text-center">{{ mission.createdAt | date:'dd/MM/yy HH:mm' }}</td>
+                <td class="text-center">{{ mission.positions?.length }}</td>
                 <td class="text-right">
                     <div class="btn-group">
                         <button type="submit"

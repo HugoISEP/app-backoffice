@@ -40,6 +40,7 @@ export const companyRoute: Routes = [
     data: {
       authorities: [Authority.ADMIN],
       pageTitle: 'Junior-Entreprises',
+      defaultSort: 'id,asc',
     },
     canActivate: [UserRouteAccessService],
   },

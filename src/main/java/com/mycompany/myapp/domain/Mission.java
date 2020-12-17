@@ -40,6 +40,6 @@ public class Mission {
 
     @Column(updatable = false)
     @CreationTimestamp
-    private LocalDateTime createDateTime;
+    private LocalDateTime createdAt;
     private LocalDateTime deletedAt;
 }

@@ -20,6 +20,8 @@ export class MissionComponent implements OnInit, OnDestroy {
   totalItems = 0;
   itemsPerPage = ITEMS_PER_PAGE;
   page!: number;
+  predicate!: string;
+  ascending!: boolean;
 
   constructor(
     protected missionService: MissionService,
@@ -53,6 +55,9 @@ export class MissionComponent implements OnInit, OnDestroy {
     combineLatest(this.activatedRoute.data, this.activatedRoute.queryParamMap, (data: Data, params: ParamMap) => {
       const page = params.get('page');
       this.page = page !== null ? +page : 1;
+      const sort = (params.get('sort') ?? data['defaultSort']).split(',');
+      this.predicate = sort[0];
+      this.ascending = sort[1] === 'asc';
       this.loadAll();
     }).subscribe();
   }
@@ -62,6 +67,7 @@ export class MissionComponent implements OnInit, OnDestroy {
       relativeTo: this.activatedRoute.parent,
       queryParams: {
         page: this.page,
+        sort: this.predicate + ',' + (this.ascending ? 'asc' : 'desc'),
       },
     });
   }
@@ -77,9 +83,18 @@ export class MissionComponent implements OnInit, OnDestroy {
         {
           page: this.page - 1,
           size: this.itemsPerPage,
+          sort: this.sort(),
         },
         this.searchTerm
       )
       .subscribe((response: HttpResponse<Mission[]>) => this.onSuccess(response.body, response.headers));
+  }
+
+  private sort(): string[] {
+    const result = [this.predicate + ',' + (this.ascending ? 'asc' : 'desc')];
+    if (this.predicate !== 'id') {
+      result.push('id');
+    }
+    return result;
   }
 }
