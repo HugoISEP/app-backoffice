@@ -93,10 +93,10 @@ public class User extends AbstractAuditingEntity implements Serializable {
     @BatchSize(size = 20)
     private Set<Authority> authorities = new HashSet<>();
 
-    @ManyToOne(fetch=FetchType.EAGER)
+    @ManyToOne
     private Company company;
 
-    @ManyToMany(fetch=FetchType.EAGER)
+    @ManyToMany
     private List<JobType> jobTypes;
 
 

@@ -18,6 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -106,9 +107,8 @@ public class PositionService {
         return mapper.asDto(repository.save(position));
     }
 
-    public void deletePosition(Long id){
-        hasAuthorization(id);
-        Position positionToDelete = repository.findById(id).orElseThrow(() -> new BadRequestAlertException("Position doesn't exist", ENTITY_NAME, "id doesn't exist"));
-        repository.delete(positionToDelete.getId());
+    public void deletePosition(Position position){
+        //hasAuthorization(id);
+        repository.delete(position);
     }
 }

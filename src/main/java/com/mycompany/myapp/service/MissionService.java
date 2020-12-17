@@ -64,15 +64,9 @@ public class MissionService {
         return mapper.asDTO(repository.save(newMission));
     }
 
-    public void deleteMission(Long id){
-        hasAuthorization(id);
-
-        Mission missionToDelete = repository.findById(id).orElseThrow(() -> new BadRequestAlertException("Technologie doesn't exist", ENTITY_NAME, "id doesn't exist"));
-        missionToDelete.getPositions().forEach(position -> {
-            //positionRepository.delete(position);
-            positionRepository.delete(position.getId());
-        });
-        repository.delete(missionToDelete);
+    public void deleteMission(Mission mission){
+        hasAuthorization(mission.getId());
+        repository.delete(mission);
     }
 
     public MissionDTO editMission(MissionDTO missionToEdit){

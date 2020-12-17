@@ -1,5 +1,7 @@
 package com.mycompany.myapp.web.rest;
 
+import com.google.common.collect.Iterables;
+import com.mycompany.myapp.domain.Position;
 import com.mycompany.myapp.repository.PositionRepository;
 import com.mycompany.myapp.security.AuthoritiesConstants;
 import com.mycompany.myapp.service.PositionService;
@@ -11,6 +13,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.Arrays;
 import java.util.List;
 
 @RestController
@@ -62,7 +65,7 @@ public class PositionController {
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable Long id){
-        service.deletePosition(id);
+    public void delete(@PathVariable("id") Position position){
+        service.deletePosition(position);
     }
 }
