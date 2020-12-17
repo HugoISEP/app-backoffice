@@ -65,6 +65,7 @@ export const missionRoute: Routes = [
     data: {
       authorities: [Authority.MANAGER],
       pageTitle: 'Mes Missions',
+      defaultSort: 'id,asc',
     },
     canActivate: [UserRouteAccessService],
   },
