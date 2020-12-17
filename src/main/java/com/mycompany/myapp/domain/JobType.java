@@ -2,6 +2,7 @@ package com.mycompany.myapp.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
+import lombok.ToString;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
@@ -12,6 +13,7 @@ import java.util.List;
 
 @Data
 @Entity
+@ToString(exclude = {"position"})
 @Table(name = "job_type")
 public class JobType {
 
@@ -24,7 +26,7 @@ public class JobType {
     private String name;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "jobType", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "jobType", cascade = CascadeType.ALL)
     private List<Position> positions = new ArrayList<>();
 
     @Column(updatable = false)
