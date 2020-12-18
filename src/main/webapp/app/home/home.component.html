@@ -1,43 +1,92 @@
-<div class="row justify-content-center">
-    <div class="col-8">
-    <h1 class="display-4">{{account ? "Bienvenue, "+ (account.company?.name ? account.company?.name : "ADMIN") : "Back-Office application mobile"}}</h1>
-
-    <div [ngSwitch]="isAuthenticated()">
-        <div *ngIf="positions && positions.length > 0">
-            <h1 class="display-6">Poste en cours</h1>
-            <table class="table table-striped">
-                <thead class="thead-dark">
-                <tr>
-                    <th scope="col">Date</th>
-                    <th scope="col">Durée</th>
-                    <th scope="col">Description</th>
-                    <th scope="col">Travail</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr *ngFor="let position of positions ;trackBy: getPositionId">
-                    <th>{{position.createdAt | date: 'yyyy-MM-dd'}}</th>
-                    <td>{{position.duration}}</td>
-                    <td>{{position.description}}</td>
-                    <td>{{position.jobType!.name}}</td>
-                </tr>
-                </tbody>
-            </table>
+<div class="row just justify-content-around ">
+    <div class="col-md-4 col-sm-11 card jh-card-split" style="padding-left: 3%; padding-right: 3%">
+        <div class="row">
+            <div class="col-8">
+                <h1 class="display-5">{{account ? "Bienvenue, "+ (account.company?.name ? account.company?.name : "ADMIN") : "Bonjour,  Junior ISIT !"}}</h1>
+            </div>
+            <div class="col-4">
+                <img class="img-fluid" src="../../content/images/home%20page/illustration-bienvenue.svg" />
+            </div>
         </div>
-
-        <div *ngIf="isAuthenticated() && ( positions && positions.length < 1)">
-            <h1 class="display-6">Pas de poste en cours</h1>
+        <div class="row" style="margin-top: 30px">
+            <p>
+                Bienvenue sur l’espace d’administration de votre application mobile à destination des consultants de
+                votre école. Vous avez la possibilité d’y ajouter des missions à pourvoir, et d’y administrer votre
+                équipe de consultants. En cas de problème n’hésitez pas à nous écrire à support@juniorisep.com
+                <br />
+                <br />
+                A bientôt
+            </p>
         </div>
-
-        <div class="alert alert-warning" *ngSwitchCase="false">
-            <span>If you want to </span>
-            <a class="alert-link" (click)="login()">sign in</a><span>, you can try the default accounts:<br/>- Administrator (login="admin" and password="admin") <br/>- User (login="user" and password="user").</span>
-        </div>
-
-        <div class="alert alert-warning" *ngSwitchCase="false">
-            <span>You don't have an account yet?</span>&nbsp;
-            <a class="alert-link" routerLink="account/register">Register a new account</a>
+        <div class="row">
+            <div class="col text-center my-auto">
+                <img class="img-fluid" style="height: 80px" src="../../content/images/home%20page/logo-JE.png" />
+            </div>
+            <div class="col text-center my-auto">
+                <img class="img-fluid" style="height: 100px" src="../../content/images/home%20page/logo-JISEP.png" />
+            </div>
         </div>
     </div>
+
+    <div class="col-md-7 col-sm-11 card jh-card-split" style="padding-left: 3%; padding-right: 3%">
+        <div class="row">
+            <div class="col-8">
+                <h1 class="display-5">Actuellement sur votre application</h1>
+            </div>
+            <div class="col-4 my-auto">
+                <label for="research">Recherche</label>
+                <input type="text" class="form-control" id="research">
+            </div>
+        </div>
+        <div class="row" style="margin-top: 30px">
+            <div class="col">
+                <table class="table table-striped">
+                    <thead class="thead-dark">
+                    <tr>
+                        <th scope="col">Date</th>
+                        <th scope="col">Durée</th>
+                        <th scope="col">Description</th>
+                        <th scope="col">Travail</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr *ngFor="let number of [1,2,3,4]">
+                        <th>yo</th>
+                        <td>yi</td>
+                        <td>ya</td>
+                        <td>yu</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div [ngSwitch]="isAuthenticated()">
+            <div *ngIf="positions && positions.length > 0">
+                <h1 class="display-6">Poste en cours</h1>
+                <table class="table table-striped">
+                    <thead class="thead-dark">
+                    <tr>
+                        <th scope="col">Date</th>
+                        <th scope="col">Durée</th>
+                        <th scope="col">Description</th>
+                        <th scope="col">Travail</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr *ngFor="let position of positions ;trackBy: getPositionId">
+                        <th>{{position.createdAt | date: 'yyyy-MM-dd'}}</th>
+                        <td>{{position.duration}}</td>
+                        <td>{{position.description}}</td>
+                        <td>{{position.jobType!.name}}</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div *ngIf="isAuthenticated() && ( positions && positions.length < 1)">
+                <h1 class="display-6">Pas de poste en cours</h1>
+            </div>
+
+        </div>
     </div>
 </div>
