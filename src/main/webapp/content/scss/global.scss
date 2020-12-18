@@ -197,10 +197,73 @@ ui bootstrap tweaks
 /* jhipster-needle-scss-add-main JHipster will add new css style */
 
 .logo-isep-img {
+  height: 35px;
+  width: 35px;
+  display: inline-block;
+  vertical-align: middle;
+  background: url('../images/logo_centre_negatif.png') no-repeat center center;
+  background-size: contain;
+}
+
+.logo-bnp-img {
+  height: 45px;
+  width: 100px;
+  display: inline-block;
+  vertical-align: middle;
+  background: url('../images/Partner logos/bnp.png') no-repeat center center;
+  background-size: contain;
+}
+
+.logo-alten-img {
+  height: 45px;
+  width: 75px;
+  display: inline-block;
+  vertical-align: middle;
+  background: url('../images/Partner logos/alten.png') no-repeat center center;
+  background-size: contain;
+}
+
+.logo-ey-img {
   height: 45px;
   width: 45px;
   display: inline-block;
   vertical-align: middle;
-  background: url('../images/logo_centre_negatif.png') no-repeat center center;
+  background: url('../images/Partner logos/ey.png') no-repeat center center;
+  background-size: contain;
+}
+
+.logo-engie-img {
+  height: 45px;
+  width: 45px;
+  display: inline-block;
+  vertical-align: middle;
+  background: url('../images/Partner logos/engie.png') no-repeat center center;
+  background-size: contain;
+}
+
+.logo-je-img {
+  height: 25px;
+  width: 25px;
+  display: inline-block;
+  vertical-align: middle;
+  background: url('../images/helpful links/icone-blanche-JE.png') no-repeat center center;
+  background-size: contain;
+}
+
+.logo-kiwi-img {
+  height: 25px;
+  width: 25px;
+  display: inline-block;
+  vertical-align: middle;
+  background: url('../images/helpful links/icone-blanche-kiwi.png') no-repeat center center;
+  background-size: contain;
+}
+
+.logo-support-img {
+  height: 25px;
+  width: 25px;
+  display: inline-block;
+  vertical-align: middle;
+  background: url('../images/helpful links/icone-blanche-support.png') no-repeat center center;
   background-size: contain;
 }
