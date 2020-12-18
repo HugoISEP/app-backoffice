@@ -275,3 +275,7 @@ ui bootstrap tweaks
   background: url('../images/helpful links/icone-blanche-support.png') no-repeat center center;
   background-size: contain;
 }
+
+.text-responsive {
+  font-size: calc(100% + 1vw + 1vh);
+}

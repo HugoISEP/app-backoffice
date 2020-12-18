@@ -1,14 +1,15 @@
-<div class="row just justify-content-around ">
-    <div class="col-md-4 col-sm-11 card jh-card-split" style="padding-left: 3%; padding-right: 3%">
+<div class="row">
+    <div class="col-md-5 col-sm-12 py-3">
+        <div class="card p-4 h-100" style="border-radius: 3%;" >
         <div class="row">
             <div class="col-8">
-                <h1 class="display-5">{{account ? "Bienvenue, "+ (account.company?.name ? account.company?.name : "ADMIN") : "Bonjour,  Junior ISIT !"}}</h1>
+                <h1 class="display-5 text-responsive">{{account ? "Bienvenue, "+ (account.company?.name ? account.company?.name : "ADMIN") : "Bonjour,  Junior ISIT !"}}</h1>
             </div>
             <div class="col-4">
                 <img class="img-fluid" src="../../content/images/home%20page/illustration-bienvenue.svg" />
             </div>
         </div>
-        <div class="row" style="margin-top: 30px">
+        <div class="row p-3 mt-3">
             <p>
                 Bienvenue sur l’espace d’administration de votre application mobile à destination des consultants de
                 votre école. Vous avez la possibilité d’y ajouter des missions à pourvoir, et d’y administrer votre
@@ -27,11 +28,13 @@
             </div>
         </div>
     </div>
+    </div>
 
-    <div class="col-md-7 col-sm-11 card jh-card-split" style="padding-left: 3%; padding-right: 3%">
+    <div class="col-md-7 col-sm-12 py-3" >
+        <div class="card h-100 p-4" style="border-radius: 3%;" >
         <div class="row">
-            <div class="col-8">
-                <h1 class="display-5">Actuellement sur votre application</h1>
+            <div class="col-8 pl-md-5">
+                <h1 class="display-5 text-responsive">Actuellement sur votre application</h1>
             </div>
             <div class="col-4 my-auto">
                 <label for="research">Recherche</label>
@@ -86,7 +89,8 @@
             <div *ngIf="isAuthenticated() && ( positions && positions.length < 1)">
                 <h1 class="display-6">Pas de poste en cours</h1>
             </div>
-
+        </div>
         </div>
     </div>
+
 </div>
