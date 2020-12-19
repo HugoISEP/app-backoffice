@@ -33,9 +33,7 @@ export class MissionService {
     if (searchTerm) {
       options = options.set('searchTerm', searchTerm);
     }
-    return this.http
-      .get<IMission[]>(this.resourceUrl, { params: options, observe: 'response' })
-      .pipe(map((res: EntityArrayResponseType) => this.convertDateArrayFromServer(res)));
+    return this.http.get<IMission[]>(this.resourceUrl, { params: options, observe: 'response' });
   }
 
   getAll(): Observable<EntityArrayResponseType> {
@@ -44,16 +42,5 @@ export class MissionService {
 
   delete(id: number): Observable<HttpResponse<{}>> {
     return this.http.delete(`${this.resourceUrl}/${id}`, { observe: 'response' });
-  }
-
-  protected convertDateArrayFromServer(res: EntityArrayResponseType): EntityArrayResponseType {
-    if (res.body) {
-      res.body.forEach((mission: IMission) => {
-        mission.positions?.forEach(position => {
-          position.createdAt = position.createdAt ? moment(position.createdAt) : undefined;
-        });
-      });
-    }
-    return res;
   }
 }
