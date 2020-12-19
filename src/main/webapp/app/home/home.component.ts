@@ -48,6 +48,10 @@ export class HomeComponent implements OnInit, OnDestroy {
     return position.id!;
   }
 
+  togglePosition(position: IPosition): void {
+    this.positionService.update({ ...position, status: !position.status }).subscribe(() => (position.status = !position.status));
+  }
+
   ngOnDestroy(): void {
     if (this.authSubscription) {
       this.authSubscription.unsubscribe();
