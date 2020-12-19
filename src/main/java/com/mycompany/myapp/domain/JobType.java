@@ -13,7 +13,7 @@ import java.util.List;
 
 @Data
 @Entity
-@ToString(exclude = {"position"})
+@ToString(exclude = {"positions"})
 @Table(name = "job_type")
 public class JobType {
 
