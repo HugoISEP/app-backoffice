@@ -103,7 +103,7 @@ public class UserService {
             });
     }
 
-    public User registerUser(UserDTO userDTO, String password) {
+    public User registerUser(UserDTO userDTO, String password) throws Exception {
         userRepository.findOneByLogin(userDTO.getLogin().toLowerCase()).ifPresent(existingUser -> {
             boolean removed = removeNonActivatedUser(existingUser);
             if (!removed) {
@@ -124,7 +124,11 @@ public class UserService {
         newUser.setFirstName(userDTO.getFirstName());
         newUser.setLastName(userDTO.getLastName());
         if (userDTO.getEmail() != null) {
+            Company company = this.isEmailValid(userDTO.getEmail());
             newUser.setEmail(userDTO.getEmail().toLowerCase());
+            newUser.setCompany(company);
+        } else {
+            throw new Exception("Email is required");
         }
         newUser.setImageUrl(userDTO.getImageUrl());
         newUser.setLangKey(userDTO.getLangKey());
@@ -199,9 +203,8 @@ public class UserService {
         return user;
     }
 
-    public Company isEmailValid(String emailToTest) throws Exception{
+    private Company isEmailValid(String emailToTest) throws Exception{
         return companyRepository.findCompanyByUserEmail(emailToTest).orElseThrow(() -> new Exception("Email doesn't match with a Company"));
-        //Pattern pattern = Pattern.compile("^[\\w-\\.]+@"+ managedUserVM.getCompany().getEmailTemplate());
     }
 
     /**
