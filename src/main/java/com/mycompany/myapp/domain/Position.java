@@ -36,7 +36,7 @@ public class Position {
     private String description;
 
     @JsonIgnore
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     private Mission mission;
 
     @Column(name = "created_at", nullable = false)

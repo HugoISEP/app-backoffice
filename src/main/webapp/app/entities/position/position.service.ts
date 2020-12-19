@@ -3,6 +3,7 @@ import { SERVER_API_URL } from '../../app.constants';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { IPosition } from '../../shared/model/position.model';
 import { Observable } from 'rxjs';
+import { createRequestOption, Pagination } from 'app/shared/util/request-util';
 
 type EntityResponseType = HttpResponse<IPosition>;
 type EntityArrayResponseType = HttpResponse<IPosition[]>;
@@ -33,8 +34,12 @@ export class PositionService {
     return this.http.get<IPosition[]>(`${this.resourceUrl}/all`, { observe: 'response' });
   }
 
-  getAllActive(): Observable<EntityArrayResponseType> {
-    return this.http.get<IPosition[]>(`${this.resourceUrl}/active`, { observe: 'response' });
+  getAllActive(req?: Pagination, searchTerm?: string): Observable<EntityArrayResponseType> {
+    let options = createRequestOption(req);
+    if (searchTerm) {
+      options = options.set('searchTerm', searchTerm);
+    }
+    return this.http.get<IPosition[]>(`${this.resourceUrl}/active`, { params: options, observe: 'response' });
   }
 
   delete(id: number): Observable<HttpResponse<{}>> {

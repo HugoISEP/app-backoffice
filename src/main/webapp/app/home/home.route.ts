@@ -10,6 +10,7 @@ export const HOME_ROUTE: Route = {
   data: {
     authorities: [Authority.ADMIN, Authority.MANAGER],
     pageTitle: 'Welcome, Java Hipster!',
+    defaultSort: 'id,asc',
   },
   canActivate: [UserRouteAccessService],
 };
