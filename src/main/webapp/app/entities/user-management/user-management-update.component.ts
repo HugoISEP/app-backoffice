@@ -46,6 +46,8 @@ export class UserManagementUpdateComponent implements OnInit {
               Validators.pattern(`^[\\w-\\.]+@${this.company.emailTemplate}$`),
             ]);
           });
+        } else {
+          this.company = user.company;
         }
         this.updateForm(user);
       }
@@ -79,6 +81,7 @@ export class UserManagementUpdateComponent implements OnInit {
       lastName: user.lastName,
       email: user.email,
       activated: user.activated,
+      company: user.company,
     });
   }
 
