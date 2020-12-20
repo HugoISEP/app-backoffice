@@ -17,9 +17,9 @@ export class UserManagementUpdateComponent implements OnInit {
   isSaving = false;
   editForm = this.fb.group({
     id: [],
-    firstName: ['', [Validators.maxLength(50)]],
-    lastName: ['', [Validators.maxLength(50)]],
-    email: ['', [Validators.minLength(5), Validators.maxLength(254), Validators.email]],
+    firstName: ['', [Validators.required, Validators.maxLength(50)]],
+    lastName: ['', [Validators.required, Validators.maxLength(50)]],
+    email: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(254), Validators.email]],
     activated: [],
     company: [],
   });
@@ -37,17 +37,17 @@ export class UserManagementUpdateComponent implements OnInit {
         this.user = user;
         if (this.user.id === undefined) {
           this.user.activated = true;
+          this.companyService.getUserCompany().subscribe(company => {
+            this.company = company.body!;
+            this.editForm.controls['email'].setValidators([
+              Validators.minLength(5),
+              Validators.maxLength(254),
+              Validators.email,
+              Validators.pattern(`^[\\w-\\.]+@${this.company.emailTemplate}$`),
+            ]);
+          });
         }
-        this.companyService.getUserCompany().subscribe(company => {
-          this.company = company.body!;
-          this.editForm.controls['email'].setValidators([
-            Validators.minLength(5),
-            Validators.maxLength(254),
-            Validators.email,
-            Validators.pattern(`^[\\w-\\.]+@${this.company.emailTemplate}$`),
-          ]);
-          this.updateForm(user);
-        });
+        this.updateForm(user);
       }
     });
   }
