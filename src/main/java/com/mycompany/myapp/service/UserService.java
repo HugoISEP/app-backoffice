@@ -1,5 +1,6 @@
 package com.mycompany.myapp.service;
 
+import com.google.api.gax.rpc.PermissionDeniedException;
 import com.mycompany.myapp.config.Constants;
 import com.mycompany.myapp.domain.Authority;
 import com.mycompany.myapp.domain.Company;
@@ -18,12 +19,14 @@ import com.mycompany.myapp.service.mapper.JobTypeMapper;
 import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
 import io.github.jhipster.security.RandomUtil;
 
+import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cache.CacheManager;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -358,6 +361,19 @@ public class UserService {
             .collect(Collectors.toList());
         user.setJobTypes(newJobTypes);
         return new UserDTO(user).getJobTypes();
+    }
+
+    public UserDTO getUser(String login){
+        UserDTO currentUser = this.getUserWithAuthorities()
+            .map(UserDTO::new)
+            .orElseThrow(() -> new BadRequestAlertException("user not found", "USER", "id exists"));
+        UserDTO user = getUserWithAuthoritiesByLogin(login).map(UserDTO::new).orElseThrow(() -> new BadRequestAlertException("User not found", "USER", "login doesn't exist"));
+
+        if(!currentUser.getAuthorities().contains(AuthoritiesConstants.ADMIN) && !currentUser.getCompany().getId().equals(user.getCompany().getId())){
+            throw new AccessDeniedException("Not authorize");
+        } else {
+            return user;
+        }
     }
 
 
