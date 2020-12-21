@@ -6,7 +6,7 @@
             <div>
                 <jhi-alert-error></jhi-alert-error>
                 <div class="form-group">
-                    <label class="form-control-label" for="field_duration">Durée</label>
+                    <label class="form-control-label" for="field_duration">Durée (en semaines)</label>
                     <input type="number" class="form-control" name="duration" id="field_duration"
                            formControlName="duration"/>
                     <div *ngIf="editForm.get('duration')!.invalid && (editForm.get('duration')!.dirty || editForm.get('duration')!.touched)">
@@ -39,8 +39,11 @@
 
                 <div class="form-group">
                     <label class="form-control-label" for="field_remuneration">Rémunération</label>
-                    <input type="number" class="form-control" name="remuneration" id="field_remuneration"
-                           formControlName="remuneration"/>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text" id="basic-addon1">€</span>
+                        <input type="number" class="form-control" name="remuneration" id="field_remuneration"
+                               formControlName="remuneration"/>
+                    </div>
                     <div *ngIf="editForm.get('remuneration')!.invalid && (editForm.get('remuneration')!.dirty || editForm.get('remuneration')!.touched)">
                         <small class="form-text text-danger"
                                *ngIf="editForm.get('remuneration')?.errors?.required">
@@ -57,6 +60,7 @@
                     <label class="form-control-label" for="field_description">Description</label>
                     <textarea class="form-control" name="description" id="field_description"
                               formControlName="description" rows="5"></textarea>
+                    <small class="float-right" [ngClass]="editForm.get('description')!.value.length > 500 ? 'text-danger' : 'text-muted'">{{editForm.get('description')!.value.length}} / 500</small>
                     <div *ngIf="editForm.get('description')!.invalid && (editForm.get('description')!.dirty || editForm.get('description')!.touched)">
                         <small class="form-text text-danger"
                                *ngIf="editForm.get('description')?.errors?.required">
@@ -66,7 +70,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label class="form-control-label" for="field_jobType">Travail</label>
+                    <label class="form-control-label" for="field_jobType">Type de poste</label>
                     <select class="form-control" id="field_jobType" name="jobType" formControlName="jobType">
                         <option *ngFor="let jobTypeOption of jobTypes; trackBy: getId" [ngValue]="jobTypeOption.id === editForm.get('jobType')!.value?.id ? editForm.get('jobType')!.value : jobTypeOption" >{{ jobTypeOption.name }}</option>
                     </select>
@@ -75,7 +79,7 @@
                 <div class="form-group">
                     <div class="custom-control custom-switch">
                         <input type="checkbox" class="custom-control-input" name="status" id="field_status" formControlName="status" >
-                        <label class="custom-control-label" for="field_status" >Status</label>
+                        <label class="custom-control-label" for="field_status" >Statut</label>
                     </div>
                 </div>
 
