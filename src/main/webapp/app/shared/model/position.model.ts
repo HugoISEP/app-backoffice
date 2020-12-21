@@ -1,4 +1,4 @@
-import { IMission } from './mission.model';
+import { BasicIMission, IMission } from './mission.model';
 import { Moment } from 'moment';
 import { JobType } from 'app/shared/model/jobType.model';
 
@@ -11,7 +11,7 @@ export interface IPosition {
   status?: boolean;
   createdAt?: Moment;
   jobType?: JobType;
-  mission?: IMission;
+  mission?: BasicIMission;
 }
 
 export class Position implements IPosition {
@@ -24,6 +24,6 @@ export class Position implements IPosition {
     public status?: boolean,
     public createdAt?: Moment,
     public jobType?: JobType,
-    public mission?: IMission
+    public mission?: BasicIMission
   ) {}
 }

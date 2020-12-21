@@ -16,9 +16,10 @@ import com.mycompany.myapp.service.view.PositionView;
 import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -70,12 +71,11 @@ public class PositionService {
         return repository.findAllByMissionId(id);
     }
 
-    public List<PositionView> getActivePositionsByUser(){
+    public Page<PositionView> getActivePositionsByUser(Pageable pageable, String searchTerm){
         UserDTO user = userService.getUserWithAuthorities()
             .map(UserDTO::new)
             .orElseThrow(() -> new BadRequestAlertException("user not found", ENTITY_NAME, "id exists"));
-
-        return repository.findAllByMissionCompanyIdAndStatusIsTrue(user.getCompany().getId());
+        return repository.findAllByMissionCompanyIdAndStatusIsTrue(user.getCompany().getId(), searchTerm, pageable);
     }
 
 

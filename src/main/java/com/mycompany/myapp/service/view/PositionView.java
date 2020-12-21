@@ -15,6 +15,5 @@ public interface PositionView {
     LocalDateTime getCreatedAt();
     boolean isStatus();
     JobTypeView getJobType();
-    @JsonIgnore
     MissionUserView getMission();
 }
