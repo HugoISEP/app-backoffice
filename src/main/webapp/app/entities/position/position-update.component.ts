@@ -22,7 +22,7 @@ export class PositionUpdateComponent implements OnInit {
     duration: [null, [Validators.required, Validators.pattern('^[1-9]\\d*$')]],
     placesNumber: [null, [Validators.required, Validators.pattern('^[1-9]\\d*$')]],
     remuneration: [null, [Validators.required, Validators.pattern('^[0-9]\\d*([.,]?[0-9]\\d*)?$')]],
-    description: [null, [Validators.required]],
+    description: [null, [Validators.required, Validators.maxLength(500)]],
     status: [null, [Validators.required]],
     jobType: [null, [Validators.required]],
   });

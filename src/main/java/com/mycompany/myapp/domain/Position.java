@@ -32,7 +32,7 @@ public class Position {
     private float remuneration;
 
     @NotNull
-    @Column(name = "description", nullable = false)
+    @Column(name = "description", length = 500, nullable = false)
     private String description;
 
     @JsonIgnore
