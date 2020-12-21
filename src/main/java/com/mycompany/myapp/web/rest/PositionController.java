@@ -9,8 +9,15 @@ import com.mycompany.myapp.service.dto.PositionDTO;
 import com.mycompany.myapp.service.mapper.PositionMapper;
 import com.mycompany.myapp.service.view.MissionView;
 import com.mycompany.myapp.service.view.PositionView;
+import io.github.jhipster.web.util.PaginationUtil;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
 import java.util.Arrays;
@@ -44,8 +51,10 @@ public class PositionController {
 
     @GetMapping("/active")
     @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.USER + "\") || hasAuthority(\"" + AuthoritiesConstants.MANAGER + "\")")
-    public List<PositionView> getActivePositionsByUser(){
-        return service.getActivePositionsByUser();
+    public ResponseEntity<List<PositionView>> getActivePositionsByUser(Pageable pageable, @RequestParam(value = "searchTerm", defaultValue = "%%") String searchTerm){
+        Page<PositionView> page = service.getActivePositionsByUser(pageable, searchTerm);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
+        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
 
     @GetMapping("/all")
