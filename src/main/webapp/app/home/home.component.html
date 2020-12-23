@@ -1,5 +1,5 @@
 <div class="row">
-    <div class="col-md-5 col-sm-12 py-3">
+    <div class="col-lg-5 col-12 py-3">
         <div class="card p-4 h-100" style="border-radius: 3%" >
         <div class="row">
             <div class="col-8 my-auto">
@@ -30,7 +30,7 @@
     </div>
     </div>
 
-    <div class="col-md-7 col-sm-12 py-3" >
+    <div class="col-lg-7 col-12 py-3" >
         <div class="card h-100 p-4" style="border-radius: 3%;" >
         <div class="row">
             <div class="col-8 pl-md-5">
@@ -81,7 +81,7 @@
                         </tbody>
                     </table>
                 </div>
-                <div *ngIf="positions">
+                <div *ngIf="totalItems > 0">
                     <div class="row justify-content-center">
                         <jhi-item-count [page]="page" [total]="totalItems" [itemsPerPage]="itemsPerPage"></jhi-item-count>
                     </div>
