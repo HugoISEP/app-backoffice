@@ -22,6 +22,10 @@
                     <span>{{ company.color }}</span>
                     <span><button type="button" class="btn btn-primary" [ngStyle]="{'background-color': company.color}"></button></span>
                 </dd>
+                <dt><span>Site internet</span></dt>
+                <dd>
+                    <span><a target="_blank" href="{{ company.websiteUrl }}">{{ company.websiteUrl }}</a></span>
+                </dd>
                 <dt><span>Nombre d'utilisateurs inscrits</span></dt>
                 <dd>
                     <span>{{ company.totalUsers }}</span>

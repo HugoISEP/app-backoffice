@@ -19,6 +19,7 @@ export class CompanyUpdateComponent implements OnInit {
     name: [null, [Validators.required]],
     emailTemplate: [null, [Validators.required]],
     color: [null, [Validators.required, Validators.pattern('^#(?:[0-9a-fA-F]{3}){1,2}$')]],
+    websiteUrl: [null, [Validators.pattern('(https?://)?([\\da-z.-]+)\\.([a-z.]{2,6})[/\\w .-]*/?')]],
     file: [null /*[Validators.required /!*requiredFileType('png')*!/]*/], //TODO: ajouter une validation pour le type de fichier
   });
 
@@ -45,6 +46,7 @@ export class CompanyUpdateComponent implements OnInit {
       id: company.id,
       name: company.name,
       emailTemplate: company.emailTemplate,
+      websiteUrl: company.websiteUrl,
       color: company.color,
     });
   }
@@ -56,6 +58,7 @@ export class CompanyUpdateComponent implements OnInit {
       id: this.editForm.get(['id'])!.value,
       name: this.editForm.get(['name'])!.value,
       emailTemplate: this.editForm.get(['emailTemplate'])!.value,
+      websiteUrl: this.editForm.get(['websiteUrl'])!.value,
       color: this.editForm.get(['color'])!.value,
     };
   }
