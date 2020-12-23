@@ -35,6 +35,9 @@ public class Company {
     @Column(name = "image_path", nullable = false, unique = true)
     private String imagePath;
 
+    @Column(name="website_url")
+    private String websiteUrl;
+
     @Column(updatable = false)
     @CreationTimestamp
     private LocalDateTime createdAt;

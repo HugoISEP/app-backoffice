@@ -6,7 +6,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.util.Objects;
 
 @Data
 @AllArgsConstructor
@@ -19,5 +18,6 @@ public class CompanyDTO implements CompanyView {
     private String emailTemplate;
     private String color;
     private String imagePath;
+    private String websiteUrl;
 
 }

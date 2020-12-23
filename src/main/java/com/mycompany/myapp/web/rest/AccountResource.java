@@ -23,6 +23,9 @@ import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.io.UnsupportedEncodingException;
+import java.net.URL;
+import java.net.URLEncoder;
 import java.util.*;
 import java.util.regex.Pattern;
 
@@ -83,14 +86,20 @@ public class AccountResource {
      * @throws RuntimeException {@code 500 (Internal Server Error)} if the user couldn't be activated.
      */
     @GetMapping("/activate")
-    public RedirectView activateAccount(@RequestParam(value = "key") String key, RedirectAttributes attributes) {
+    public RedirectView activateAccount(@RequestParam(value = "key") String key, RedirectAttributes attributes)  {
         Optional<User> user = userService.activateRegistration(key);
         if (!user.isPresent()) {
             throw new AccountResourceException("No user was found for this activation key");
         }
+        String siteUrl = user.get().getCompany().getWebsiteUrl()!= null ? user.get().getCompany().getWebsiteUrl() : "junior-entreprises.com";
         attributes.addFlashAttribute("flashAttribute", "redirectWithRedirectView");
         attributes.addAttribute("attribute", "redirectWithRedirectView");
-        return new RedirectView(appUrl);
+        try {
+            return new RedirectView(appUrl + "?url=" + URLEncoder.encode(siteUrl, "UTF-8"));
+        } catch (UnsupportedEncodingException e) {
+            return new RedirectView(appUrl);
+        }
+
     }
 
     /**
