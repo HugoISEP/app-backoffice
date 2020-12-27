@@ -112,10 +112,6 @@ Generic styles
   opacity: 1;
 }
 
-.footer {
-  border-top: 1px solid rgba(0, 0, 0, 0.125);
-}
-
 .hand,
 [jhisortby] {
   cursor: pointer;
@@ -278,4 +274,9 @@ ui bootstrap tweaks
 
 .text-responsive {
   font-size: calc(100% + 1vw + 1vh);
+}
+
+html,
+body {
+  height: 100%;
 }
