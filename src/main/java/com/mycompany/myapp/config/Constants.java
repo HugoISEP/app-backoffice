@@ -14,6 +14,9 @@ public final class Constants {
 
     public static final String HEX_COLOR_REGEX = "^#(?:[0-9a-fA-F]{3}){1,2}$";
 
+    public static final String JOBTYPE_BUCKET = "jobType";
+    public static final String COMPANY_BUCKET = "company";
+
     private Constants() {
     }
 }

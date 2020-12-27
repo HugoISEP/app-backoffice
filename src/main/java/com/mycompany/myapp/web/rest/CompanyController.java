@@ -91,11 +91,12 @@ public class CompanyController {
     }
 
     @PostMapping("/{id}/image")
-    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\") || hasAuthority(\"" + AuthoritiesConstants.MANAGER + "\")")
+    //@PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\") || hasAuthority(\"" + AuthoritiesConstants.MANAGER + "\")")
     @ResponseStatus(HttpStatus.OK)
     public void uploadFile(@PathVariable("id") Long id, @RequestParam("file") MultipartFile file) {
         try {
-            service.editFile(file, id);
+            //service.editFile(file, id);
+            service.testMinio(file, id);
         } catch (Exception e) {
             throw new BadRequestAlertException("Could not upload the file ", ENTITY_NAME, file.getName());
         }

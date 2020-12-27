@@ -9,6 +9,10 @@ import com.mycompany.myapp.service.dto.UserDTO;
 import com.mycompany.myapp.service.mapper.CompanyMapper;
 import com.mycompany.myapp.service.view.CompanyDetailsView;
 import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
+import io.minio.MinioClient;
+import io.minio.PutObjectArgs;
+import io.minio.errors.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.AccessDeniedException;
@@ -21,7 +25,11 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
+
+import static com.mycompany.myapp.config.Constants.COMPANY_BUCKET;
 
 
 @Service
@@ -29,6 +37,9 @@ import java.time.LocalDateTime;
 public class CompanyService {
 
     private static final String ENTITY_NAME = "company";
+
+    @Autowired
+    private MinioClient minioClient;
 
     private final CompanyRepository repository;
     private final CompanyMapper mapper;
@@ -117,5 +128,15 @@ public class CompanyService {
         byte[] file = image.getBytes();
         Path path = Paths.get(currentPath + "/images/company/" + timestamp + ".png");
         return Files.write(path, file).toFile();
+    }
+
+    public void testMinio(MultipartFile image, Long companyId) throws IOException, ServerException, InsufficientDataException, InternalException, InvalidResponseException, InvalidKeyException, NoSuchAlgorithmException, XmlParserException, ErrorResponseException {
+        System.out.println("testMinio");
+        minioClient.putObject(PutObjectArgs.builder()
+            .contentType(image.getContentType())
+            .object(image.getName())
+            .stream(image.getInputStream(), image.getSize(), 6000000)
+            .bucket(COMPANY_BUCKET)
+            .build());
     }
 }
