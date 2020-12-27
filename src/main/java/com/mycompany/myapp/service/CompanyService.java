@@ -34,7 +34,7 @@ public class CompanyService {
     private final CompanyMapper mapper;
     private final UserService userService;
 
-    private final String filePath = "/images/company";
+    private final String filePath = "/images/company/";
 
     public CompanyService(CompanyRepository repository, CompanyMapper mapper, UserService userService) {
         this.repository = repository;
@@ -117,7 +117,7 @@ public class CompanyService {
         String currentPath = Paths.get("").toAbsolutePath().toString();
 
         byte[] file = image.getBytes();
-        Path path = Paths.get(currentPath + "/images/company/" + timestamp + ".png");
+        Path path = Paths.get(currentPath + filePath + timestamp + ".png");
         return Files.write(path, file).toFile();
     }
 }
