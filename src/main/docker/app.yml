@@ -11,7 +11,12 @@ services:
     ports:
       - 8080:8080
     volumes:
-    - ./images:/images
+      - ./images:/images
+
+  confirmation-page:
+    image: 'registry.dev.juniorisep.com/application-consultants-globale/confirmation-page'
+    ports:
+      - 5000:5000
   #hugoisep-postgresql:
   # extends:
   #  file: postgresql.yml
