@@ -34,7 +34,7 @@ public class CompanyService {
     private final CompanyMapper mapper;
     private final UserService userService;
 
-    private final String filePath = "/images/company";
+    private final String filePath = "/images/company/";
 
     public CompanyService(CompanyRepository repository, CompanyMapper mapper, UserService userService) {
         this.repository = repository;
@@ -69,7 +69,7 @@ public class CompanyService {
         ObjectMapper objectMapper = new ObjectMapper();
         CompanyDTO company = objectMapper.readValue(companyJson, CompanyDTO.class);
 
-        File image = storeFile(file, timestamp);
+        File image = storeFile(file, company.getName() + "-" + timestamp);
         company.setImagePath(image.getPath().split(filePath)[1]);
         return mapper.asDTO(repository.save(mapper.fromDTO(company)));
     }
@@ -101,7 +101,7 @@ public class CompanyService {
 
         Files.delete(Paths.get(filePath + company.getImagePath()));
 
-        Path path = storeFile(image, timestamp).toPath();
+        Path path = storeFile(image, company.getName() + "-" +timestamp).toPath();
         company.setImagePath(path.toString().split(filePath)[1]);
     }
 
@@ -117,7 +117,7 @@ public class CompanyService {
         String currentPath = Paths.get("").toAbsolutePath().toString();
 
         byte[] file = image.getBytes();
-        Path path = Paths.get(currentPath + "/images/company/" + timestamp + ".png");
+        Path path = Paths.get(currentPath + filePath + timestamp + ".png");
         return Files.write(path, file).toFile();
     }
 }

@@ -25,6 +25,8 @@ management:
       prometheus:
         enabled: false
 
+mobile-app-url: ${MOBILE_APP_URL}
+
 spring:
   devtools:
     restart:
