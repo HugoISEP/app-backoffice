@@ -4,6 +4,7 @@ import com.mycompany.myapp.config.Constants;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.Formula;
+import org.hibernate.validator.constraints.URL;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -34,6 +35,10 @@ public class Company {
     @NotNull
     @Column(name = "image_path", nullable = false, unique = true)
     private String imagePath;
+
+    @URL
+    @Column(name="website_url")
+    private String websiteUrl;
 
     @Column(updatable = false)
     @CreationTimestamp
