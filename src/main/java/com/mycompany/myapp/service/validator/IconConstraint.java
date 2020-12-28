@@ -8,7 +8,7 @@ import java.lang.annotation.*;
 @Constraint(validatedBy = IconValidator.class)
 @Target( { ElementType.METHOD, ElementType.FIELD })
 @Retention(RetentionPolicy.RUNTIME)
-public @interface IconValid {
+public @interface IconConstraint {
     String message() default "Invalid icon name";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};

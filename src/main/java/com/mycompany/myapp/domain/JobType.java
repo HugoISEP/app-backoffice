@@ -1,7 +1,7 @@
 package com.mycompany.myapp.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.mycompany.myapp.service.validator.IconValid;
+import com.mycompany.myapp.service.validator.IconConstraint;
 import lombok.Data;
 import lombok.ToString;
 import org.hibernate.annotations.CreationTimestamp;
@@ -27,7 +27,7 @@ public class JobType {
     private String name;
 
     @NotNull
-    @IconValid
+    @IconConstraint
     @Column(name = "icon", nullable = false)
     private String icon;
 
