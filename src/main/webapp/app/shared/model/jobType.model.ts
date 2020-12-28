@@ -1,7 +1,7 @@
 export interface IJobType {
   id?: number;
   name?: string;
-  imageUrl?: string;
+  icon?: string;
   createdAt?: Date;
 }
 

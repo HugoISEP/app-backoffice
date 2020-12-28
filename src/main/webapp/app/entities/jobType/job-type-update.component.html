@@ -20,28 +20,17 @@
                 </div>
 
                 <div class="form-group">
-                <div class="container">
-                    <div class="row">
-                        <div class="col-12">
-                            <h6 class="text-muted">List Group with Images</h6>
-                            <ul class="list-group" style="height: 300px; overflow: auto">
-                                <li *ngFor="let url of urls" class="list-group-item d-flex justify-content-between justify-content-between align-items-center" (change)="handleCheckbox(url)">
-                                    <label>
-                                        <input type="checkbox" [checked]="editForm.get('imageUrl')!.value === url">
-                                        {{getImageName(url)}}
-                                    </label>
-                                    <div class="image-parent">
-                                        <img style="max-height: 80px" src="{{url}}" class="img-fluid" alt="quixote">
-                                    </div>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-                    <div *ngIf="editForm.get('imageUrl')!.invalid && (editForm.get('imageUrl')!.dirty || editForm.get('imageUrl')!.touched || editForm.get('imageUrl')!.value === null)">
+                    <label class="form-control-label" for="field_icon">Icon</label>
+                    <input type="text" class="form-control" name="icon" id="field_icon"
+                           formControlName="icon"/>
+                    <div *ngIf="editForm.get('icon')!.invalid && (editForm.get('icon')!.dirty || editForm.get('icon')!.touched)">
                         <small class="form-text text-danger"
-                               *ngIf="editForm.get('imageUrl')?.errors?.required">
+                               *ngIf="editForm.get('icon')?.errors?.required">
                             Ce champs est requis
+                        </small>
+                        <small class="form-text text-danger"
+                               *ngIf="editForm.get('icon')?.errors?.invalidIcon">
+                            Cet icon n'est pas valide
                         </small>
                     </div>
                 </div>
