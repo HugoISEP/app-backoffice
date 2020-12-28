@@ -47,7 +47,7 @@ public class NotificationService {
 
     private Message getPreconfiguredMessage(Position position) {
         return getPreconfiguredMessageBuilder(position).setTopic(position.getJobType().getId().toString())
-            .putData("title", position.getMission().getCompany().getName()).putData("body", "Une nouvelle mission "+position.getJobType().getName() + " est disponible !")
+            .putData("title", position.getMission().getCompany().getName()).putData("body", position.getJobType().getName())
             .build();
     }
 
@@ -57,7 +57,7 @@ public class NotificationService {
         ApnsConfig apnsConfig = getApnsConfig(position.getJobType().getId().toString());
         return Message.builder()
             .setApnsConfig(apnsConfig).setAndroidConfig(androidConfig).setNotification(
-                new Notification(position.getMission().getCompany().getName(), "Une nouvelle mission "+position.getJobType().getName() + " est disponible !"));
+                new Notification(position.getMission().getCompany().getName(), position.getJobType().getName()));
     }
 
 }
