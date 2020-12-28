@@ -34,6 +34,8 @@ public class CompanyService {
     private final CompanyMapper mapper;
     private final UserService userService;
 
+    private final String filePath = "/images/company/";
+
     public CompanyService(CompanyRepository repository, CompanyMapper mapper, UserService userService) {
         this.repository = repository;
         this.mapper = mapper;
@@ -67,8 +69,8 @@ public class CompanyService {
         ObjectMapper objectMapper = new ObjectMapper();
         CompanyDTO company = objectMapper.readValue(companyJson, CompanyDTO.class);
 
-        File image = storeFile(file, timestamp);
-        company.setImagePath(image.getPath());
+        File image = storeFile(file, company.getName() + "-" + timestamp);
+        company.setImagePath(image.getPath().split(filePath)[1]);
         return mapper.asDTO(repository.save(mapper.fromDTO(company)));
     }
 
@@ -87,7 +89,7 @@ public class CompanyService {
         hasAuthorization(id);
 
         Company companyToDelete = repository.findById(id).orElseThrow(() -> new BadRequestAlertException("company doesn't exist", ENTITY_NAME, "id doesn't exist"));
-        Files.delete(Paths.get(companyToDelete.getImagePath()));
+        Files.delete(Paths.get(filePath + companyToDelete.getImagePath()));
         repository.delete(companyToDelete);
     }
 
@@ -97,15 +99,15 @@ public class CompanyService {
         hasAuthorization(companyId);
         Company company = repository.findById(companyId).orElseThrow(() -> new BadRequestAlertException("company not found" , "COMPANY", " id doesn't exist"));
 
-        Files.delete(Paths.get(company.getImagePath()));
+        Files.delete(Paths.get(filePath + company.getImagePath()));
 
-        Path path = storeFile(image, timestamp).toPath();
-        company.setImagePath(path.toString());
+        Path path = storeFile(image, company.getName() + "-" +timestamp).toPath();
+        company.setImagePath(path.toString().split(filePath)[1]);
     }
 
     public Path getFile(Long companyId) {
         Company company = repository.findById(companyId).orElseThrow(() -> new BadRequestAlertException("company not found" , "COMPANY", " id doesn't exist"));
-        return Paths.get(company.getImagePath());
+        return Paths.get(filePath + company.getImagePath());
     }
 
     private File storeFile(MultipartFile image, String timestamp) throws IOException{
@@ -115,7 +117,7 @@ public class CompanyService {
         String currentPath = Paths.get("").toAbsolutePath().toString();
 
         byte[] file = image.getBytes();
-        Path path = Paths.get(currentPath + "/images/company/" + timestamp + ".png");
+        Path path = Paths.get(currentPath + filePath + timestamp + ".png");
         return Files.write(path, file).toFile();
     }
 }
