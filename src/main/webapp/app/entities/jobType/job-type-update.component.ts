@@ -1491,9 +1491,8 @@ export class JobTypeUpdateComponent implements OnInit {
     this.editForm.patchValue({
       id: jobType.id,
       name: jobType.name,
+      icon: jobType.icon,
     });
-    // eslint-disable-next-line no-console
-    console.log(this.editForm.get('icon')?.errors);
   }
 
   private createForm(): IJobType {

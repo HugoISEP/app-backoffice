@@ -16,13 +16,7 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 
 @Service
@@ -102,14 +96,6 @@ public class JobTypeService {
         JobType jobTypeToDelete = repository.findById(id).orElseThrow(() -> new BadRequestAlertException("JobType doesn't exist", ENTITY_NAME, "id doesn't exist"));
         hasAuthorization(id);
         repository.delete(jobTypeToDelete);
-    }
-
-    public List<String> getImages() throws IOException {
-        try (Stream<Path> paths = Files.walk(Paths.get(System.getProperty("user.dir") + IMAGES_PATH))) {
-            return paths
-                .filter(Files::isRegularFile)
-                .map(Path::toString).collect(Collectors.toList());
-        }
     }
 
 }

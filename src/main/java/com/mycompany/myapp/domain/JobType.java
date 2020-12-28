@@ -25,6 +25,10 @@ public class JobType {
     @Column(name = "name", nullable = false)
     private String name;
 
+    @NotNull
+    @Column(name = "icon", nullable = false)
+    private String icon;
+
     @JsonIgnore
     @OneToMany(mappedBy = "jobType", cascade = CascadeType.ALL)
     private List<Position> positions = new ArrayList<>();
