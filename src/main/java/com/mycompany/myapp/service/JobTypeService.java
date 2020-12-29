@@ -23,7 +23,6 @@ import java.util.List;
 @Transactional
 public class JobTypeService {
     private static final String ENTITY_NAME = "jobType";
-    private static final String IMAGES_PATH = "/images/jobType";
 
     private final JobTypeRepository repository;
     private final JobTypeMapper mapper;

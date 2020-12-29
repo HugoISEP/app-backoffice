@@ -6,5 +6,5 @@ export interface IJobType {
 }
 
 export class JobType implements IJobType {
-  constructor(public id?: number, public name?: string, public imageUrl?: string, public createdAt?: Date) {}
+  constructor(public id?: number, public name?: string, public icon?: string, public createdAt?: Date) {}
 }
