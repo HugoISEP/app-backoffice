@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 @Service
 @Transactional
@@ -88,11 +89,11 @@ public class PositionService {
         Mission mission = missionRepository.findById(missionId).orElseThrow(() -> new BadRequestAlertException("mission doesn't exist", ENTITY_NAME, "id doesn't exist"));
         newPosition.setMission(mission);
         mission.getPositions().add(newPosition);
-        /*try {
+        try {
             notificationService.sendMessage(newPosition);
         } catch (InterruptedException | ExecutionException e) {
             log.warn("Error when sending notification: " + e.toString());
-        }*/
+        }
         return missionMapper.asDTO(missionRepository.save(mission));
     }
 
