@@ -23,6 +23,9 @@
                     <label class="form-control-label" for="field_icon">Icon</label>
                     <input type="text" class="form-control" name="icon" id="field_icon"
                            formControlName="icon"/>
+                    <small class="form-text text-muted">
+                        Icon à choisir <a href="https://fontawesome.com/icons?d=gallery&s=brands,solid" target="_blank">ici</a>, mettre le nom de l'icon sans préfixe (parmi les catégories solid et brand)
+                    </small>
                     <div *ngIf="editForm.get('icon')!.invalid && (editForm.get('icon')!.dirty || editForm.get('icon')!.touched)">
                         <small class="form-text text-danger"
                                *ngIf="editForm.get('icon')?.errors?.required">
