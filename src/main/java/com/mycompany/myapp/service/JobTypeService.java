@@ -22,7 +22,7 @@ import java.util.List;
 @Service
 @Transactional
 public class JobTypeService {
-    private static final String ENTITY_NAME = "mission";
+    private static final String ENTITY_NAME = "jobType";
 
     private final JobTypeRepository repository;
     private final JobTypeMapper mapper;
@@ -95,7 +95,6 @@ public class JobTypeService {
         JobType jobTypeToDelete = repository.findById(id).orElseThrow(() -> new BadRequestAlertException("JobType doesn't exist", ENTITY_NAME, "id doesn't exist"));
         hasAuthorization(id);
         repository.delete(jobTypeToDelete);
-
     }
 
 }

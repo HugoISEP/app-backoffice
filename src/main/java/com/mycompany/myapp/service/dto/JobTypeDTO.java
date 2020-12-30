@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 public class JobTypeDTO implements JobTypeView {
     private Long id;
     private String name;
+    private String icon;
     private LocalDateTime createdAt;
     private CompanyDTO company;
 
