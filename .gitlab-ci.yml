@@ -25,6 +25,7 @@ maven-compile:
     expire_in: 1 day
   only:
     - master
+    - merge_requests
 
 maven-package:
   stage: package
