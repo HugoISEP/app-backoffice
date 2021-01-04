@@ -156,4 +156,132 @@
             <column name="local_date" type="date"/>
         </createTable>
     </changeSet>
+
+    <changeSet author="hugo (generated)" id="1609792039844-2">
+        <createTable tableName="company">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="companyPK"/>
+            </column>
+            <column name="color" type="VARCHAR(255)"/>
+            <column name="created_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="deleted_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="email_template" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="image_path" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="website_url" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="hugo (generated)" id="1609792039844-3">
+        <createTable tableName="jhi_user_job_types">
+            <column name="user_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="job_types_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="hugo (generated)" id="1609792039844-4">
+        <createTable tableName="job_type">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="job_typePK"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="deleted_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="icon" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="company_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="hugo (generated)" id="1609792039844-5">
+        <createTable tableName="mission">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="missionPK"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="deleted_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="project_manager_email" type="VARCHAR(255)"/>
+            <column name="company_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="hugo (generated)" id="1609792039844-6">
+        <createTable tableName="position">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="positionPK"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP WITHOUT TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="deleted_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="description" type="VARCHAR(500)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="duration" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="places_number" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="remuneration" type="FLOAT4">
+                <constraints nullable="false"/>
+            </column>
+            <column name="status" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="job_type_id" type="BIGINT"/>
+            <column name="mission_id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="hugo (generated)" id="1609792039844-7">
+        <addColumn tableName="jhi_user">
+            <column name="company_id" type="int8"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="hugo (generated)" id="1609792039844-8">
+        <addUniqueConstraint columnNames="email_template" constraintName="UC_COMPANYEMAIL_TEMPLATE_COL" tableName="company"/>
+    </changeSet>
+    <changeSet author="hugo (generated)" id="1609792039844-9">
+        <addUniqueConstraint columnNames="image_path" constraintName="UC_COMPANYIMAGE_PATH_COL" tableName="company"/>
+    </changeSet>
+    <changeSet author="hugo (generated)" id="1609792039844-10">
+        <addForeignKeyConstraint baseColumnNames="company_id" baseTableName="jhi_user" constraintName="FK3ltrtkr6yv25sivkurwf9q8v9" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="company" validate="true"/>
+    </changeSet>
+    <changeSet author="hugo (generated)" id="1609792039844-11">
+        <addForeignKeyConstraint baseColumnNames="job_types_id" baseTableName="jhi_user_job_types" constraintName="FK6xevsw9703m1b92842uy08w80" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="job_type" validate="true"/>
+    </changeSet>
+    <changeSet author="hugo (generated)" id="1609792039844-12">
+        <addForeignKeyConstraint baseColumnNames="company_id" baseTableName="job_type" constraintName="FKgd2ymndgtnt1n0m8jd932uf38" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="company" validate="true"/>
+    </changeSet>
+    <changeSet author="hugo (generated)" id="1609792039844-13">
+        <addForeignKeyConstraint baseColumnNames="mission_id" baseTableName="position" constraintName="FKgepwke3ujb2vb7q2jdnrees45" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="mission" validate="true"/>
+    </changeSet>
+    <changeSet author="hugo (generated)" id="1609792039844-14">
+        <addForeignKeyConstraint baseColumnNames="company_id" baseTableName="mission" constraintName="FKhwsgolr29521w9wejsjv976n1" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="company" validate="true"/>
+    </changeSet>
+    <changeSet author="hugo (generated)" id="1609792039844-15">
+        <addForeignKeyConstraint baseColumnNames="job_type_id" baseTableName="position" constraintName="FKibc9yq315b75l0dlw89n9rawp" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="job_type" validate="true"/>
+    </changeSet>
+    <changeSet author="hugo (generated)" id="1609792039844-16">
+        <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="jhi_user_job_types" constraintName="FKijdq49borvlff6bn9a1kofpaq" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="jhi_user" validate="true"/>
+    </changeSet>
+    <changeSet author="hugo (generated)" id="1609792039844-1">
+        <alterSequence sequenceName="sequence_generator"/>
+    </changeSet>
 </databaseChangeLog>
