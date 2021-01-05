@@ -1,5 +1,6 @@
 package com.mycompany.myapp.web.rest;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mycompany.myapp.repository.CompanyRepository;
 import com.mycompany.myapp.security.AuthoritiesConstants;
 import com.mycompany.myapp.service.CompanyService;
@@ -25,6 +26,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("api/company")
@@ -70,14 +72,16 @@ public class CompanyController {
 
     @PostMapping
     @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
-    public CompanyView createCompany(@Valid @RequestParam("company") String companyJson, @RequestParam("file") MultipartFile file) throws IOException {
+    public CompanyView createCompany(@RequestParam("company") String companyJson, @RequestParam("file") MultipartFile file) throws IOException {
         return service.create(companyJson, file);
     }
 
     @PutMapping
     @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.MANAGER + "\")")
-    public CompanyView editCompany(@Valid @RequestBody CompanyDTO updatedCompany){
-        return service.edit(updatedCompany);
+    public CompanyView editCompany(@RequestParam("company") String companyJson, @RequestParam(value = "file", required = false) MultipartFile file) throws IOException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        CompanyDTO updatedCompany = objectMapper.readValue(companyJson, CompanyDTO.class);
+        return service.edit(updatedCompany, file);
     }
 
     @DeleteMapping("/{id}")

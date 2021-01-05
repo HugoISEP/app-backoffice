@@ -22,6 +22,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 
 @Service
@@ -74,7 +75,7 @@ public class CompanyService {
         return mapper.asDTO(repository.save(mapper.fromDTO(company)));
     }
 
-    public CompanyDTO edit(CompanyDTO updatedCompany){
+    public CompanyDTO edit(CompanyDTO updatedCompany, MultipartFile file) throws IOException {
         if (updatedCompany.getId() == null) {
             throw new BadRequestAlertException("Cannot edit ", ENTITY_NAME, " id doesn't exist");
         }
@@ -82,7 +83,10 @@ public class CompanyService {
 
         Company company = repository.findById(updatedCompany.getId()).orElseThrow(() -> new BadRequestAlertException("company doesn't exist", ENTITY_NAME, "id doesn't exist"));
         mapper.updateCompany(updatedCompany, company);
-        return mapper.asDTO(company);
+        if (file != null){
+            editFile(file, updatedCompany.getId());
+        }
+        return mapper.asDTO(repository.save(company));
     }
 
     public void delete(Long id) throws IOException {
@@ -99,7 +103,7 @@ public class CompanyService {
         hasAuthorization(companyId);
         Company company = repository.findById(companyId).orElseThrow(() -> new BadRequestAlertException("company not found" , "COMPANY", " id doesn't exist"));
 
-        Files.delete(Paths.get(filePath + company.getImagePath()));
+        Files.delete(Paths.get(Paths.get("").toAbsolutePath().toString()+ filePath + company.getImagePath()));
 
         Path path = storeFile(image, company.getName() + "-" +timestamp).toPath();
         company.setImagePath(path.toString().split(filePath)[1]);
@@ -111,7 +115,7 @@ public class CompanyService {
     }
 
     private File storeFile(MultipartFile image, String timestamp) throws IOException{
-        if (!image.getContentType().equals("image/png")) {
+        if (!Objects.equals(image.getContentType(), "image/png")) {
             throw new BadRequestAlertException("file type isn't a png ", "IMAGE", " wrong image type");
         }
         String currentPath = Paths.get("").toAbsolutePath().toString();

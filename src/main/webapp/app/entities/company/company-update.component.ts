@@ -1,8 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Observable } from 'rxjs';
-import { HttpResponse } from '@angular/common/http';
 import { CompanyService } from 'app/entities/company/company.service';
 import { Company, ICompany } from 'app/shared/model/company.model';
 
@@ -76,7 +74,7 @@ export class CompanyUpdateComponent implements OnInit {
     return company.id;
   }
 
-  protected subscribeToSaveResponse(result: Observable<HttpResponse<ICompany>>): void {
+  protected subscribeToSaveResponse(result: any): void {
     result.subscribe(
       () => this.onSaveSuccess(),
       () => this.onSaveError()
@@ -95,7 +93,7 @@ export class CompanyUpdateComponent implements OnInit {
     this.isSaving = true;
     const company = this.createForm();
     if (company.id !== undefined) {
-      this.subscribeToSaveResponse(this.companyService.update(company));
+      this.subscribeToSaveResponse(this.companyService.update(company, this.editForm.get(['file'])!.value));
     } else {
       this.subscribeToSaveResponse(this.companyService.create(company, this.editForm.get(['file'])!.value));
     }
