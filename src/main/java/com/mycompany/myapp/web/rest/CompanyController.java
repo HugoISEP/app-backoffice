@@ -21,12 +21,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import javax.validation.Valid;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("api/company")
@@ -91,17 +89,6 @@ public class CompanyController {
             service.delete(id);
         } catch (Exception e) {
             throw new BadRequestAlertException("Could not delete the file", ENTITY_NAME, e.toString());
-        }
-    }
-
-    @PostMapping("/{id}/image")
-    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\") || hasAuthority(\"" + AuthoritiesConstants.MANAGER + "\")")
-    @ResponseStatus(HttpStatus.OK)
-    public void uploadFile(@PathVariable("id") Long id, @RequestParam("file") MultipartFile file) {
-        try {
-            service.editFile(file, id);
-        } catch (Exception e) {
-            throw new BadRequestAlertException("Could not upload the file ", ENTITY_NAME, file.getName());
         }
     }
 
