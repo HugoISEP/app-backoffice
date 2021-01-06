@@ -13,7 +13,7 @@ stages:
 before_script:
   - export NG_CLI_ANALYTICS="false"
   - export MAVEN_USER_HOME=`pwd`/.maven
-  - export TAG='$CI_COMMIT_BRANCH' && [[ "$CI_COMMIT_BRANCH" == "master" ]] && export TAG="prod"
+  - export TAG=$CI_COMMIT_BRANCH && [[ "$CI_COMMIT_BRANCH" == "master" ]] && export TAG="prod"
   - echo $TAG
 
 maven-compile:
