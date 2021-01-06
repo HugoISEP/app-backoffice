@@ -3,13 +3,13 @@ import { AbstractControl, FormBuilder, ValidatorFn, Validators } from '@angular/
 import { ActivatedRoute, Router } from '@angular/router';
 import { CompanyService } from 'app/entities/company/company.service';
 import { Company, ICompany } from 'app/shared/model/company.model';
-import { icons } from '../../shared/constants/icons.constant';
 
 @Component({
   selector: 'jhi-company-update',
   templateUrl: './company-update.component.html',
 })
 export class CompanyUpdateComponent implements OnInit {
+  ownCompanyUrl = '/company/own/update';
   isSaving = false;
   file: File | null = null;
 
@@ -19,7 +19,7 @@ export class CompanyUpdateComponent implements OnInit {
     emailTemplate: [null, [Validators.required]],
     color: [null, [Validators.required, Validators.pattern('^#(?:[0-9a-fA-F]{3}){1,2}$')]],
     websiteUrl: [null, [Validators.pattern('(https?://)?([\\da-z.-]+)\\.([a-z.]{2,6})[/\\w .-]*/?')]],
-    file: [null, [Validators.required, this.fileValidator()]],
+    file: [null, [this.requiredIfNewCompany(), this.fileValidator()]],
   });
 
   constructor(
@@ -33,7 +33,7 @@ export class CompanyUpdateComponent implements OnInit {
     this.activateRoute.data.subscribe(({ company }) => {
       this.updateForm(company);
     });
-    if (this.router.url === '/company/own/update') {
+    if (this.router.url === this.ownCompanyUrl) {
       this.companyService.getUserCompany().subscribe(company => {
         this.updateForm(company.body!);
       });
@@ -112,5 +112,11 @@ export class CompanyUpdateComponent implements OnInit {
   fileValidator(): ValidatorFn {
     return (control: AbstractControl): { [key: string]: any } | null =>
       control.value?.type === 'image/png' ? null : { invalidFile: control.value };
+  }
+
+  requiredIfNewCompany(): ValidatorFn {
+    return (control: AbstractControl): { [key: string]: any } | null => {
+      return this.router.url === this.ownCompanyUrl ? null : control.value ? null : { required: true };
+    };
   }
 }
