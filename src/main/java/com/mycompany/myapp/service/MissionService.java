@@ -10,6 +10,7 @@ import com.mycompany.myapp.service.mapper.CompanyMapper;
 import com.mycompany.myapp.service.mapper.MissionMapper;
 import com.mycompany.myapp.service.view.MissionView;
 import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
+import com.mycompany.myapp.web.rest.errors.ResourceNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.AccessDeniedException;
@@ -40,8 +41,8 @@ public class MissionService {
     public void hasAuthorization(Long id){
         UserDTO user = userService.getUserWithAuthorities()
             .map(UserDTO::new)
-            .orElseThrow(() -> new BadRequestAlertException("User not found", ENTITY_NAME, "id doesn't exist"));
-        Mission mission = repository.findById(id).orElseThrow(() -> new BadRequestAlertException("Entity not found", ENTITY_NAME, "id doesn't exist"));
+            .orElseThrow(() -> new ResourceNotFoundException("User not found", ENTITY_NAME, "id doesn't exist"));
+        Mission mission = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Entity not found", ENTITY_NAME, "id doesn't exist"));
         if(!user.getAuthorities().contains(AuthoritiesConstants.ADMIN) && !user.getCompany().getId().equals(mission.getCompany().getId())){
             throw new AccessDeniedException("user not authorize");
         }
@@ -54,11 +55,11 @@ public class MissionService {
 
     public MissionDTO createMission(MissionDTO mission){
         if (mission.getId() != null) {
-            throw new BadRequestAlertException("A new mission cannot already have an ID", ENTITY_NAME, "id exists");
+            throw new ResourceNotFoundException("A new mission cannot already have an ID", ENTITY_NAME, "id exists");
         }
         UserDTO user = userService.getUserWithAuthorities()
             .map(UserDTO::new)
-            .orElseThrow(() -> new BadRequestAlertException("user not found", ENTITY_NAME, "id exists"));
+            .orElseThrow(() -> new ResourceNotFoundException("user not found", ENTITY_NAME, "id exists"));
         Mission newMission = mapper.fromDTO(mission);
         newMission.setCompany(companyMapper.fromDTO(user.getCompany()));
         return mapper.asDTO(repository.save(newMission));
@@ -83,7 +84,7 @@ public class MissionService {
     public Page<MissionView> getAllMissionByCompany(Pageable pageable, String searchTerm){
         UserDTO user = userService.getUserWithAuthorities()
             .map(UserDTO::new)
-            .orElseThrow(() -> new BadRequestAlertException("user not found", ENTITY_NAME, "id exists"));
+            .orElseThrow(() -> new ResourceNotFoundException("user not found", ENTITY_NAME, "id exists"));
         return repository.findAllByCompanyId(user.getCompany().getId(), searchTerm, pageable);
     }
 }

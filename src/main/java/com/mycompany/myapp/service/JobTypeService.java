@@ -10,6 +10,7 @@ import com.mycompany.myapp.service.mapper.CompanyMapper;
 import com.mycompany.myapp.service.mapper.JobTypeMapper;
 import com.mycompany.myapp.service.view.JobTypeView;
 import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
+import com.mycompany.myapp.web.rest.errors.ResourceNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.AccessDeniedException;
@@ -41,8 +42,8 @@ public class JobTypeService {
     public void hasAuthorization(Long id){
         UserDTO user = userService.getUserWithAuthorities()
             .map(UserDTO::new)
-            .orElseThrow(() -> new BadRequestAlertException("User not found", ENTITY_NAME, "id doesn't exist"));
-        JobType jobType = repository.findById(id).orElseThrow(() -> new BadRequestAlertException("Entity not found", ENTITY_NAME, "id doesn't exist"));
+            .orElseThrow(() -> new ResourceNotFoundException("User not found", ENTITY_NAME, "id doesn't exist"));
+        JobType jobType = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Entity not found", ENTITY_NAME, "id doesn't exist"));
         if(!user.getAuthorities().contains(AuthoritiesConstants.ADMIN) && !user.getCompany().getId().equals(jobType.getCompany().getId())){
             throw new AccessDeniedException("user not authorize");
         }
@@ -56,7 +57,7 @@ public class JobTypeService {
     public Page<JobTypeView> getAllJobTypeByUserPaginated(Pageable pageable, String searchTerm){
         UserDTO user = userService.getUserWithAuthorities()
             .map(UserDTO::new)
-            .orElseThrow(() -> new BadRequestAlertException("User not found", ENTITY_NAME, "id doesn't exist"));
+            .orElseThrow(() -> new ResourceNotFoundException("User not found", ENTITY_NAME, "id doesn't exist"));
 
         return repository.findAllByCompanyIdPaginated(user.getCompany().getId(), searchTerm, pageable);
     }
@@ -64,7 +65,7 @@ public class JobTypeService {
     public List<JobTypeView> getAllJobTypeByUser(){
         UserDTO user = userService.getUserWithAuthorities()
             .map(UserDTO::new)
-            .orElseThrow(() -> new BadRequestAlertException("User not found", ENTITY_NAME, "id doesn't exist"));
+            .orElseThrow(() -> new ResourceNotFoundException("User not found", ENTITY_NAME, "id doesn't exist"));
         return repository.findAllByCompany_Id(user.getCompany().getId());
     }
 
@@ -75,7 +76,7 @@ public class JobTypeService {
         }
         UserDTO user = userService.getUserWithAuthorities()
             .map(UserDTO::new)
-            .orElseThrow(() -> new BadRequestAlertException("User not found", ENTITY_NAME, "id doesn't exist"));
+            .orElseThrow(() -> new ResourceNotFoundException("User not found", ENTITY_NAME, "id doesn't exist"));
         newJobType.setCompany(companyMapper.fromDTO(user.getCompany()));
         return mapper.asDTO(repository.save(newJobType));
     }
@@ -92,7 +93,7 @@ public class JobTypeService {
     }
 
     public void deleteJobType(Long id){
-        JobType jobTypeToDelete = repository.findById(id).orElseThrow(() -> new BadRequestAlertException("JobType doesn't exist", ENTITY_NAME, "id doesn't exist"));
+        JobType jobTypeToDelete = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("JobType doesn't exist", ENTITY_NAME, "id doesn't exist"));
         hasAuthorization(id);
         repository.delete(jobTypeToDelete);
     }
