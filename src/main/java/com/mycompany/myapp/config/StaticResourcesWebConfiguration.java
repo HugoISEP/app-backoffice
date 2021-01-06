@@ -1,9 +1,7 @@
 package com.mycompany.myapp.config;
 
-import io.github.jhipster.config.JHipsterConstants;
 import io.github.jhipster.config.JHipsterProperties;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
 import org.springframework.http.CacheControl;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistration;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
@@ -12,11 +10,10 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import java.util.concurrent.TimeUnit;
 
 @Configuration
-@Profile({JHipsterConstants.SPRING_PROFILE_PRODUCTION})
 public class StaticResourcesWebConfiguration implements WebMvcConfigurer {
 
-    protected static final String[] RESOURCE_LOCATIONS = new String[]{"classpath:/static/app/", "classpath:/static/content/", "classpath:/static/i18n/"};
-    protected static final String[] RESOURCE_PATHS = new String[]{"/app/*", "/content/*", "/i18n/*"};
+    protected static final String[] RESOURCE_LOCATIONS = new String[]{"classpath:/static/app/", "classpath:/static/content/", "classpath:/static/i18n/", "file:" + System.getProperty("user.dir") + "/images/company/"};
+    protected static final String[] RESOURCE_PATHS = new String[]{"/app/*", "/content/*", "/i18n/*", "/images/company/*"};
 
     private final JHipsterProperties jhipsterProperties;
 

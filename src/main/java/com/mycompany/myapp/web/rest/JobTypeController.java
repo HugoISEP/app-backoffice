@@ -39,8 +39,7 @@ public class JobTypeController {
 
     @GetMapping("/{id}")
     public JobTypeView getById(@PathVariable Long id){
-        service.hasAuthorization(id);
-        return mapper.asDTO(repository.findById(id).orElseThrow(() -> new BadRequestAlertException("JobType doesn't exist", ENTITY_NAME, "id doesn't exist")));
+        return service.getById(id);
     }
 
     @GetMapping
@@ -64,18 +63,25 @@ public class JobTypeController {
 
     @PostMapping
     public JobTypeView create(@Valid @RequestBody JobTypeDTO jobType){
-        return service.createJobType(jobType);
+        try {
+            return service.createJobType(jobType);
+        } catch (Exception e){
+            throw new BadRequestAlertException("data is not valid ", ENTITY_NAME, e.getMessage());
+        }
     }
 
     @PutMapping
     public JobTypeView edit(@Valid @RequestBody JobTypeDTO jobType){
-        service.hasAuthorization(jobType.getId());
-        return service.editJobType(jobType);
+        try {
+            return service.editJobType(jobType);
+        } catch (Exception e){
+            throw new BadRequestAlertException("data is not valid ", ENTITY_NAME, e.getMessage());
+        }
     }
 
     @DeleteMapping("/{id}")
     public void delete(@PathVariable Long id){
-        service.hasAuthorization(id);
         service.deleteJobType(id);
     }
+
 }

@@ -1,48 +1,50 @@
+<div class="card jh-card">
 <div class="row justify-content-center">
     <div class="col-8">
         <div *ngIf="mission">
             <h2><span>Mission: </span> {{ mission.name }}</h2>
             <hr>
             <jhi-alert-error></jhi-alert-error>
-            <table *ngIf="mission.positions && mission.positions.length > 0" class="table table-striped">
-                <thead class="thead-dark">
-                <tr>
-                    <th scope="col">Date</th>
-                    <th scope="col">Durée</th>
-                    <th scope="col">Description</th>
-                    <th scope="col">Travail</th>
-                    <th scope="col">Status</th>
-                    <th scope="col">Voir plus</th>
-                    <th scope="col">Supprimer</th>
+            <div class="table-responsive">
+                <table *ngIf="mission.positions && mission.positions.length > 0" class="table table-striped ">
+                    <thead class="thead-dark">
+                    <tr>
+                        <th scope="col" style="width: 16%">Date</th>
+                        <th scope="col" style="width: 10%">Durée</th>
+                        <th scope="col" style="width: 32%">Description</th>
+                        <th scope="col" style="width: 16%">Type de poste</th>
+                        <th scope="col" style="width: 10%">Status</th>
+                        <th scope="col" style="width: 16%">Action</th>
 
-                </tr>
-                </thead>
-                <tbody>
-                <tr *ngFor="let position of mission?.positions ;trackBy: getPositionId">
-                    <th>{{position.createdAt | date: 'yyyy-MM-dd'}}</th>
-                    <td>{{position.duration}}</td>
-                    <td>{{position.description}}</td>
-                    <td>{{position.jobType!.name}}</td>
-                    <td>
-                        <div class="custom-control custom-switch">
-                            <input type="checkbox" class="custom-control-input" [id]="position.id" (click)="togglePosition(position)" [checked]="position.status">
-                            <label class="custom-control-label" [for]="position.id" ></label>
-                        </div>
-                    </td>
-                    <td>
-                        <button type="submit" [routerLink]="['/mission', mission.id,'position', position.id, 'edit']" class="btn btn-info btn-sm">
-                            <fa-icon icon="eye"></fa-icon><span class="d-none d-md-inline">Voir</span>
-                        </button>
-                    </td>
-                    <td>
-                        <button type="submit" (click)="delete(position)"
-                                class="btn btn-danger btn-sm">
-                            <fa-icon icon="trash-alt"></fa-icon>
-                        </button>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr *ngFor="let position of mission?.positions ;trackBy: getPositionId">
+                        <td>{{position.createdAt | date: 'yyyy-MM-dd'}}</td>
+                        <td>{{position.duration}}</td>
+                        <td><div style="max-height: 100px; overflow-y: auto">{{position.description}}</div></td>
+                        <td>{{position.jobType!.name}}</td>
+                        <td>
+                            <div class="custom-control custom-switch">
+                                <input type="checkbox" class="custom-control-input" [id]="position.id" (click)="togglePosition(position)" [checked]="position.status">
+                                <label class="custom-control-label" [for]="position.id" ></label>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="btn-group">
+                                <button type="submit" [routerLink]="['/mission', mission.id,'position', position.id, 'edit']" class="btn btn-info btn-sm">
+                                    <fa-icon icon="eye"></fa-icon><span class="d-none d-md-inline">Voir</span>
+                                </button>
+                                <button type="submit" (click)="delete(position)"
+                                        class="btn btn-danger btn-sm">
+                                    <fa-icon icon="trash-alt"></fa-icon>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
 
             <button type="submit"
                     (click)="previousState()"
@@ -63,4 +65,5 @@
             </button>
         </div>
     </div>
+</div>
 </div>

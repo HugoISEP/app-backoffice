@@ -1,7 +1,9 @@
 package com.mycompany.myapp.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.mycompany.myapp.service.validator.IconConstraint;
 import lombok.Data;
+import lombok.ToString;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
@@ -12,6 +14,7 @@ import java.util.List;
 
 @Data
 @Entity
+@ToString(exclude = {"positions"})
 @Table(name = "job_type")
 public class JobType {
 
@@ -23,16 +26,22 @@ public class JobType {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @OneToMany(mappedBy = "jobType", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+    @NotNull
+    @IconConstraint
+    @Column(name = "icon", nullable = false)
+    private String icon;
+
     @JsonIgnore
+    @OneToMany(mappedBy = "jobType", cascade = CascadeType.ALL)
     private List<Position> positions = new ArrayList<>();
 
     @Column(updatable = false)
     @CreationTimestamp
-    private LocalDateTime createDateTime;
+    private LocalDateTime createdAt;
     private LocalDateTime deletedAt;
 
-    @ManyToOne(optional = false)
     @JsonIgnore
+    @ManyToOne(optional = false)
     private Company company;
+
 }

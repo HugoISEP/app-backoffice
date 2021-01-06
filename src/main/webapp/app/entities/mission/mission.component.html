@@ -1,4 +1,4 @@
-<div>
+<div class="card jh-card">
     <h2 id="page-heading">
         <span>Mes Missions</span>
 
@@ -18,28 +18,28 @@
         <span>Aucune mission trouvée</span>
     </div>
 
-    <div class="float-right">
+    <div class="text-right mt-4 mb-3" *ngIf="(missions && missions.length > 0) || searchTerm !== ''">
         <label for="research">Recherche</label>
-        <input type="text" class="form-control" id="research" [(ngModel)]="searchTerm" (ngModelChange)="loadAll()">
+        <input type="text" id="research" [(ngModel)]="searchTerm" (ngModelChange)="loadAll()">
     </div>
 
     <div class="table-responsive" id="entities" *ngIf="missions && missions.length > 0">
         <table class="table table-striped" aria-describedby="page-heading">
             <thead>
-            <tr>
-                <th scope="col" ><span>Nom</span></th>
-                <th scope="col" ><span>Date de création</span></th>
-                <th></th>
+            <tr jhiSort [(predicate)]="predicate" [(ascending)]="ascending" [callback]="transition.bind(this)">
+                <th scope="col" jhiSortBy="name" class="text-center"><span>Nom</span><fa-icon icon="sort"></fa-icon></th>
+                <th scope="col" jhiSortBy="createdAt" class="text-center"><span>Date de création</span><fa-icon icon="sort"></fa-icon></th>
+                <th scope="col" jhiSortBy="projectManagerEmail" class="text-center"><span>Email de réception</span><fa-icon icon="sort"></fa-icon></th>
+                <th scope="col" class="text-center"><span>Nombre de postes</span></th>
                 <th></th>
             </tr>
             </thead>
             <tbody>
             <tr *ngFor="let mission of missions ;trackBy: getId">
-                <td><a [routerLink]="['/mission', mission.id, 'view']">{{ mission.name }}</a></td>
-                <td>{{ mission.positions?.length }}</td>
-                <td>
-                    Ajouter une date ?
-                </td>
+                <td class="text-center"><a [routerLink]="['/mission', mission.id, 'view']">{{ mission.name }}</a></td>
+                <td class="text-center">{{ mission.createdAt | date:'dd/MM/yy HH:mm' }}</td>
+                <td class="text-center">{{ mission.projectManagerEmail }}</td>
+                <td class="text-center">{{ mission.positions?.length }}</td>
                 <td class="text-right">
                     <div class="btn-group">
                         <button type="submit"
@@ -47,13 +47,6 @@
                                 class="btn btn-info btn-sm">
                             <fa-icon icon="eye"></fa-icon>
                             <span class="d-none d-md-inline">Voir</span>
-                        </button>
-
-                        <button type="submit"
-                                [routerLink]="['/mission', mission.id, 'edit']"
-                                class="btn btn-primary btn-sm">
-                            <fa-icon icon="pencil-alt"></fa-icon>
-                            <span class="d-none d-md-inline">Modifier</span>
                         </button>
 
                         <button type="submit" (click)="delete(mission)"
@@ -68,7 +61,7 @@
         </table>
     </div>
 
-    <div *ngIf="missions">
+    <div *ngIf="missions && missions.length > 0">
         <div class="row justify-content-center">
             <jhi-item-count [page]="page" [total]="totalItems" [itemsPerPage]="itemsPerPage"></jhi-item-count>
         </div>
@@ -77,5 +70,4 @@
             <ngb-pagination [collectionSize]="totalItems" [(page)]="page" [pageSize]="itemsPerPage" [maxSize]="5" [rotate]="true" [boundaryLinks]="true" (pageChange)="transition()"></ngb-pagination>
         </div>
     </div>
-
 </div>

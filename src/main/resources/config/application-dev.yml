@@ -19,6 +19,8 @@ logging:
     io.github.jhipster: DEBUG
     com.mycompany.myapp: DEBUG
 
+mobile-app-url: 'http://localhost:1234'
+
 spring:
   profiles:
     active: dev

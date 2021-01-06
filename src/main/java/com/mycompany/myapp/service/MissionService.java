@@ -41,47 +41,50 @@ public class MissionService {
     public void hasAuthorization(Long id){
         UserDTO user = userService.getUserWithAuthorities()
             .map(UserDTO::new)
-            .orElseThrow(() -> new BadRequestAlertException("User not found", ENTITY_NAME, "id doesn't exist"));
+            .orElseThrow(() -> new ResourceNotFoundException("User not found", ENTITY_NAME, "id doesn't exist"));
         Mission mission = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Entity not found", ENTITY_NAME, "id doesn't exist"));
         if(!user.getAuthorities().contains(AuthoritiesConstants.ADMIN) && !user.getCompany().getId().equals(mission.getCompany().getId())){
             throw new AccessDeniedException("user not authorize");
         }
     }
 
-    public Mission createMission(MissionDTO mission){
+    public MissionDTO getById(Long id){
+        hasAuthorization(id);
+        return mapper.asDTO(repository.findById(id).orElseThrow(() -> new BadRequestAlertException("position doesn't exist", ENTITY_NAME, "id doesn't exist")));
+    }
+
+    public MissionDTO createMission(MissionDTO mission){
         if (mission.getId() != null) {
-            throw new BadRequestAlertException("A new mission cannot already have an ID", ENTITY_NAME, "id exists");
+            throw new ResourceNotFoundException("A new mission cannot already have an ID", ENTITY_NAME, "id exists");
         }
         UserDTO user = userService.getUserWithAuthorities()
             .map(UserDTO::new)
-            .orElseThrow(() -> new BadRequestAlertException("user not found", ENTITY_NAME, "id exists"));
+            .orElseThrow(() -> new ResourceNotFoundException("user not found", ENTITY_NAME, "id exists"));
         Mission newMission = mapper.fromDTO(mission);
         newMission.setCompany(companyMapper.fromDTO(user.getCompany()));
-        return repository.save(newMission);
+        return mapper.asDTO(repository.save(newMission));
     }
 
-    public void deleteMission(Long id){
-        Mission missionToDelete = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Entity doesn't exist", ENTITY_NAME, "id doesn't exist"));
-        missionToDelete.getPositions().forEach(position -> {
-            //positionRepository.delete(position);
-            positionRepository.delete(position.getId());
-        });
-        repository.delete(missionToDelete);
+    public void deleteMission(Mission mission){
+        hasAuthorization(mission.getId());
+        repository.delete(mission);
     }
 
-    public Mission editMission(MissionDTO missionToEdit){
+    public MissionDTO editMission(MissionDTO missionToEdit){
         if (missionToEdit.getId() == null) {
             throw new BadRequestAlertException("Cannot edit ", ENTITY_NAME, " id doesn't exist");
         }
-        Mission mission = repository.findById(missionToEdit.getId()).orElseThrow(() -> new ResourceNotFoundException("mission doesn't exist", ENTITY_NAME, "id doesn't exist"));
+        hasAuthorization(missionToEdit.getId());
+
+        Mission mission = repository.findById(missionToEdit.getId()).orElseThrow(() -> new BadRequestAlertException("mission doesn't exist", ENTITY_NAME, "id doesn't exist"));
         mapper.updateMission(mapper.fromDTO(missionToEdit), mission);
-        return repository.save(mission);
+        return mapper.asDTO(repository.save(mission));
     }
 
     public Page<MissionView> getAllMissionByCompany(Pageable pageable, String searchTerm){
         UserDTO user = userService.getUserWithAuthorities()
             .map(UserDTO::new)
-            .orElseThrow(() -> new BadRequestAlertException("user not found", ENTITY_NAME, "id exists"));
+            .orElseThrow(() -> new ResourceNotFoundException("user not found", ENTITY_NAME, "id exists"));
         return repository.findAllByCompanyId(user.getCompany().getId(), searchTerm, pageable);
     }
 }

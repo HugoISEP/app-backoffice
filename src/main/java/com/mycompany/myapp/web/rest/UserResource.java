@@ -144,6 +144,7 @@ public class UserResource {
      * @return the {@link List<? extends JobTypeView>} with status {@code 200 (OK)} and with list of jobTypes.
      */
     @PutMapping("/users/{id}")
+    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.USER + "\")")
     public List<? extends JobTypeView> editJobTypes(@PathVariable("id") Long id, @Valid @RequestBody List<JobTypeDTO> jobTypes) {
         return userService.updateNotificationPreferences(id, jobTypes);
     }
@@ -155,6 +156,7 @@ public class UserResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body all users.
      */
     @GetMapping("/users")
+    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
     public ResponseEntity<List<UserDTO>> getAllUsers(Pageable pageable) {
         final Page<UserDTO> page = userService.getAllManagedUsers(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
@@ -162,6 +164,7 @@ public class UserResource {
     }
 
     @GetMapping("/users/manager")
+    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\") || hasAuthority(\"" + AuthoritiesConstants.MANAGER + "\")")
     public ResponseEntity<List<UserDTO>> getAllUsersByManager(Pageable pageable, @RequestParam(value = "searchTerm", defaultValue = "%%") String searchTerm) {
         final Page<UserDTO> page = userService.getAllManagedUsersByManager(pageable, searchTerm);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
@@ -185,11 +188,10 @@ public class UserResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the "login" user, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/users/{login:" + Constants.LOGIN_REGEX + "}")
-    public ResponseEntity<UserView> getUser(@PathVariable String login) {
+
+    public UserView getUser(@PathVariable String login) {
         log.debug("REST request to get User : {}", login);
-        return ResponseUtil.wrapOrNotFound(
-            userService.getUserWithAuthoritiesByLogin(login)
-                .map(UserDTO::new));
+        return userService.getUser(login);
     }
 
     /**
@@ -199,7 +201,7 @@ public class UserResource {
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @DeleteMapping("/users/{id}")
-    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.MANAGER + "\")")
+    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\") || hasAuthority(\"" + AuthoritiesConstants.MANAGER + "\")")
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
         log.debug("REST request to delete User: {}", id);
         userService.deleteUser(id);

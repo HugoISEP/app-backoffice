@@ -5,7 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Objects;
+import javax.validation.constraints.Email;
+import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor
@@ -14,8 +15,11 @@ public class CompanyDTO implements CompanyView {
 
     private Long id;
     private String name;
+    private LocalDateTime createdAt;
     private String emailTemplate;
     private String color;
     private String imagePath;
+    @Email
+    private String websiteUrl;
 
 }

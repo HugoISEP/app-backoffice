@@ -1,4 +1,4 @@
-<div>
+<div class="card jh-card">
     <h2 id="page-heading">
         <span>Mes types de poste</span>
 
@@ -18,21 +18,24 @@
         <span>Aucun type de poste trouvé</span>
     </div>
 
-    <div class="float-right">
+    <div class="text-right mt-4 mb-3" *ngIf="(jobTypes && jobTypes.length > 0) || searchTerm !== ''">
         <label for="research">Recherche</label>
-        <input type="text" class="form-control" id="research" [(ngModel)]="searchTerm" (ngModelChange)="loadAll()">
+        <input type="text" id="research" [(ngModel)]="searchTerm" (ngModelChange)="loadAll()">
     </div>
 
     <div class="table-responsive" id="entities" *ngIf="jobTypes && jobTypes.length > 0">
         <table class="table table-striped" aria-describedby="page-heading">
             <thead>
-            <tr>
-                <th scope="col" ><span>Nom</span></th>
+            <tr jhiSort [(predicate)]="predicate" [(ascending)]="ascending" [callback]="transition.bind(this)">
+                <th scope="col" jhiSortBy="name" class="text-center"><span>Nom</span><fa-icon icon="sort"></fa-icon></th>
+                <th scope="col" jhiSortBy="createdAt" class="text-center"><span>Date de création</span><fa-icon icon="sort"></fa-icon></th>
+                <th></th>
             </tr>
             </thead>
             <tbody>
             <tr *ngFor="let jobType of jobTypes ;trackBy: getId">
-                <td><a [routerLink]="['/mission', jobType.id, 'view']">{{ jobType.name }}</a></td>
+                <td class="text-center"><a [routerLink]="['/mission', jobType.id, 'view']">{{ jobType.name }}</a></td>
+                <td class="text-center">{{ jobType.createdAt | date:'dd/MM/yy HH:mm' }}</td>
                 <td class="text-right">
                     <div class="btn-group">
                         <button type="submit"
@@ -61,7 +64,7 @@
         </table>
     </div>
 
-    <div *ngIf="jobTypes">
+    <div *ngIf="jobTypes && jobTypes.length > 0">
         <div class="row justify-content-center">
             <jhi-item-count [page]="page" [total]="totalItems" [itemsPerPage]="itemsPerPage"></jhi-item-count>
         </div>
@@ -70,5 +73,4 @@
             <ngb-pagination [collectionSize]="totalItems" [(page)]="page" [pageSize]="itemsPerPage" [maxSize]="5" [rotate]="true" [boundaryLinks]="true" (pageChange)="transition()"></ngb-pagination>
         </div>
     </div>
-
 </div>

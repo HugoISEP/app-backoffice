@@ -2,10 +2,10 @@ import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { errorRoute } from './layouts/error/error.route';
 import { navbarRoute } from './layouts/navbar/navbar.route';
-import { DEBUG_INFO_ENABLED } from 'app/app.constants';
 import { Authority } from 'app/shared/constants/authority.constants';
 
 import { UserRouteAccessService } from 'app/core/auth/user-route-access-service';
+import { DEBUG_INFO_ENABLED } from 'app/app.constants';
 
 const LAYOUT_ROUTES = [navbarRoute, ...errorRoute];
 
@@ -13,6 +13,11 @@ const LAYOUT_ROUTES = [navbarRoute, ...errorRoute];
   imports: [
     RouterModule.forRoot(
       [
+        {
+          path: '',
+          redirectTo: 'login',
+          pathMatch: 'full',
+        },
         {
           path: 'admin',
           data: {
@@ -24,6 +29,14 @@ const LAYOUT_ROUTES = [navbarRoute, ...errorRoute];
         {
           path: 'account',
           loadChildren: () => import('./account/account.module').then(m => m.AccountModule),
+        },
+        {
+          path: 'home',
+          loadChildren: () => import('./home/home.module').then(m => m.HugoIsepHomeModule),
+        },
+        {
+          path: 'login',
+          loadChildren: () => import('./login/login.module').then(l => l.LoginModule),
         },
         ...LAYOUT_ROUTES,
       ]

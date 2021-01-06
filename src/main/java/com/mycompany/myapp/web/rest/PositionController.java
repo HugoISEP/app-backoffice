@@ -1,19 +1,26 @@
 package com.mycompany.myapp.web.rest;
 
+import com.google.common.collect.Iterables;
+import com.mycompany.myapp.domain.Position;
 import com.mycompany.myapp.repository.PositionRepository;
 import com.mycompany.myapp.security.AuthoritiesConstants;
-import com.mycompany.myapp.service.MissionService;
 import com.mycompany.myapp.service.PositionService;
 import com.mycompany.myapp.service.dto.PositionDTO;
-import com.mycompany.myapp.service.mapper.MissionMapper;
 import com.mycompany.myapp.service.mapper.PositionMapper;
 import com.mycompany.myapp.service.view.MissionView;
 import com.mycompany.myapp.service.view.PositionView;
-import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
+import io.github.jhipster.web.util.PaginationUtil;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
+import java.util.Arrays;
 import java.util.List;
 
 @RestController
@@ -21,38 +28,33 @@ import java.util.List;
 @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.MANAGER + "\") || hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
 public class PositionController {
 
-    private static final String ENTITY_NAME = "position";
 
     private final PositionRepository repository;
     private final PositionService service;
     private final PositionMapper mapper;
-    private final MissionService missionService;
-    private final MissionMapper missionMapper;
 
-    public PositionController(PositionRepository repository, PositionService service, PositionMapper mapper, MissionService missionService, MissionMapper missionMapper) {
+    public PositionController(PositionRepository repository, PositionService service, PositionMapper mapper) {
         this.repository = repository;
         this.service = service;
         this.mapper = mapper;
-        this.missionService = missionService;
-        this.missionMapper = missionMapper;
     }
 
     @GetMapping("/{id}")
     public PositionView getById(@PathVariable Long id){
-        service.hasAuthorization(id);
-        return mapper.asDto(repository.findById(id).orElseThrow(() -> new BadRequestAlertException("position doesn't exist", ENTITY_NAME, "id doesn't exist")));
+        return service.getById(id);
     }
 
     @GetMapping("/mission/{id}")
     public List<PositionView> getPositionsByMission(@PathVariable Long id){
-        missionService.hasAuthorization(id);
-        return repository.findAllByMissionId(id);
+        return service.getByMissionId(id);
     }
 
     @GetMapping("/active")
     @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.USER + "\") || hasAuthority(\"" + AuthoritiesConstants.MANAGER + "\")")
-    public List<PositionView> getActivePositionsByUser(){
-        return service.getActivePositionsByUser();
+    public ResponseEntity<List<PositionView>> getActivePositionsByUser(Pageable pageable, @RequestParam(value = "searchTerm", defaultValue = "%%") String searchTerm){
+        Page<PositionView> page = service.getActivePositionsByUser(pageable, searchTerm);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
+        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
 
     @GetMapping("/all")
@@ -63,19 +65,16 @@ public class PositionController {
 
     @PostMapping("/mission/{missionId}")
     public MissionView addPosition(@PathVariable Long missionId, @Valid @RequestBody PositionDTO position){
-        missionService.hasAuthorization(missionId);
-        return missionMapper.asDTO(service.addPosition(missionId, position));
+        return service.addPosition(missionId, position);
     }
 
     @PutMapping()
     public PositionView edit(@Valid @RequestBody PositionDTO position){
-        service.hasAuthorization(position.getId());
-        return mapper.asDto(service.editPosition(position));
+        return service.editPosition(position);
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable Long id){
-        service.hasAuthorization(id);
-        service.deletePosition(id);
+    public void delete(@PathVariable("id") Position position){
+        service.deletePosition(position);
     }
 }

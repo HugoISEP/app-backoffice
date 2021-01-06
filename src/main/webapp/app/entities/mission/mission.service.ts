@@ -3,8 +3,6 @@ import { SERVER_API_URL } from '../../app.constants';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { IMission } from '../../shared/model/mission.model';
 import { Observable } from 'rxjs';
-import * as moment from 'moment';
-import { map } from 'rxjs/operators';
 import { createRequestOption, Pagination } from '../../shared/util/request-util';
 
 type EntityResponseType = HttpResponse<IMission>;
@@ -33,9 +31,7 @@ export class MissionService {
     if (searchTerm) {
       options = options.set('searchTerm', searchTerm);
     }
-    return this.http
-      .get<IMission[]>(this.resourceUrl, { params: options, observe: 'response' })
-      .pipe(map((res: EntityArrayResponseType) => this.convertDateArrayFromServer(res)));
+    return this.http.get<IMission[]>(this.resourceUrl, { params: options, observe: 'response' });
   }
 
   getAll(): Observable<EntityArrayResponseType> {
@@ -44,16 +40,5 @@ export class MissionService {
 
   delete(id: number): Observable<HttpResponse<{}>> {
     return this.http.delete(`${this.resourceUrl}/${id}`, { observe: 'response' });
-  }
-
-  protected convertDateArrayFromServer(res: EntityArrayResponseType): EntityArrayResponseType {
-    if (res.body) {
-      res.body.forEach((mission: IMission) => {
-        mission.positions?.forEach(position => {
-          position.createdAt = position.createdAt ? moment(position.createdAt) : undefined;
-        });
-      });
-    }
-    return res;
   }
 }

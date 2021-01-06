@@ -15,11 +15,17 @@ import com.mycompany.myapp.web.rest.vm.ManagedUserVM;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.io.UnsupportedEncodingException;
+import java.net.URL;
+import java.net.URLEncoder;
 import java.util.*;
 import java.util.regex.Pattern;
 
@@ -35,6 +41,9 @@ public class AccountResource {
             super(message);
         }
     }
+
+    @Value("${mobile-app-url}")
+    private String appUrl;
 
     private final Logger log = LoggerFactory.getLogger(AccountResource.class);
 
@@ -66,10 +75,6 @@ public class AccountResource {
         if (!checkPasswordLength(managedUserVM.getPassword())) {
             throw new InvalidPasswordException();
         }
-        Pattern pattern = Pattern.compile("^[\\w-\\.]+@"+ managedUserVM.getCompany().getEmailTemplate());
-        if (!pattern.matcher(managedUserVM.getEmail()).matches()) {
-            throw new Exception("invalid email");
-        }
         User user = userService.registerUser(managedUserVM, managedUserVM.getPassword());
         mailService.sendActivationEmail(user);
     }
@@ -81,11 +86,20 @@ public class AccountResource {
      * @throws RuntimeException {@code 500 (Internal Server Error)} if the user couldn't be activated.
      */
     @GetMapping("/activate")
-    public void activateAccount(@RequestParam(value = "key") String key) {
+    public RedirectView activateAccount(@RequestParam(value = "key") String key, RedirectAttributes attributes)  {
         Optional<User> user = userService.activateRegistration(key);
         if (!user.isPresent()) {
             throw new AccountResourceException("No user was found for this activation key");
         }
+        String siteUrl = user.get().getCompany().getWebsiteUrl()!= null ? user.get().getCompany().getWebsiteUrl() : "junior-entreprises.com";
+        attributes.addFlashAttribute("flashAttribute", "redirectWithRedirectView");
+        attributes.addAttribute("attribute", "redirectWithRedirectView");
+        try {
+            return new RedirectView(appUrl + "?url=" + URLEncoder.encode(siteUrl, "UTF-8"));
+        } catch (UnsupportedEncodingException e) {
+            return new RedirectView(appUrl);
+        }
+
     }
 
     /**

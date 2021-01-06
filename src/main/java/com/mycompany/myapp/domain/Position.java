@@ -1,7 +1,8 @@
 package com.mycompany.myapp.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
+import lombok.ToString;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
@@ -9,6 +10,7 @@ import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 @Data
+@ToString(exclude = {"mission", "jobType"})
 @Entity
 @Table(name = "position")
 public class Position {
@@ -30,11 +32,11 @@ public class Position {
     private float remuneration;
 
     @NotNull
-    @Column(name = "description", nullable = false)
+    @Column(name = "description", length = 500, nullable = false)
     private String description;
 
+    @JsonIgnore
     @ManyToOne
-    @JsonIgnoreProperties(value = "positions")
     private Mission mission;
 
     @Column(name = "created_at", nullable = false)
@@ -47,6 +49,6 @@ public class Position {
     private boolean status = false;
 
     @ManyToOne
-    @JsonIgnoreProperties(value = "positions")
     private JobType jobType;
+
 }

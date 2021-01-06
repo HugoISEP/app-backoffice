@@ -1,3 +1,4 @@
+<div class="card jh-card">
 <div class="row justify-content-center">
     <div class="col-8">
         <form name="editForm" role="form" novalidate (ngSubmit)="save()" [formGroup]="editForm">
@@ -5,6 +6,7 @@
 
             <div>
                 <jhi-alert-error></jhi-alert-error>
+
                 <div class="form-group">
                     <label class="form-control-label" for="field_name">Nom</label>
                     <input type="text" class="form-control" name="name" id="field_name"
@@ -16,6 +18,26 @@
                         </small>
                     </div>
                 </div>
+
+                <div class="form-group">
+                    <label class="form-control-label" for="field_icon">Icon</label>
+                    <input type="text" class="form-control" name="icon" id="field_icon"
+                           formControlName="icon"/>
+                    <small class="form-text text-muted">
+                        Icon à choisir <a href="https://fontawesome.com/icons?d=gallery&s=brands,solid" target="_blank">ici</a>, mettre le nom de l'icon sans préfixe (parmi les catégories solid et brand)
+                    </small>
+                    <div *ngIf="editForm.get('icon')!.invalid && (editForm.get('icon')!.dirty || editForm.get('icon')!.touched)">
+                        <small class="form-text text-danger"
+                               *ngIf="editForm.get('icon')?.errors?.required">
+                            Ce champs est requis
+                        </small>
+                        <small class="form-text text-danger"
+                               *ngIf="editForm.get('icon')?.errors?.invalidIcon">
+                            Cet icon n'est pas valide
+                        </small>
+                    </div>
+                </div>
+
             </div>
             <div>
                 <button type="button" id="cancel-save" class="btn btn-secondary" (click)="previousState()">
@@ -28,4 +50,5 @@
             </div>
         </form>
     </div>
+</div>
 </div>

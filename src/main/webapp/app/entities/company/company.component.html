@@ -1,4 +1,4 @@
-<div>
+<div class="card jh-card">
     <h2 id="page-heading">
         <span>Junior-Entreprises</span>
 
@@ -18,26 +18,28 @@
         <span>Aucune Junior-Entreprise trouvée</span>
     </div>
 
-    <div class="float-right">
+    <div class="text-right mt-4 mb-3" *ngIf="(companies && companies.length > 0) || searchTerm !== ''">
         <label for="research">Recherche</label>
-        <input type="text" class="form-control" id="research" [(ngModel)]="searchTerm" (ngModelChange)="loadAll()">
+        <input type="text" id="research" [(ngModel)]="searchTerm" (ngModelChange)="loadAll()">
     </div>
 
     <div class="table-responsive" id="entities" *ngIf="companies && companies.length > 0">
         <table class="table table-striped" aria-describedby="page-heading">
             <thead>
-            <tr>
-                <th scope="col" ><span>Nom</span></th>
-                <th scope="col" ><span>Template d'adresse email</span></th>
-                <th scope="col" ><span>Nombre d'utilisateurs inscrits</span></th>
-                <th scope="col" ><span>Gérer</span></th>
+            <tr jhiSort [(predicate)]="predicate" [(ascending)]="ascending" [callback]="transition.bind(this)" >
+                <th scope="col" jhiSortBy="name" class="text-center"><span>Nom</span><fa-icon icon="sort"></fa-icon></th>
+                <th scope="col" jhiSortBy="createdAt" class="text-center"><span>Date de création</span><fa-icon icon="sort"></fa-icon></th>
+                <th scope="col" jhiSortBy="emailTemplate" class="text-center"><span>Template d'adresse email</span><fa-icon icon="sort"></fa-icon></th>
+                <th scope="col" jhiSortBy="totalUsers" class="text-center"><span>Nombre d'utilisateurs inscrits</span><fa-icon icon="sort"></fa-icon></th>
+                <th></th>
             </tr>
             </thead>
             <tbody>
             <tr *ngFor="let company of companies ;trackBy: getId">
-                <td>{{ company.name }}</td>
-                <td>{{ company.emailTemplate }}</td>
-                <td>{{company.totalUsers}}</td>
+                <td class="text-center">{{ company.name }}</td>
+                <td class="text-center">{{ company.createdAt | date:'dd/MM/yy HH:mm' }}</td>
+                <td class="text-center">{{ company.emailTemplate }}</td>
+                <td class="text-center">{{company.totalUsers}}</td>
                 <td class="text-right">
                     <div class="btn-group">
                         <button type="submit"
@@ -59,7 +61,7 @@
         </table>
     </div>
 
-    <div *ngIf="companies">
+    <div *ngIf="companies && companies.length > 0">
         <div class="row justify-content-center">
             <jhi-item-count [page]="page" [total]="totalItems" [itemsPerPage]="itemsPerPage"></jhi-item-count>
         </div>
@@ -68,6 +70,4 @@
             <ngb-pagination [collectionSize]="totalItems" [(page)]="page" [pageSize]="itemsPerPage" [maxSize]="5" [rotate]="true" [boundaryLinks]="true" (pageChange)="transition()"></ngb-pagination>
         </div>
     </div>
-
 </div>
-

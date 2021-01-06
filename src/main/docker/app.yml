@@ -10,6 +10,13 @@ services:
       - JHIPSTER_SLEEP=10 # gives time for other services to boot before the application
     ports:
       - 8080:8080
+    volumes:
+      - ./images:/images
+
+  confirmation-page:
+    image: 'registry.dev.juniorisep.com/application-consultants-globale/confirmation-page'
+    ports:
+      - 5000:5000
   #hugoisep-postgresql:
   # extends:
   #  file: postgresql.yml

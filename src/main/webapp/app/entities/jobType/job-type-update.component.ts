@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, ValidatorFn, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
 import { HttpResponse } from '@angular/common/http';
 import { JobTypeService } from './jobType.service';
 import { IJobType, JobType } from '../../shared/model/jobType.model';
+import { icons } from '../../shared/constants/icons.constant';
 
 @Component({
   selector: 'jhi-job-type-update',
@@ -16,6 +17,7 @@ export class JobTypeUpdateComponent implements OnInit {
   editForm = this.fb.group({
     id: [],
     name: [null, [Validators.required]],
+    icon: [null, [Validators.required, this.iconValidator()]],
   });
 
   constructor(protected jobTypeService: JobTypeService, protected activateRoute: ActivatedRoute, private fb: FormBuilder) {}
@@ -30,6 +32,7 @@ export class JobTypeUpdateComponent implements OnInit {
     this.editForm.patchValue({
       id: jobType.id,
       name: jobType.name,
+      icon: jobType.icon,
     });
   }
 
@@ -38,6 +41,7 @@ export class JobTypeUpdateComponent implements OnInit {
       ...new JobType(),
       id: this.editForm.get(['id'])!.value,
       name: this.editForm.get(['name'])!.value,
+      icon: this.editForm.get(['icon'])!.value,
     };
   }
 
@@ -73,5 +77,10 @@ export class JobTypeUpdateComponent implements OnInit {
     } else {
       this.subscribeToSaveResponse(this.jobTypeService.create(mission));
     }
+  }
+
+  iconValidator(): ValidatorFn {
+    return (control: AbstractControl): { [key: string]: any } | null =>
+      icons.includes(control.value) ? null : { invalidIcon: control.value };
   }
 }

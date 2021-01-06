@@ -1,43 +1,108 @@
-<div class="row justify-content-center">
-    <div class="col-8">
-    <h1 class="display-4">{{account ? "Bienvenue, "+ (account.company?.name ? account.company?.name : "ADMIN") : "Back-Office application mobile"}}</h1>
-
-    <div [ngSwitch]="isAuthenticated()">
-        <div *ngIf="positions && positions.length > 0">
-            <h1 class="display-6">Poste en cours</h1>
-            <table class="table table-striped">
-                <thead class="thead-dark">
-                <tr>
-                    <th scope="col">Date</th>
-                    <th scope="col">Durée</th>
-                    <th scope="col">Description</th>
-                    <th scope="col">Travail</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr *ngFor="let position of positions ;trackBy: getPositionId">
-                    <th>{{position.createdAt | date: 'yyyy-MM-dd'}}</th>
-                    <td>{{position.duration}}</td>
-                    <td>{{position.description}}</td>
-                    <td>{{position.jobType!.name}}</td>
-                </tr>
-                </tbody>
-            </table>
+<div class="row h-100">
+    <div class="col-lg-5">
+        <div class="card p-4 h-100" style="border-radius: 10px" >
+        <div class="row">
+            <div class="col-8 my-auto">
+                <h1 class="display-5 text-responsive">{{"Bonjour,  Junior ISIT !"}}</h1>
+            </div>
+            <div class="col-4">
+                <img class="img-fluid" src="../../content/images/home%20page/illustration-bienvenue.svg" />
+            </div>
         </div>
-
-        <div *ngIf="isAuthenticated() && ( positions && positions.length < 1)">
-            <h1 class="display-6">Pas de poste en cours</h1>
+        <div class="row p-3 mt-3">
+            <p>
+                Bienvenue sur l’espace d’administration de votre application mobile à destination des consultants de
+                votre école. Vous avez la possibilité d’y ajouter des missions à pourvoir, et d’y administrer votre
+                équipe de consultants. En cas de problème n’hésitez pas à nous écrire à support@juniorisep.com
+                <br />
+                <br />
+                A bientôt
+            </p>
         </div>
-
-        <div class="alert alert-warning" *ngSwitchCase="false">
-            <span>If you want to </span>
-            <a class="alert-link" (click)="login()">sign in</a><span>, you can try the default accounts:<br/>- Administrator (login="admin" and password="admin") <br/>- User (login="user" and password="user").</span>
-        </div>
-
-        <div class="alert alert-warning" *ngSwitchCase="false">
-            <span>You don't have an account yet?</span>&nbsp;
-            <a class="alert-link" routerLink="account/register">Register a new account</a>
+        <div class="row">
+            <div class="col text-center my-auto">
+                <img class="img-fluid" style="height: 80px" src="../../content/images/home%20page/logo-JE.png" />
+            </div>
+            <div class="col text-center my-auto">
+                <img class="img-fluid" style="height: 100px" src="../../content/images/home%20page/logo-JISEP.png" />
+            </div>
         </div>
     </div>
     </div>
+
+    <div class="col-lg-7 mt-3 mt-lg-0" >
+        <div class="card h-100 p-4" style="border-radius: 10px" >
+        <div class="row">
+            <div class="col-8 pl-md-5">
+                <h1 class="display-5 text-responsive">Actuellement sur votre application</h1>
+            </div>
+            <div class="col-4 my-auto">
+                <label for="research">Recherche</label>
+                <input type="text" class="form-control" id="research" [(ngModel)]="searchTerm" (ngModelChange)="loadAll()">
+            </div>
+        </div>
+        <div class="row" style="margin-top: 30px">
+            <div class="col">
+                <div class="table-responsive" id="entities" *ngIf="positions && positions.length > 0">
+                    <table class="table table-striped" aria-describedby="page-heading">
+                        <thead>
+                        <tr jhiSort [(predicate)]="predicate" [(ascending)]="ascending" [callback]="transition.bind(this)">
+                            <th scope="col" jhiSortBy="createdAt" class="text-center"><span>Date</span><fa-icon icon="sort"></fa-icon></th>
+                            <th scope="col" jhiSortBy="mission.name" class="text-center"><span>Mission</span><fa-icon icon="sort"></fa-icon></th>
+                            <th scope="col" jhiSortBy="placesNumber" class="text-center"><span>Nombre de places</span><fa-icon icon="sort"></fa-icon></th>
+                            <th scope="col" jhiSortBy="remuneration" class="text-center"><span>Rémunération</span><fa-icon icon="sort"></fa-icon></th>
+                            <th scope="col"class="text-center"><span>Statut</span></th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr *ngFor="let position of positions ;trackBy: getPositionId">
+                            <td class="text-center">{{ position.createdAt | date:'dd/MM/yy HH:mm'}}</td>
+                            <td class="text-center">{{ position.mission!.name }}</td>
+                            <td class="text-center">{{ position.placesNumber }}</td>
+                            <td class="text-center">{{ position.remuneration }} €</td>
+                            <td class="text-center">
+                                <div class="custom-control custom-switch">
+                                    <input type="checkbox" class="custom-control-input" [id]="position.id" (click)="togglePosition(position)" [checked]="position.status">
+                                    <label class="custom-control-label" [for]="position.id" ></label>
+                                </div>
+                            </td>
+                            <td class="text-right">
+                                <div class="btn-group">
+                                    <button type="submit"
+                                            [routerLink]="['/mission', position.mission!.id, 'position', position.id, 'edit']"
+                                            class="btn btn-info btn-sm">
+                                        <fa-icon icon="eye"></fa-icon>
+                                        <span class="d-none d-md-inline">Voir</span>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div *ngIf="totalItems > 0">
+                    <div class="row justify-content-center">
+                        <jhi-item-count [page]="page" [total]="totalItems" [itemsPerPage]="itemsPerPage"></jhi-item-count>
+                    </div>
+
+                    <div class="row justify-content-center">
+                        <ngb-pagination [collectionSize]="totalItems" [(page)]="page" [pageSize]="itemsPerPage" [maxSize]="5" [rotate]="true" [boundaryLinks]="true" (pageChange)="transition()"></ngb-pagination>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div *ngIf="isAuthenticated()">
+            <div *ngIf="isAuthenticated() && ( positions && positions!.length < 1)">
+                <h1 class="display-6">Pas de poste en cours</h1>
+            </div>
+        </div>
+        </div>
+    </div>
+
 </div>
+
+
+
+
