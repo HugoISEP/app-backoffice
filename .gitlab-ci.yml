@@ -43,11 +43,10 @@ docker-push:
   stage: release
   variables:
     REGISTRY_URL: $CI_REGISTRY
-    IMAGE_TAG: '${CI_REGISTRY_IMAGE}:${TAG}'
   dependencies:
     - maven-package
   script:
-    - echo $IMAGE_TAG
+    - IMAGE_TAG = '${CI_REGISTRY_IMAGE}:${TAG}'
     - ./mvnw -ntp compile jib:build -Pprod -Djib.to.image=$IMAGE_TAG -Djib.to.auth.username=gitlab-ci-token  -Djib.to.auth.password=$CI_BUILD_TOKEN -Dmaven.repo.local=$MAVEN_USER_HOME
   only:
     - master
