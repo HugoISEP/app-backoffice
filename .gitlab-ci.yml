@@ -13,6 +13,7 @@ stages:
 before_script:
   - export NG_CLI_ANALYTICS="false"
   - export MAVEN_USER_HOME=`pwd`/.maven
+  - export TAG=$CI_COMMIT_BRANCH && [[$CI_COMMIT_BRANCH == "master"]] && export TAG="prod"
 
 maven-compile:
   stage: build
@@ -25,6 +26,7 @@ maven-compile:
     expire_in: 1 day
   only:
     - master
+    - staging
 
 maven-package:
   stage: package
@@ -37,12 +39,13 @@ maven-package:
     expire_in: 1 day
   only:
     - master
+    - staging
 
 docker-push:
   stage: release
   variables:
     REGISTRY_URL: $CI_REGISTRY
-    IMAGE_TAG: $CI_REGISTRY_IMAGE:prod
+    IMAGE_TAG: $CI_REGISTRY_IMAGE:$TAG
   dependencies:
     - maven-package
   script:
