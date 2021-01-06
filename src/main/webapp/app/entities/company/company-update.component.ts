@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, ValidatorFn, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CompanyService } from 'app/entities/company/company.service';
 import { Company, ICompany } from 'app/shared/model/company.model';
+import { icons } from '../../shared/constants/icons.constant';
 
 @Component({
   selector: 'jhi-company-update',
@@ -18,7 +19,7 @@ export class CompanyUpdateComponent implements OnInit {
     emailTemplate: [null, [Validators.required]],
     color: [null, [Validators.required, Validators.pattern('^#(?:[0-9a-fA-F]{3}){1,2}$')]],
     websiteUrl: [null, [Validators.pattern('(https?://)?([\\da-z.-]+)\\.([a-z.]{2,6})[/\\w .-]*/?')]],
-    file: [null /*[Validators.required /!*requiredFileType('png')*!/]*/], //TODO: ajouter une validation pour le type de fichier
+    file: [null, [Validators.required, this.fileValidator()]],
   });
 
   constructor(
@@ -105,5 +106,11 @@ export class CompanyUpdateComponent implements OnInit {
     } else {
       this.editForm.controls['file'].setValue(null);
     }
+    this.editForm.controls['file']!.markAsTouched();
+  }
+
+  fileValidator(): ValidatorFn {
+    return (control: AbstractControl): { [key: string]: any } | null =>
+      control.value?.type === 'image/png' ? null : { invalidFile: control.value };
   }
 }

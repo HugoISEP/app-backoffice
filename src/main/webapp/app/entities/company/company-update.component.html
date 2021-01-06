@@ -68,12 +68,19 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="field_file">Logo</label>
-                    <input type="file" class="form-control-file" name="file" id="field_file" (change)="handleFile($event)">
-                    <div *ngIf="editForm.get('file')!.invalid && (editForm.get('file')!.dirty || editForm.get('file')!.touched)">
+                    <label class="form-control-label" for="field_file">Logo</label>
+                    <input type="file" class="form-control-file" name="file" id="field_file"(change)="handleFile($event)">
+                    <small class="form-text text-muted">
+                        fichier en png d'une taille maximale de 1 Mo
+                    </small>
+                    <div *ngIf="editForm.get('file')!.invalid">
                         <small class="form-text text-danger"
                                *ngIf="editForm.get('file')?.errors?.required">
                             Ce champs est requis
+                        </small>
+                        <small class="form-text text-danger"
+                               *ngIf="editForm.get('file')?.errors?.invalidFile">
+                            Format png requis
                         </small>
                     </div>
                 </div>
