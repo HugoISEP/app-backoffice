@@ -43,7 +43,7 @@ docker-push:
   stage: release
   variables:
     REGISTRY_URL: $CI_REGISTRY
-    IMAGE_TAG: '$CI_REGISTRY_IMAGE:$TAG'
+    IMAGE_TAG: '${CI_REGISTRY_IMAGE}:${TAG}'
   dependencies:
     - maven-package
   script:
