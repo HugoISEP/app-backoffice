@@ -9,6 +9,8 @@ import com.mycompany.myapp.service.dto.UserDTO;
 import com.mycompany.myapp.service.mapper.CompanyMapper;
 import com.mycompany.myapp.service.view.CompanyDetailsView;
 import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
+import com.mycompany.myapp.web.rest.errors.ResourceNotFoundException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.AccessDeniedException;
@@ -19,11 +21,12 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 
-
+@Slf4j
 @Service
 @Transactional
 public class CompanyService {
@@ -46,7 +49,7 @@ public class CompanyService {
         UserDTO user = userService.getUserWithAuthorities()
             .map(UserDTO::new)
             .orElseThrow(() -> new BadRequestAlertException("User not found", ENTITY_NAME, "id doesn't exist"));
-        Company company = repository.findById(id).orElseThrow(() -> new BadRequestAlertException("Entity not found", ENTITY_NAME, "id doesn't exist"));
+        Company company = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Entity not found", ENTITY_NAME, "id doesn't exist"));
         if(!user.getAuthorities().contains(AuthoritiesConstants.ADMIN) && !user.getCompany().getId().equals(company.getId())){
             throw new AccessDeniedException("user not authorize");
         }
@@ -55,7 +58,7 @@ public class CompanyService {
     public CompanyDetailsView getCompanyFromCurrentUser(){
         UserDTO user = userService.getUserWithAuthorities()
             .map(UserDTO::new)
-            .orElseThrow(() -> new BadRequestAlertException("user not found", ENTITY_NAME, " id exists"));
+            .orElseThrow(() -> new ResourceNotFoundException("user not found", ENTITY_NAME, " id exists"));
         return repository.findCompanyFromCurrentUser(user.getId());
     }
 
@@ -87,9 +90,12 @@ public class CompanyService {
 
     public void delete(Long id) throws IOException {
         hasAuthorization(id);
-
         Company companyToDelete = repository.findById(id).orElseThrow(() -> new BadRequestAlertException("company doesn't exist", ENTITY_NAME, "id doesn't exist"));
-        Files.delete(Paths.get(filePath + companyToDelete.getImagePath()));
+        try {
+            Files.delete(Paths.get(filePath + companyToDelete.getImagePath()));
+        } catch ( NoSuchFileException e){
+            log.warn("Picture not found while trying to deleting it");
+        }
         repository.delete(companyToDelete);
     }
 
@@ -116,8 +122,12 @@ public class CompanyService {
         }
         String currentPath = Paths.get("").toAbsolutePath().toString();
 
-        byte[] file = image.getBytes();
-        Path path = Paths.get(currentPath + filePath + timestamp + ".png");
-        return Files.write(path, file).toFile();
+        try {
+            byte[] file = image.getBytes();
+            Path path = Paths.get(currentPath + filePath + timestamp + ".png");
+            return Files.write(path, file).toFile();
+        } catch (IOException e){
+            throw new CompanyPictureNotFoundException("temp picture not found", "");
+        }
     }
 }

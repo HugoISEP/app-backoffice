@@ -1,6 +1,5 @@
 package com.mycompany.myapp.service;
 
-import com.google.api.gax.rpc.PermissionDeniedException;
 import com.mycompany.myapp.config.Constants;
 import com.mycompany.myapp.domain.Authority;
 import com.mycompany.myapp.domain.Company;
@@ -16,12 +15,11 @@ import com.mycompany.myapp.service.dto.JobTypeDTO;
 import com.mycompany.myapp.service.dto.UserDTO;
 
 import com.mycompany.myapp.service.mapper.JobTypeMapper;
+import com.mycompany.myapp.web.rest.errors.InvalidEmailSuffixException;
 import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
 import io.github.jhipster.security.RandomUtil;
 
-import io.github.jhipster.web.util.ResponseUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.CacheManager;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -39,11 +37,10 @@ import java.util.stream.Collectors;
 /**
  * Service class for managing users.
  */
+@Slf4j
 @Service
 @Transactional
 public class UserService {
-
-    private final Logger log = LoggerFactory.getLogger(UserService.class);
 
     private final UserRepository userRepository;
 
@@ -166,7 +163,7 @@ public class UserService {
             Company company = this.isEmailValid(userDTO.getEmail());
             if (!currentUser.getAuthorities().contains(AuthoritiesConstants.ADMIN)) {
                 if (!currentUser.getCompany().getId().equals(company.getId())) {
-                    throw new Exception("Email match with the wrong company");
+                    throw new InvalidEmailSuffixException("Email match with the wrong company");
                 }
             }
             user.setEmail(userDTO.getEmail().toLowerCase());
@@ -201,8 +198,8 @@ public class UserService {
         return user;
     }
 
-    private Company isEmailValid(String emailToTest) throws Exception{
-        return companyRepository.findCompanyByUserEmail(emailToTest).orElseThrow(() -> new Exception("Email doesn't match with a Company"));
+    private Company isEmailValid(String emailToTest){
+        return companyRepository.findCompanyByUserEmail(emailToTest).orElseThrow(() -> new InvalidEmailSuffixException("Email doesn't match with a company"));
     }
 
     /**
