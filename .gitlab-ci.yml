@@ -1,9 +1,10 @@
 image: $CI_REGISTRY_IMAGE/jhipster:latest
 
 cache:
-  key: '$CI_COMMIT_REF_NAME'
   paths:
     - .maven/
+    - node_modules
+    - node
 stages:
   - build
   - analyze
@@ -26,6 +27,7 @@ maven-compile:
     expire_in: 1 day
   only:
     - master
+    - staging
 
 maven-package:
   stage: package
@@ -38,6 +40,7 @@ maven-package:
     expire_in: 1 day
   only:
     - master
+    - staging
 
 docker-push:
   stage: release
