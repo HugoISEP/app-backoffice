@@ -11,5 +11,6 @@ public interface CompanyView {
     LocalDateTime getCreatedAt();
     String getEmailTemplate();
     String getColor();
+    String getImagePath();
     String getWebsiteUrl();
 }

@@ -5,6 +5,7 @@ export interface ICompany {
   emailTemplate?: string;
   color?: string;
   websiteUrl?: string;
+  imagePath?: string;
   totalUsers?: number;
 }
 
@@ -15,6 +16,7 @@ export class Company implements ICompany {
     public createdAt?: Date,
     public emailTemplate?: string,
     public websiteUrl?: string,
+    public imagePath?: string,
     public totalUsers?: number
   ) {}
 }

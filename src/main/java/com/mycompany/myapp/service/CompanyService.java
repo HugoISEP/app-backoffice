@@ -25,6 +25,7 @@ import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Slf4j
 @Service
@@ -37,7 +38,8 @@ public class CompanyService {
     private final CompanyMapper mapper;
     private final UserService userService;
 
-    private final String filePath = "/images/company/";
+    private final String directoryPath = "/images/";
+    private final String absolutePath = Paths.get("").toAbsolutePath().toString();
 
     public CompanyService(CompanyRepository repository, CompanyMapper mapper, UserService userService) {
         this.repository = repository;
@@ -73,11 +75,11 @@ public class CompanyService {
         CompanyDTO company = objectMapper.readValue(companyJson, CompanyDTO.class);
 
         File image = storeFile(file, company.getName() + "-" + timestamp);
-        company.setImagePath(image.getPath().split(filePath)[1]);
+        company.setImagePath(image.getPath().split(absolutePath)[1]);
         return mapper.asDTO(repository.save(mapper.fromDTO(company)));
     }
 
-    public CompanyDTO edit(CompanyDTO updatedCompany){
+    public CompanyDTO edit(CompanyDTO updatedCompany, MultipartFile file) throws IOException {
         if (updatedCompany.getId() == null) {
             throw new BadRequestAlertException("Cannot edit ", ENTITY_NAME, " id doesn't exist");
         }
@@ -85,46 +87,44 @@ public class CompanyService {
 
         Company company = repository.findById(updatedCompany.getId()).orElseThrow(() -> new BadRequestAlertException("company doesn't exist", ENTITY_NAME, "id doesn't exist"));
         mapper.updateCompany(updatedCompany, company);
-        return mapper.asDTO(company);
+        if (file != null){
+            editFile(file, company);
+        }
+        return mapper.asDTO(repository.save(company));
     }
 
     public void delete(Long id) throws IOException {
         hasAuthorization(id);
         Company companyToDelete = repository.findById(id).orElseThrow(() -> new BadRequestAlertException("company doesn't exist", ENTITY_NAME, "id doesn't exist"));
         try {
-            Files.delete(Paths.get(filePath + companyToDelete.getImagePath()));
+            Files.delete(Paths.get(absolutePath + companyToDelete.getImagePath()));
         } catch ( NoSuchFileException e){
             log.warn("Picture not found while trying to deleting it");
         }
         repository.delete(companyToDelete);
     }
 
-    public void editFile(MultipartFile image, Long companyId) throws IOException {
+    public void editFile(MultipartFile image, Company company) throws IOException {
         String timestamp = LocalDateTime.now().toString();
 
-        hasAuthorization(companyId);
-        Company company = repository.findById(companyId).orElseThrow(() -> new BadRequestAlertException("company not found" , "COMPANY", " id doesn't exist"));
-
-        Files.delete(Paths.get(filePath + company.getImagePath()));
+        Files.delete(Paths.get(absolutePath + company.getImagePath()));
 
         Path path = storeFile(image, company.getName() + "-" +timestamp).toPath();
-        company.setImagePath(path.toString().split(filePath)[1]);
+        company.setImagePath(path.toString().split(absolutePath)[1]);
     }
 
     public Path getFile(Long companyId) {
         Company company = repository.findById(companyId).orElseThrow(() -> new BadRequestAlertException("company not found" , "COMPANY", " id doesn't exist"));
-        return Paths.get(filePath + company.getImagePath());
+        return Paths.get(company.getImagePath());
     }
 
     private File storeFile(MultipartFile image, String timestamp) throws IOException{
-        if (!image.getContentType().equals("image/png")) {
+        if (!Objects.equals(image.getContentType(), "image/png")) {
             throw new BadRequestAlertException("file type isn't a png ", "IMAGE", " wrong image type");
         }
-        String currentPath = Paths.get("").toAbsolutePath().toString();
-
         try {
             byte[] file = image.getBytes();
-            Path path = Paths.get(currentPath + filePath + timestamp + ".png");
+            Path path = Paths.get(absolutePath + directoryPath + timestamp + ".png");
             return Files.write(path, file).toFile();
         } catch (IOException e){
             throw new CompanyPictureNotFoundException("temp picture not found", "");
