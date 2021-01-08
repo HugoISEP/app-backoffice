@@ -1,5 +1,6 @@
 package com.mycompany.myapp.web.rest;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mycompany.myapp.repository.CompanyRepository;
 import com.mycompany.myapp.security.AuthoritiesConstants;
 import com.mycompany.myapp.service.CompanyService;
@@ -20,7 +21,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import javax.validation.Valid;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -70,14 +70,16 @@ public class CompanyController {
 
     @PostMapping
     @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
-    public CompanyView createCompany(@Valid @RequestParam("company") String companyJson, @RequestParam("file") MultipartFile file) throws IOException {
+    public CompanyView createCompany(@RequestParam("company") String companyJson, @RequestParam("file") MultipartFile file) throws IOException {
         return service.create(companyJson, file);
     }
 
     @PutMapping
     @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.MANAGER + "\")")
-    public CompanyView editCompany(@Valid @RequestBody CompanyDTO updatedCompany){
-        return service.edit(updatedCompany);
+    public CompanyView editCompany(@RequestParam("company") String companyJson, @RequestParam(value = "file", required = false) MultipartFile file) throws IOException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        CompanyDTO updatedCompany = objectMapper.readValue(companyJson, CompanyDTO.class);
+        return service.edit(updatedCompany, file);
     }
 
     @DeleteMapping("/{id}")
@@ -87,17 +89,6 @@ public class CompanyController {
             service.delete(id);
         } catch (Exception e) {
             throw new BadRequestAlertException("Could not delete the file", ENTITY_NAME, e.toString());
-        }
-    }
-
-    @PostMapping("/{id}/image")
-    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\") || hasAuthority(\"" + AuthoritiesConstants.MANAGER + "\")")
-    @ResponseStatus(HttpStatus.OK)
-    public void uploadFile(@PathVariable("id") Long id, @RequestParam("file") MultipartFile file) {
-        try {
-            service.editFile(file, id);
-        } catch (Exception e) {
-            throw new BadRequestAlertException("Could not upload the file ", ENTITY_NAME, file.getName());
         }
     }
 

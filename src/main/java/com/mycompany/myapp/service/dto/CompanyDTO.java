@@ -19,7 +19,6 @@ public class CompanyDTO implements CompanyView {
     private String emailTemplate;
     private String color;
     private String imagePath;
-    @Email
     private String websiteUrl;
 
 }
