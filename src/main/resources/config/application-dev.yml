@@ -20,6 +20,7 @@ logging:
     com.mycompany.myapp: DEBUG
 
 mobile-app-url: 'http://localhost:1234'
+firebase: './src/main/resources/google/google-service.json'
 
 spring:
   profiles:

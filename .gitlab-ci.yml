@@ -27,6 +27,7 @@ maven-compile:
     expire_in: 1 day
   only:
     - master
+    - merge_requests
     - staging
 
 maven-package:
