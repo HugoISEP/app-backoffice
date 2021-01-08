@@ -35,7 +35,7 @@ public class CompanyService {
     private final CompanyMapper mapper;
     private final UserService userService;
 
-    private final String directoryPath = "/images/company/";
+    private final String directoryPath = "/images/";
     private final String absolutePath = Paths.get("").toAbsolutePath().toString();
 
     public CompanyService(CompanyRepository repository, CompanyMapper mapper, UserService userService) {
