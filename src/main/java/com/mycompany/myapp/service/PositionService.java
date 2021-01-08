@@ -15,6 +15,8 @@ import com.mycompany.myapp.service.notification.NotificationService;
 import com.mycompany.myapp.service.view.PositionView;
 import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
 import com.mycompany.myapp.web.rest.errors.ResourceNotFoundException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.AccessDeniedException;
@@ -22,12 +24,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 @Service
 @Transactional
 public class PositionService {
 
     private static final String ENTITY_NAME = "position";
+
+    private final Logger log = LoggerFactory.getLogger(PositionService.class);
+
 
     private final PositionRepository repository;
     private final PositionMapper mapper;
@@ -86,11 +92,11 @@ public class PositionService {
         Mission mission = missionRepository.findById(missionId).orElseThrow(() -> new ResourceNotFoundException("mission doesn't exist", ENTITY_NAME, "id doesn't exist"));
         newPosition.setMission(mission);
         mission.getPositions().add(newPosition);
-        /*try {
+        try {
             notificationService.sendMessage(newPosition);
         } catch (InterruptedException | ExecutionException e) {
             log.warn("Error when sending notification: " + e.toString());
-        }*/
+        }
         return missionMapper.asDTO(missionRepository.save(mission));
     }
 
