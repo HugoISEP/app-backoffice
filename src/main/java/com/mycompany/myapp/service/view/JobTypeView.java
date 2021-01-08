@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 public interface JobTypeView {
     Long getId();
     String getName();
+    String getIcon();
     LocalDateTime getCreatedAt();
     @JsonIgnore
     CompanyView getCompany();

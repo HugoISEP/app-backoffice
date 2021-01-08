@@ -6,6 +6,7 @@ import com.mycompany.myapp.service.JobTypeService;
 import com.mycompany.myapp.service.dto.JobTypeDTO;
 import com.mycompany.myapp.service.mapper.JobTypeMapper;
 import com.mycompany.myapp.service.view.JobTypeView;
+import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
 import io.github.jhipster.web.util.PaginationUtil;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -23,6 +24,8 @@ import java.util.List;
 @RequestMapping("api/job-type")
 @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.MANAGER + "\") || hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
 public class JobTypeController {
+
+    private static final String ENTITY_NAME = "jobType";
 
     private final JobTypeRepository repository;
     private final JobTypeMapper mapper;
@@ -60,16 +63,25 @@ public class JobTypeController {
 
     @PostMapping
     public JobTypeView create(@Valid @RequestBody JobTypeDTO jobType){
-        return service.createJobType(jobType);
+        try {
+            return service.createJobType(jobType);
+        } catch (Exception e){
+            throw new BadRequestAlertException("data is not valid ", ENTITY_NAME, e.getMessage());
+        }
     }
 
     @PutMapping
     public JobTypeView edit(@Valid @RequestBody JobTypeDTO jobType){
-        return service.editJobType(jobType);
+        try {
+            return service.editJobType(jobType);
+        } catch (Exception e){
+            throw new BadRequestAlertException("data is not valid ", ENTITY_NAME, e.getMessage());
+        }
     }
 
     @DeleteMapping("/{id}")
     public void delete(@PathVariable Long id){
         service.deleteJobType(id);
     }
+
 }
