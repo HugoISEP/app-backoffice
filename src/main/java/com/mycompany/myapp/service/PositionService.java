@@ -15,6 +15,8 @@ import com.mycompany.myapp.service.notification.NotificationService;
 import com.mycompany.myapp.service.view.PositionView;
 import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
 import com.mycompany.myapp.web.rest.errors.ResourceNotFoundException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.AccessDeniedException;
@@ -29,6 +31,9 @@ import java.util.concurrent.ExecutionException;
 public class PositionService {
 
     private static final String ENTITY_NAME = "position";
+
+    private final Logger log = LoggerFactory.getLogger(PositionService.class);
+
 
     private final PositionRepository repository;
     private final PositionMapper mapper;
