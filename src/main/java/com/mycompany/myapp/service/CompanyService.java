@@ -75,7 +75,7 @@ public class CompanyService {
         CompanyDTO company = objectMapper.readValue(companyJson, CompanyDTO.class);
 
         File image = storeFile(file, company.getName() + "-" + timestamp);
-        company.setImagePath(image.getPath().split("/")[image.getPath().split("/").length -1]);
+        company.setImagePath(image.getPath().split(absolutePath)[1]);
         return mapper.asDTO(repository.save(mapper.fromDTO(company)));
     }
 
@@ -97,6 +97,7 @@ public class CompanyService {
         hasAuthorization(id);
         Company companyToDelete = repository.findById(id).orElseThrow(() -> new BadRequestAlertException("company doesn't exist", ENTITY_NAME, "id doesn't exist"));
         try {
+            System.out.println("LE PATH: " + absolutePath + companyToDelete.getImagePath());
             Files.delete(Paths.get(absolutePath + companyToDelete.getImagePath()));
         } catch ( NoSuchFileException e){
             log.warn("Picture not found while trying to deleting it");
