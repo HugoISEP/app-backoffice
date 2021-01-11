@@ -9,6 +9,7 @@ import com.mycompany.myapp.service.view.CompanyDetailsView;
 import com.mycompany.myapp.service.view.CompanyView;
 import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
 import io.github.jhipster.web.util.PaginationUtil;
+import io.minio.errors.*;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -24,6 +25,8 @@ import javax.validation.Valid;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
 @RestController
@@ -70,7 +73,7 @@ public class CompanyController {
 
     @PostMapping
     @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
-    public CompanyView createCompany(@Valid @RequestParam("company") String companyJson, @RequestParam("file") MultipartFile file) throws IOException {
+    public CompanyView createCompany(@Valid @RequestParam("company") String companyJson, @RequestParam("file") MultipartFile file) throws IOException, MinioException {
         return service.create(companyJson, file);
     }
 
@@ -96,7 +99,7 @@ public class CompanyController {
     public void uploadFile(@PathVariable("id") Long id, @RequestParam("file") MultipartFile file) {
         try {
             //service.editFile(file, id);
-            service.testMinio(file, id);
+            //service.testMinio(file, id);
         } catch (Exception e) {
             throw new BadRequestAlertException("Could not upload the file ", ENTITY_NAME, file.getName());
         }

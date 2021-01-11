@@ -1,9 +1,11 @@
 package com.mycompany.myapp.service;
 
-import io.minio.MinioClient;
+import io.minio.*;
+import io.minio.errors.*;
 import io.minio.messages.Bucket;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -21,18 +23,33 @@ public class MinioService {
         }
     }
 
-    /*public void uploadFile(String name, byte[] content) {
-        File file = new File("/tmp/" + name);
-        file.canWrite();
-        file.canRead();
+    public void deleteFile(String fileName, String bucket) throws MinioException {
         try {
-            FileOutputStream iofs = new FileOutputStream(file);
-            iofs.write(content);
-            minioClient.putObject(defaultBucketName, defaultBaseFolder + name, file.getAbsolutePath());
+            minioClient.removeObject(RemoveObjectArgs.builder()
+                .bucket(bucket)
+                .object(fileName)
+                .build());
         } catch (Exception e) {
-            throw new RuntimeException(e.getMessage());
+            throw new MinioException(e.getMessage());
+        }
+    }
+
+    public void uploadFile(MultipartFile file, String fileName, String bucket) throws MinioException {
+        try {
+            if(minioClient.bucketExists(BucketExistsArgs.builder().bucket(bucket).build())){
+                minioClient.putObject(PutObjectArgs.builder()
+                    .contentType(file.getContentType())
+                    .object(fileName)
+                    .stream(file.getInputStream(), file.getSize(), 6000000)
+                    .bucket(bucket)
+                    .build());
+            } else {
+                minioClient.makeBucket(MakeBucketArgs.builder().bucket(bucket).build());
+            }
+        } catch (Exception e) {
+            throw new MinioException(e.getMessage());
         }
 
-    }*/
+    }
 
 }

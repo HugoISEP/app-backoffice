@@ -59,7 +59,7 @@ spring:
   thymeleaf:
     cache: false
   minio:
-    url: http://localhost:9001
+    url: http://localhost:9000
     accessKey: adminadmin
     secretKey: adminadmin
     secure: false # secure if using https

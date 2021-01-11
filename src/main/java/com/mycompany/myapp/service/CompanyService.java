@@ -1,5 +1,6 @@
 package com.mycompany.myapp.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mycompany.myapp.domain.Company;
 import com.mycompany.myapp.repository.CompanyRepository;
@@ -10,7 +11,6 @@ import com.mycompany.myapp.service.mapper.CompanyMapper;
 import com.mycompany.myapp.service.view.CompanyDetailsView;
 import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
 import io.minio.MinioClient;
-import io.minio.PutObjectArgs;
 import io.minio.errors.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -44,11 +44,13 @@ public class CompanyService {
     private final CompanyRepository repository;
     private final CompanyMapper mapper;
     private final UserService userService;
+    private final MinioService minioService;
 
-    public CompanyService(CompanyRepository repository, CompanyMapper mapper, UserService userService) {
+    public CompanyService(CompanyRepository repository, CompanyMapper mapper, UserService userService, MinioService minioService) {
         this.repository = repository;
         this.mapper = mapper;
         this.userService = userService;
+        this.minioService = minioService;
     }
 
     public void hasAuthorization(Long id){
@@ -72,14 +74,14 @@ public class CompanyService {
         return repository.findAllPaginated(pageable, searchTerm);
     }
 
-    public CompanyDTO create(String companyJson, MultipartFile file) throws IOException{
+    public CompanyDTO create(String companyJson, MultipartFile file) throws MinioException, JsonProcessingException {
         String timestamp = LocalDateTime.now().toString();
 
         ObjectMapper objectMapper = new ObjectMapper();
         CompanyDTO company = objectMapper.readValue(companyJson, CompanyDTO.class);
-
-        File image = storeFile(file, timestamp);
-        company.setImagePath(image.getPath());
+        minioService.uploadFile(file, timestamp, COMPANY_BUCKET);
+        //File image = storeFile(file, timestamp);
+        company.setImagePath(timestamp);
         return mapper.asDTO(repository.save(mapper.fromDTO(company)));
     }
 
@@ -94,11 +96,11 @@ public class CompanyService {
         return mapper.asDTO(company);
     }
 
-    public void delete(Long id) throws IOException {
+    public void delete(Long id) throws MinioException {
         hasAuthorization(id);
 
         Company companyToDelete = repository.findById(id).orElseThrow(() -> new BadRequestAlertException("company doesn't exist", ENTITY_NAME, "id doesn't exist"));
-        Files.delete(Paths.get(companyToDelete.getImagePath()));
+        minioService.deleteFile(companyToDelete.getImagePath(), COMPANY_BUCKET);
         repository.delete(companyToDelete);
     }
 
@@ -130,13 +132,4 @@ public class CompanyService {
         return Files.write(path, file).toFile();
     }
 
-    public void testMinio(MultipartFile image, Long companyId) throws IOException, ServerException, InsufficientDataException, InternalException, InvalidResponseException, InvalidKeyException, NoSuchAlgorithmException, XmlParserException, ErrorResponseException {
-        System.out.println("testMinio");
-        minioClient.putObject(PutObjectArgs.builder()
-            .contentType(image.getContentType())
-            .object(image.getName())
-            .stream(image.getInputStream(), image.getSize(), 6000000)
-            .bucket(COMPANY_BUCKET)
-            .build());
-    }
 }

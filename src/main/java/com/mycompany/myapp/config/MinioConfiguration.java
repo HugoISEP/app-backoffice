@@ -17,13 +17,11 @@ public class MinioConfiguration {
     @Bean
     public MinioClient generateMinioClient() {
         try {
-            System.out.println("BEFORE");
-            MinioClient client = MinioClient.builder()
+            System.out.println("INITIALIZATION MINIO");
+            return MinioClient.builder()
                 .endpoint(minioUrl)
                 .credentials(accessKey, accessSecret)
                 .build();
-            System.out.println("AFTER");
-            return client;
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage());
         }
