@@ -115,8 +115,9 @@ export class CompanyUpdateComponent implements OnInit {
   }
 
   requiredIfNewCompany(): ValidatorFn {
-    return (control: AbstractControl): { [key: string]: any } | null => {
-      return this.router.url === this.ownCompanyUrl ? null : control.value ? null : { required: true };
+    return (): { [key: string]: any } | null => {
+      const urlSplit = this.router.url.split('/');
+      return urlSplit[urlSplit.length - 1] === 'update' ? null : { required: true };
     };
   }
 }
