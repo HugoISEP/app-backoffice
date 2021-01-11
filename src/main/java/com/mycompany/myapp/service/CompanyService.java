@@ -132,4 +132,9 @@ public class CompanyService {
         return Files.write(path, file).toFile();
     }
 
+    public String getFileUrl(Long companyId) throws MinioException {
+        Company company = repository.findById(companyId).orElseThrow(() -> new BadRequestAlertException("company not found" , "COMPANY", " id doesn't exist"));
+        return minioService.getFileUrl(company.getImagePath(), COMPANY_BUCKET);
+    }
+
 }

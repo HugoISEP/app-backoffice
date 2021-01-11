@@ -93,6 +93,15 @@ public class CompanyController {
         }
     }
 
+    @GetMapping("/{id}/file")
+    public String getFileUrl(@PathVariable Long id) {
+        try {
+            return service.getFileUrl(id);
+        } catch (Exception e) {
+            throw new BadRequestAlertException("Could not delete the file", ENTITY_NAME, e.toString());
+        }
+    }
+
     @PostMapping("/{id}/image")
     //@PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\") || hasAuthority(\"" + AuthoritiesConstants.MANAGER + "\")")
     @ResponseStatus(HttpStatus.OK)
