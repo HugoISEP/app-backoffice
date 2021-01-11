@@ -75,10 +75,7 @@ public class CompanyService {
         CompanyDTO company = objectMapper.readValue(companyJson, CompanyDTO.class);
 
         File image = storeFile(file, company.getName() + "-" + timestamp);
-        company.setImagePath(image.getPath().split(absolutePath)[1]);
-        System.out.println(image.getPath());
-        System.out.println(image.getAbsolutePath());
-        System.out.println(company.getImagePath());
+        company.setImagePath(image.getPath().split("/")[image.getPath().split("/").length -1]);
         return mapper.asDTO(repository.save(mapper.fromDTO(company)));
     }
 
