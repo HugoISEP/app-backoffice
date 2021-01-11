@@ -2,6 +2,7 @@ package com.mycompany.myapp.service;
 
 import io.minio.*;
 import io.minio.errors.*;
+import io.minio.http.Method;
 import io.minio.messages.Bucket;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,6 +29,18 @@ public class MinioService {
             minioClient.removeObject(RemoveObjectArgs.builder()
                 .bucket(bucket)
                 .object(fileName)
+                .build());
+        } catch (Exception e) {
+            throw new MinioException(e.getMessage());
+        }
+    }
+
+    public String getFileUrl(String fileName, String bucket) throws MinioException {
+        try {
+            return minioClient.getPresignedObjectUrl(GetPresignedObjectUrlArgs.builder()
+                .bucket(bucket)
+                .object(fileName)
+                .method(Method.GET)
                 .build());
         } catch (Exception e) {
             throw new MinioException(e.getMessage());

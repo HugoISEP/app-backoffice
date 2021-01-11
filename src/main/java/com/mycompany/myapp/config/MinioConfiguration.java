@@ -1,6 +1,7 @@
 package com.mycompany.myapp.config;
 
 import io.minio.MinioClient;
+import io.minio.errors.MinioException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,15 +16,14 @@ public class MinioConfiguration {
     String minioUrl;
 
     @Bean
-    public MinioClient generateMinioClient() {
+    public MinioClient generateMinioClient() throws MinioException {
         try {
-            System.out.println("INITIALIZATION MINIO");
             return MinioClient.builder()
                 .endpoint(minioUrl)
                 .credentials(accessKey, accessSecret)
                 .build();
         } catch (Exception e) {
-            throw new RuntimeException(e.getMessage());
+            throw new MinioException(e.getMessage());
         }
     }
 
