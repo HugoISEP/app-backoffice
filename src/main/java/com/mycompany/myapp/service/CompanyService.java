@@ -124,6 +124,7 @@ public class CompanyService {
             throw new BadRequestAlertException("file type isn't a png ", "IMAGE", " wrong image type");
         }
         try {
+            System.out.println("absolutePath: " + absolutePath);
             byte[] file = image.getBytes();
             Path path = Paths.get(absolutePath + directoryPath + timestamp + ".png");
             return Files.write(path, file).toFile();
