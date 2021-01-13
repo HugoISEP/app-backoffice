@@ -1,6 +1,7 @@
 package com.mycompany.myapp.config;
 
 import io.github.jhipster.config.JHipsterProperties;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.CacheControl;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistration;
@@ -12,8 +13,11 @@ import java.util.concurrent.TimeUnit;
 @Configuration
 public class StaticResourcesWebConfiguration implements WebMvcConfigurer {
 
-    protected static final String[] RESOURCE_LOCATIONS = new String[]{"classpath:/static/app/", "classpath:/static/content/", "classpath:/static/i18n/", "file:" + System.getProperty("user.dir") + "/images/company/"};
-    protected static final String[] RESOURCE_PATHS = new String[]{"/app/*", "/content/*", "/i18n/*", "/images/company/*"};
+    @Value("${image-path}")
+    String absolutePath;
+
+
+    protected static final String[] RESOURCE_PATHS = new String[]{"/app/*", "/content/*", "/i18n/*", "/images/*"};
 
     private final JHipsterProperties jhipsterProperties;
 
@@ -32,6 +36,7 @@ public class StaticResourcesWebConfiguration implements WebMvcConfigurer {
     }
 
     protected void initializeResourceHandler(ResourceHandlerRegistration resourceHandlerRegistration) {
+        String[] RESOURCE_LOCATIONS = new String[]{"classpath:/static/app/", "classpath:/static/content/", "classpath:/static/i18n/", "file:" + absolutePath + "/images/"};
         resourceHandlerRegistration.addResourceLocations(RESOURCE_LOCATIONS).setCacheControl(getCacheControl());
     }
 

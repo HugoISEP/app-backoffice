@@ -4,6 +4,7 @@ import io.github.jhipster.config.JHipsterDefaults;
 import io.github.jhipster.config.JHipsterProperties;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.CacheControl;
 import org.springframework.mock.web.MockServletContext;
 import org.springframework.web.context.WebApplicationContext;
@@ -23,6 +24,11 @@ public class StaticResourcesWebConfigurerTest {
     private MockServletContext servletContext;
     private WebApplicationContext applicationContext;
     private JHipsterProperties props;
+
+    @Value("${image-path}")
+    protected static String absolutePath;
+
+
 
     @BeforeEach
     void setUp() {
@@ -54,6 +60,9 @@ public class StaticResourcesWebConfigurerTest {
         ResourceHandlerRegistration resourceHandlerRegistration = spy(new ResourceHandlerRegistration(RESOURCE_PATHS));
 
         staticResourcesWebConfiguration.initializeResourceHandler(resourceHandlerRegistration);
+
+        String[] RESOURCE_LOCATIONS = new String[]{"classpath:/static/app/", "classpath:/static/content/", "classpath:/static/i18n/", "file:" + absolutePath + "/images/"};
+
 
         verify(staticResourcesWebConfiguration, times(1)).getCacheControl();
         verify(resourceHandlerRegistration, times(1)).setCacheControl(ccExpected);

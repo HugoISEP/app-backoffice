@@ -42,7 +42,7 @@ public class CompanyService {
     private final String directoryPath = "/images/";
 
     @Value("${image-path}")
-    private final String absolutePath = Paths.get("").toAbsolutePath().toString();
+    private String absolutePath;
 
     public CompanyService(CompanyRepository repository, CompanyMapper mapper, UserService userService) {
         this.repository = repository;
