@@ -48,4 +48,8 @@ export class CompanyService {
   delete(id: number): Observable<HttpResponse<{}>> {
     return this.http.delete(`${this.resourceUrl}/${id}`, { observe: 'response' });
   }
+
+  getFileUrl(id: number): Observable<HttpResponse<string>> {
+    return this.http.get<string>(`${this.resourceUrl}/${id}/file`, { observe: 'response' });
+  }
 }

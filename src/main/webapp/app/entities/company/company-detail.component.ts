@@ -8,6 +8,7 @@ import { CompanyService } from './company.service';
 })
 export class CompanyDetailComponent implements OnInit {
   company: ICompany | null = null;
+  imageUrl: string | null = null;
 
   constructor(protected companyService: CompanyService) {}
 
