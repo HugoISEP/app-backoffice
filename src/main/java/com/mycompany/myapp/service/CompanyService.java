@@ -38,9 +38,6 @@ public class CompanyService {
 
     private static final String ENTITY_NAME = "company";
 
-    @Autowired
-    private MinioClient minioClient;
-
     private final CompanyRepository repository;
     private final CompanyMapper mapper;
     private final UserService userService;
