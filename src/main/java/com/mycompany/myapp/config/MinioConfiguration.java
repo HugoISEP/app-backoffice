@@ -60,10 +60,4 @@ public class MinioConfiguration {
         }
     }
 
-    @PostConstruct
-    public void setUpMinioClient(){
-
-    }
-
-
 }
