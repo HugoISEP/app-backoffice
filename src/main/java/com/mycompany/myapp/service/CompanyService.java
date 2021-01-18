@@ -20,7 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 
-import static com.mycompany.myapp.config.Constants.COMPANY_BUCKET;
+import static com.mycompany.myapp.config.Constants.LOGO_BUCKET;
 
 
 @Service
@@ -67,7 +67,7 @@ public class CompanyService {
             ObjectMapper objectMapper = new ObjectMapper();
             CompanyDTO company = objectMapper.readValue(companyJson, CompanyDTO.class);
             String imageName = company.getName() + LocalDateTime.now() + ".png";
-            minioService.uploadFile(file, imageName, COMPANY_BUCKET);
+            minioService.uploadFile(file, imageName, LOGO_BUCKET);
             company.setImagePath(imageName);
             return mapper.asDTO(repository.save(mapper.fromDTO(company)));
         } catch (Exception e){
@@ -86,9 +86,9 @@ public class CompanyService {
 
         String imageName = updatedCompany.getName() + "-" + LocalDateTime.now() + ".png";
         if(file != null){
-            minioService.uploadFile(file, imageName, COMPANY_BUCKET);
+            minioService.uploadFile(file, imageName, LOGO_BUCKET);
             updatedCompany.setImagePath(imageName);
-            minioService.deleteFile(company.getImagePath(), COMPANY_BUCKET);
+            minioService.deleteFile(company.getImagePath(), LOGO_BUCKET);
         }
         mapper.updateCompany(updatedCompany, company);
         return mapper.asDTO(company);
@@ -97,13 +97,13 @@ public class CompanyService {
     public void delete(Long id) throws MinioException {
         hasAuthorization(id);
         Company companyToDelete = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("company doesn't exist", ENTITY_NAME, "id doesn't exist"));
-        minioService.deleteFile(companyToDelete.getImagePath(), COMPANY_BUCKET);
+        minioService.deleteFile(companyToDelete.getImagePath(), LOGO_BUCKET);
         repository.delete(companyToDelete);
     }
 
     public String getFileUrl(Long companyId) throws MinioException {
         Company company = repository.findById(companyId).orElseThrow(() -> new ResourceNotFoundException("company not found" , "COMPANY", " id doesn't exist"));
-        return minioService.getFileUrl(company.getImagePath(), COMPANY_BUCKET);
+        return minioService.getFileUrl(company.getImagePath(), LOGO_BUCKET);
     }
 
 }

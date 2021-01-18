@@ -7,9 +7,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.Resource;
 
-import javax.annotation.PostConstruct;
-
-import static com.mycompany.myapp.config.Constants.COMPANY_BUCKET;
+import static com.mycompany.myapp.config.Constants.LOGO_BUCKET;
 
 @Configuration
 public class MinioConfiguration {
@@ -31,8 +29,8 @@ public class MinioConfiguration {
                 .credentials(accessKey, accessSecret)
                 .build();
 
-            if(!minio.bucketExists(BucketExistsArgs.builder().bucket(COMPANY_BUCKET).build())){
-                minio.makeBucket(MakeBucketArgs.builder().bucket(COMPANY_BUCKET).build());
+            if(!minio.bucketExists(BucketExistsArgs.builder().bucket(LOGO_BUCKET).build())){
+                minio.makeBucket(MakeBucketArgs.builder().bucket(LOGO_BUCKET).build());
             }
             String configs = "{\n" +
                 "  \"Version\": \"2012-10-17\",\n" +
@@ -52,7 +50,7 @@ public class MinioConfiguration {
                 "}";
             minio.setBucketPolicy(SetBucketPolicyArgs.builder()
                 .config(configs)
-                .bucket(COMPANY_BUCKET)
+                .bucket(LOGO_BUCKET)
                 .build());
             return minio;
         } catch (Exception e) {
