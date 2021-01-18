@@ -42,7 +42,7 @@ public class MinioConfiguration {
                 "      \"Effect\": \"Allow\",\n" +
                 "      \"Principal\": {\"AWS\": [\"*\"]},\n" +
                 "      \"Resource\": [\n" +
-                "        \"arn:aws:s3:::company/*\"\n" +
+                "        \"arn:aws:s3:::logo/*\"\n" +
                 "      ],\n" +
                 "      \"Sid\": \"\"\n" +
                 "    }\n" +
