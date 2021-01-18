@@ -1,10 +1,8 @@
 package com.mycompany.myapp.web.rest;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mycompany.myapp.repository.CompanyRepository;
 import com.mycompany.myapp.security.AuthoritiesConstants;
 import com.mycompany.myapp.service.CompanyService;
-import com.mycompany.myapp.service.dto.CompanyDTO;
 import com.mycompany.myapp.service.mapper.CompanyMapper;
 import com.mycompany.myapp.service.view.CompanyDetailsView;
 import com.mycompany.myapp.service.view.CompanyView;
@@ -75,9 +73,7 @@ public class CompanyController {
     @PutMapping
     @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.MANAGER + "\")")
     public CompanyView editCompany(@RequestParam("company") String companyJson, @RequestParam(value = "file", required = false) MultipartFile file) throws IOException, MinioException {
-        ObjectMapper objectMapper = new ObjectMapper();
-        CompanyDTO updatedCompany = objectMapper.readValue(companyJson, CompanyDTO.class);
-        return service.edit(updatedCompany, file);
+        return service.edit(companyJson, file);
     }
 
     @DeleteMapping("/{id}")
@@ -91,8 +87,7 @@ public class CompanyController {
     }
 
     @GetMapping("/{id}/file")
-    @ResponseStatus(HttpStatus.OK)
-    public String getFileUrl(@PathVariable Long id) throws MinioException {
+    public String getFileUrl(@PathVariable Long id) {
         try {
             return service.getFileUrl(id);
         } catch (Exception e) {
