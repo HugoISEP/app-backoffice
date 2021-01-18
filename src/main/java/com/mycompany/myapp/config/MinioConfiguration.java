@@ -17,7 +17,6 @@ public class MinioConfiguration {
     String accessSecret;
     @Value("${spring.minio.url}")
     String minioUrl;
-    //not working yet
     @Value("classpath:minio/policy-config.json")
     Resource config;
 
@@ -32,24 +31,8 @@ public class MinioConfiguration {
             if(!minio.bucketExists(BucketExistsArgs.builder().bucket(LOGO_BUCKET).build())){
                 minio.makeBucket(MakeBucketArgs.builder().bucket(LOGO_BUCKET).build());
             }
-            String configs = "{\n" +
-                "  \"Version\": \"2012-10-17\",\n" +
-                "  \"Statement\": [\n" +
-                "    {\n" +
-                "      \"Action\": [\n" +
-                "        \"s3:GetObject\"\n" +
-                "      ],\n" +
-                "      \"Effect\": \"Allow\",\n" +
-                "      \"Principal\": {\"AWS\": [\"*\"]},\n" +
-                "      \"Resource\": [\n" +
-                "        \"arn:aws:s3:::logo/*\"\n" +
-                "      ],\n" +
-                "      \"Sid\": \"\"\n" +
-                "    }\n" +
-                "  ]\n" +
-                "}";
             minio.setBucketPolicy(SetBucketPolicyArgs.builder()
-                .config(configs)
+                .config(ResourceReader.asString(config))
                 .bucket(LOGO_BUCKET)
                 .build());
             return minio;
