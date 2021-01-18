@@ -30,12 +30,13 @@ export class CompanyUpdateComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.activateRoute.data.subscribe(({ company }) => {
-      this.updateForm(company);
-    });
     if (this.router.url === this.ownCompanyUrl) {
       this.companyService.getUserCompany().subscribe(company => {
         this.updateForm(company.body!);
+      });
+    } else {
+      this.activateRoute.data.subscribe(({ company }) => {
+        this.updateForm(company);
       });
     }
   }
@@ -110,8 +111,14 @@ export class CompanyUpdateComponent implements OnInit {
   }
 
   fileValidator(): ValidatorFn {
-    return (control: AbstractControl): { [key: string]: any } | null =>
-      control.value?.type === 'image/png' ? null : { invalidFile: control.value };
+    return (control: AbstractControl): { [key: string]: any } | null => {
+      const urlSplit = this.router.url.split('/');
+      return urlSplit[urlSplit.length - 1] === 'update'
+        ? null
+        : control.value?.type === 'image/png'
+        ? null
+        : { invalidFile: control.value };
+    };
   }
 
   requiredIfNewCompany(): ValidatorFn {

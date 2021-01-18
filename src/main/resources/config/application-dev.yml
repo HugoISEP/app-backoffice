@@ -62,6 +62,11 @@ spring:
     cache-duration: PT1S # 1 second, see the ISO 8601 standard
   thymeleaf:
     cache: false
+  minio:
+    url: http://localhost:9000
+    accessKey: adminadmin
+    secretKey: adminadmin
+    secure: false # secure if using https
 
 server:
   port: 8080
