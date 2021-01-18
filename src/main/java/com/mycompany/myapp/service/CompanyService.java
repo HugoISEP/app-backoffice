@@ -1,6 +1,5 @@
 package com.mycompany.myapp.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mycompany.myapp.domain.Company;
 import com.mycompany.myapp.repository.CompanyRepository;
@@ -10,9 +9,8 @@ import com.mycompany.myapp.service.dto.UserDTO;
 import com.mycompany.myapp.service.mapper.CompanyMapper;
 import com.mycompany.myapp.service.view.CompanyDetailsView;
 import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
-import io.minio.MinioClient;
+import com.mycompany.myapp.web.rest.errors.ResourceNotFoundException;
 import io.minio.errors.*;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.AccessDeniedException;
@@ -20,13 +18,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
 
 import static com.mycompany.myapp.config.Constants.COMPANY_BUCKET;
@@ -54,7 +45,7 @@ public class CompanyService {
         UserDTO user = userService.getUserWithAuthorities()
             .map(UserDTO::new)
             .orElseThrow(() -> new BadRequestAlertException("User not found", ENTITY_NAME, "id doesn't exist"));
-        Company company = repository.findById(id).orElseThrow(() -> new BadRequestAlertException("Entity not found", ENTITY_NAME, "id doesn't exist"));
+        Company company = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Entity not found", ENTITY_NAME, "id doesn't exist"));
         if(!user.getAuthorities().contains(AuthoritiesConstants.ADMIN) && !user.getCompany().getId().equals(company.getId())){
             throw new AccessDeniedException("user not authorize");
         }
@@ -63,7 +54,7 @@ public class CompanyService {
     public CompanyDetailsView getCompanyFromCurrentUser(){
         UserDTO user = userService.getUserWithAuthorities()
             .map(UserDTO::new)
-            .orElseThrow(() -> new BadRequestAlertException("user not found", ENTITY_NAME, " id exists"));
+            .orElseThrow(() -> new ResourceNotFoundException("user not found", ENTITY_NAME, " id exists"));
         return repository.findCompanyFromCurrentUser(user.getId());
     }
 
@@ -71,62 +62,42 @@ public class CompanyService {
         return repository.findAllPaginated(pageable, searchTerm);
     }
 
-    public CompanyDTO create(String companyJson, MultipartFile file) throws MinioException, JsonProcessingException {
+    public CompanyDTO create(String companyJson, MultipartFile file) throws Exception {
         String timestamp = LocalDateTime.now().toString();
 
-        ObjectMapper objectMapper = new ObjectMapper();
-        CompanyDTO company = objectMapper.readValue(companyJson, CompanyDTO.class);
-        minioService.uploadFile(file, timestamp, COMPANY_BUCKET);
-        //File image = storeFile(file, timestamp);
-        company.setImagePath(timestamp);
-        return mapper.asDTO(repository.save(mapper.fromDTO(company)));
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            CompanyDTO company = objectMapper.readValue(companyJson, CompanyDTO.class);
+            minioService.uploadFile(file, company.getName() + "-" + timestamp + ".png", COMPANY_BUCKET);
+            company.setImagePath(company.getName() + "-" + timestamp + ".png");
+            return mapper.asDTO(repository.save(mapper.fromDTO(company)));
+        } catch (Exception e){
+            throw new Exception("Error when creating new company: " + e.toString());
+        }
     }
 
-    public CompanyDTO edit(CompanyDTO updatedCompany){
+    public CompanyDTO edit(CompanyDTO updatedCompany, MultipartFile file) throws MinioException {
         if (updatedCompany.getId() == null) {
-            throw new BadRequestAlertException("Cannot edit ", ENTITY_NAME, " id doesn't exist");
+            throw new ResourceNotFoundException("Cannot edit ", ENTITY_NAME, " id doesn't exist");
         }
+        String timestamp = LocalDateTime.now().toString();
         hasAuthorization(updatedCompany.getId());
 
-        Company company = repository.findById(updatedCompany.getId()).orElseThrow(() -> new BadRequestAlertException("company doesn't exist", ENTITY_NAME, "id doesn't exist"));
+        Company company = repository.findById(updatedCompany.getId()).orElseThrow(() -> new ResourceNotFoundException("company doesn't exist", ENTITY_NAME, "id doesn't exist"));
+        if(file != null){
+            minioService.uploadFile(file, updatedCompany.getName() + "-" + timestamp + ".png", COMPANY_BUCKET);
+            updatedCompany.setImagePath(updatedCompany.getName() + "-" + timestamp + ".png");
+            minioService.deleteFile(company.getImagePath(), COMPANY_BUCKET);
+        }
         mapper.updateCompany(updatedCompany, company);
         return mapper.asDTO(company);
     }
 
     public void delete(Long id) throws MinioException {
         hasAuthorization(id);
-
         Company companyToDelete = repository.findById(id).orElseThrow(() -> new BadRequestAlertException("company doesn't exist", ENTITY_NAME, "id doesn't exist"));
         minioService.deleteFile(companyToDelete.getImagePath(), COMPANY_BUCKET);
         repository.delete(companyToDelete);
-    }
-
-    public void editFile(MultipartFile image, Long companyId) throws IOException {
-        String timestamp = LocalDateTime.now().toString();
-
-        hasAuthorization(companyId);
-        Company company = repository.findById(companyId).orElseThrow(() -> new BadRequestAlertException("company not found" , "COMPANY", " id doesn't exist"));
-
-        Files.delete(Paths.get(company.getImagePath()));
-
-        Path path = storeFile(image, timestamp).toPath();
-        company.setImagePath(path.toString());
-    }
-
-    public Path getFile(Long companyId) {
-        Company company = repository.findById(companyId).orElseThrow(() -> new BadRequestAlertException("company not found" , "COMPANY", " id doesn't exist"));
-        return Paths.get(company.getImagePath());
-    }
-
-    private File storeFile(MultipartFile image, String timestamp) throws IOException{
-        if (!image.getContentType().equals("image/png")) {
-            throw new BadRequestAlertException("file type isn't a png ", "IMAGE", " wrong image type");
-        }
-        String currentPath = Paths.get("").toAbsolutePath().toString();
-
-        byte[] file = image.getBytes();
-        Path path = Paths.get(currentPath + "/images/company/" + timestamp + ".png");
-        return Files.write(path, file).toFile();
     }
 
     public String getFileUrl(Long companyId) throws MinioException {

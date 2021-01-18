@@ -19,6 +19,10 @@ logging:
     io.github.jhipster: DEBUG
     com.mycompany.myapp: DEBUG
 
+mobile-app-url: 'http://localhost:1234'
+firebase: './src/main/resources/google/google-service.json'
+image-path: '/Users/hugo/JE/app-backoffice'
+
 spring:
   profiles:
     active: dev

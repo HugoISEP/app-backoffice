@@ -25,6 +25,10 @@ management:
       prometheus:
         enabled: false
 
+mobile-app-url: ${MOBILE_APP_URL}
+firebase: './google-service.json'
+image-path: ''
+
 spring:
   devtools:
     restart:
@@ -129,7 +133,6 @@ jhipster:
       queue-size: 512
   audit-events:
     retention-period: 30 # Number of days before audit events are deleted.
-  #firebase: '../google-service.json'
 # ===================================================================
 # Application specific properties
 # Add your own application properties here, see the ApplicationProperties class

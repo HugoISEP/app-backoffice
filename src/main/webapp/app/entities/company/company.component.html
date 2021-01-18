@@ -1,5 +1,4 @@
 <div class="card jh-card">
-    <div>
     <h2 id="page-heading">
         <span>Junior-Entreprises</span>
 
@@ -19,9 +18,9 @@
         <span>Aucune Junior-Entreprise trouvée</span>
     </div>
 
-    <div class="float-right">
+    <div class="text-right mt-4 mb-3" *ngIf="(companies && companies.length > 0) || searchTerm !== ''">
         <label for="research">Recherche</label>
-        <input type="text" class="form-control" id="research" [(ngModel)]="searchTerm" (ngModelChange)="loadAll()">
+        <input type="text" id="research" [(ngModel)]="searchTerm" (ngModelChange)="loadAll()">
     </div>
 
     <div class="table-responsive" id="entities" *ngIf="companies && companies.length > 0">
@@ -44,7 +43,7 @@
                 <td class="text-right">
                     <div class="btn-group">
                         <button type="submit"
-                                [routerLink]="['/company', company.id, 'edit']"
+                                [routerLink]="['/company', company.id, 'update']"
                                 class="btn btn-primary btn-sm">
                             <fa-icon icon="pencil-alt"></fa-icon>
                             <span class="d-none d-md-inline">Modifier</span>
@@ -62,7 +61,7 @@
         </table>
     </div>
 
-    <div *ngIf="companies">
+    <div *ngIf="companies && companies.length > 0">
         <div class="row justify-content-center">
             <jhi-item-count [page]="page" [total]="totalItems" [itemsPerPage]="itemsPerPage"></jhi-item-count>
         </div>
@@ -70,6 +69,5 @@
         <div class="row justify-content-center">
             <ngb-pagination [collectionSize]="totalItems" [(page)]="page" [pageSize]="itemsPerPage" [maxSize]="5" [rotate]="true" [boundaryLinks]="true" (pageChange)="transition()"></ngb-pagination>
         </div>
-    </div>
     </div>
 </div>

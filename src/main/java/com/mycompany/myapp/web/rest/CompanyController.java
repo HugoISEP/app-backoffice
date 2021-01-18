@@ -1,5 +1,6 @@
 package com.mycompany.myapp.web.rest;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mycompany.myapp.repository.CompanyRepository;
 import com.mycompany.myapp.security.AuthoritiesConstants;
 import com.mycompany.myapp.service.CompanyService;
@@ -9,8 +10,7 @@ import com.mycompany.myapp.service.view.CompanyDetailsView;
 import com.mycompany.myapp.service.view.CompanyView;
 import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
 import io.github.jhipster.web.util.PaginationUtil;
-import io.minio.errors.*;
-import org.springframework.core.io.ByteArrayResource;
+import io.minio.errors.MinioException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
@@ -21,12 +21,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import javax.validation.Valid;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
 @RestController
@@ -73,14 +68,16 @@ public class CompanyController {
 
     @PostMapping
     @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
-    public CompanyView createCompany(@Valid @RequestParam("company") String companyJson, @RequestParam("file") MultipartFile file) throws IOException, MinioException {
+    public CompanyView createCompany(@RequestParam("company") String companyJson, @RequestParam("file") MultipartFile file) throws Exception {
         return service.create(companyJson, file);
     }
 
     @PutMapping
     @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.MANAGER + "\")")
-    public CompanyView editCompany(@Valid @RequestBody CompanyDTO updatedCompany){
-        return service.edit(updatedCompany);
+    public CompanyView editCompany(@RequestParam("company") String companyJson, @RequestParam(value = "file", required = false) MultipartFile file) throws IOException, MinioException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        CompanyDTO updatedCompany = objectMapper.readValue(companyJson, CompanyDTO.class);
+        return service.edit(updatedCompany, file);
     }
 
     @DeleteMapping("/{id}")
@@ -94,42 +91,12 @@ public class CompanyController {
     }
 
     @GetMapping("/{id}/file")
-    public String getFileUrl(@PathVariable Long id) {
+    @ResponseStatus(HttpStatus.OK)
+    public String getFileUrl(@PathVariable Long id) throws MinioException {
         try {
             return service.getFileUrl(id);
         } catch (Exception e) {
             throw new BadRequestAlertException("Could not delete the file", ENTITY_NAME, e.toString());
-        }
-    }
-
-    @PostMapping("/{id}/image")
-    //@PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\") || hasAuthority(\"" + AuthoritiesConstants.MANAGER + "\")")
-    @ResponseStatus(HttpStatus.OK)
-    public void uploadFile(@PathVariable("id") Long id, @RequestParam("file") MultipartFile file) {
-        try {
-            //service.editFile(file, id);
-            //service.testMinio(file, id);
-        } catch (Exception e) {
-            throw new BadRequestAlertException("Could not upload the file ", ENTITY_NAME, file.getName());
-        }
-    }
-
-    @GetMapping("/{id}/image")
-    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\") || hasAuthority(\"" + AuthoritiesConstants.MANAGER + "\") || hasAuthority(\"" + AuthoritiesConstants.USER + "\")")
-    public ResponseEntity<ByteArrayResource> getFile(@PathVariable("id") Long companyId) {
-        try {
-            Path path = service.getFile(companyId);
-            byte[] data = Files.readAllBytes(path);
-            ByteArrayResource resource = new ByteArrayResource(data);
-            return ResponseEntity.ok()
-                // Content-Disposition
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + path.getFileName().toString())
-                // Content-Lengh
-                .contentLength(data.length)
-                .body(resource);
-
-        } catch (Exception e) {
-            throw new BadRequestAlertException("can't get image ", "IMAGE", " image not found");
         }
     }
 
