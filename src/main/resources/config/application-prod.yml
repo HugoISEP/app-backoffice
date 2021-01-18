@@ -65,6 +65,11 @@ spring:
     #password: ${MAIL_PASSWORD}
   thymeleaf:
     cache: true
+  minio:
+    url: ${MINIO_URL}
+    accessKey: ${MINIO_ACCESSKEY}
+    secretKey: ${MINIO_SECRETKEY}
+    secure: true # secure if using https
 
 # ===================================================================
 # To enable TLS in production, generate a certificate using:

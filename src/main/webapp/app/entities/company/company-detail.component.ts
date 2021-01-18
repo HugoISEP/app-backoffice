@@ -15,7 +15,9 @@ export class CompanyDetailComponent implements OnInit {
   ngOnInit(): void {
     this.companyService.getUserCompany().subscribe(company => {
       this.company = company.body!;
-      this.imageUrl = location.origin + this.company.imagePath;
+      this.companyService.getFileUrl(this.company?.id!).subscribe(url => {
+        this.imageUrl = url.body;
+      });
     });
   }
 }
