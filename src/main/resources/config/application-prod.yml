@@ -26,7 +26,7 @@ management:
         enabled: false
 
 mobile-app-url: ${MOBILE_APP_URL}
-firebase: './google-service.json'
+firebase: '/app/google-service.json'
 
 spring:
   devtools:
