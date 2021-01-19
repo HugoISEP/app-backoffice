@@ -357,6 +357,7 @@ public class UserService {
             .map(Optional::get)
             .collect(Collectors.toList());
         user.setJobTypes(newJobTypes);
+        this.clearUserCaches(user);
         return new UserDTO(user).getJobTypes();
     }
 
