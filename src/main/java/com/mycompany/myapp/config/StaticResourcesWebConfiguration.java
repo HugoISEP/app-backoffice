@@ -13,11 +13,7 @@ import java.util.concurrent.TimeUnit;
 @Configuration
 public class StaticResourcesWebConfiguration implements WebMvcConfigurer {
 
-    @Value("${image-path}")
-    String absolutePath;
-
-
-    protected static final String[] RESOURCE_PATHS = new String[]{"/app/*", "/content/*", "/i18n/*", "/images/*"};
+    protected static final String[] RESOURCE_PATHS = new String[]{"/app/*", "/content/*", "/i18n/*"};
 
     private final JHipsterProperties jhipsterProperties;
 
@@ -36,7 +32,7 @@ public class StaticResourcesWebConfiguration implements WebMvcConfigurer {
     }
 
     protected void initializeResourceHandler(ResourceHandlerRegistration resourceHandlerRegistration) {
-        String[] RESOURCE_LOCATIONS = new String[]{"classpath:/static/app/", "classpath:/static/content/", "classpath:/static/i18n/", "file:" + absolutePath + "/images/"};
+        String[] RESOURCE_LOCATIONS = new String[]{"classpath:/static/app/", "classpath:/static/content/", "classpath:/static/i18n/"};
         resourceHandlerRegistration.addResourceLocations(RESOURCE_LOCATIONS).setCacheControl(getCacheControl());
     }
 

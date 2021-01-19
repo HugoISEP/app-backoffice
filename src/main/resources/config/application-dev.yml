@@ -21,7 +21,6 @@ logging:
 
 mobile-app-url: 'http://localhost:1234'
 firebase: './src/main/resources/google/google-service.json'
-image-path: '/Users/hugo/JE/app-backoffice'
 
 spring:
   profiles:

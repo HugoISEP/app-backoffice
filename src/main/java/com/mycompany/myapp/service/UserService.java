@@ -251,7 +251,7 @@ public class UserService {
             .orElseThrow(() -> new BadRequestAlertException("current user not found", "USER", "id exists"));
 
         User user = userRepository.findById(id).orElseThrow(() -> new BadRequestAlertException("User not found", "USER", "login doesn't exist"));
-        if (currentUser.getCompany().getId() == user.getCompany().getId() || currentUser.getAuthorities().contains(AuthoritiesConstants.ADMIN)){
+        if (currentUser.getAuthorities().contains(AuthoritiesConstants.ADMIN) || currentUser.getCompany().getId().equals(user.getCompany().getId())){
             userRepository.delete(user);
             this.clearUserCaches(user);
             log.debug("Deleted User: {}", user);
