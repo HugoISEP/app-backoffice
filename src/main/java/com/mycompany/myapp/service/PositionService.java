@@ -93,7 +93,9 @@ public class PositionService {
         newPosition.setMission(mission);
         mission.getPositions().add(newPosition);
         try {
-            notificationService.sendMessage(newPosition);
+            if (newPosition.isStatus()){
+                notificationService.sendMessage(newPosition);
+            }
         } catch (InterruptedException | ExecutionException e) {
             log.warn("Error when sending notification: " + e.toString());
         }
