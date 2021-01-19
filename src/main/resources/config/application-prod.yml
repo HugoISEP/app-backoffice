@@ -27,7 +27,6 @@ management:
 
 mobile-app-url: ${MOBILE_APP_URL}
 firebase: './google-service.json'
-image-path: ''
 
 spring:
   devtools:
