@@ -152,3 +152,8 @@ Desktop.ini
 ######################
 /images/company/*
 !/images/company/.gitkeep
+
+######################
+# Google conf
+######################
+/src/main/resources/google

@@ -1,9 +1,11 @@
 image: $CI_REGISTRY_IMAGE/jhipster:latest
 
 cache:
-  key: '$CI_COMMIT_REF_NAME'
+  key: app-backoffice
   paths:
     - .maven/
+    - node_modules
+    - node
 stages:
   - build
   - analyze
@@ -13,6 +15,7 @@ stages:
 before_script:
   - export NG_CLI_ANALYTICS="false"
   - export MAVEN_USER_HOME=`pwd`/.maven
+  - export TAG=$CI_COMMIT_BRANCH && [[ "$CI_COMMIT_BRANCH" == "master" ]] && TAG="prod"
 
 maven-compile:
   stage: build
@@ -25,6 +28,8 @@ maven-compile:
     expire_in: 1 day
   only:
     - master
+    - merge_requests
+    - staging
 
 maven-package:
   stage: package
@@ -37,15 +42,17 @@ maven-package:
     expire_in: 1 day
   only:
     - master
+    - staging
 
 docker-push:
   stage: release
   variables:
     REGISTRY_URL: $CI_REGISTRY
-    IMAGE_TAG: $CI_REGISTRY_IMAGE:prod
   dependencies:
     - maven-package
   script:
+    - export IMAGE_TAG=$CI_REGISTRY_IMAGE:$TAG
     - ./mvnw -ntp compile jib:build -Pprod -Djib.to.image=$IMAGE_TAG -Djib.to.auth.username=gitlab-ci-token  -Djib.to.auth.password=$CI_BUILD_TOKEN -Dmaven.repo.local=$MAVEN_USER_HOME
   only:
     - master
+    - staging

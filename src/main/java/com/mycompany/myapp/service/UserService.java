@@ -251,7 +251,7 @@ public class UserService {
             .orElseThrow(() -> new BadRequestAlertException("current user not found", "USER", "id exists"));
 
         User user = userRepository.findById(id).orElseThrow(() -> new BadRequestAlertException("User not found", "USER", "login doesn't exist"));
-        if (currentUser.getCompany().getId() == user.getCompany().getId() || currentUser.getAuthorities().contains(AuthoritiesConstants.ADMIN)){
+        if (currentUser.getAuthorities().contains(AuthoritiesConstants.ADMIN) || currentUser.getCompany().getId().equals(user.getCompany().getId())){
             userRepository.delete(user);
             this.clearUserCaches(user);
             log.debug("Deleted User: {}", user);
@@ -357,6 +357,7 @@ public class UserService {
             .map(Optional::get)
             .collect(Collectors.toList());
         user.setJobTypes(newJobTypes);
+        this.clearUserCaches(user);
         return new UserDTO(user).getJobTypes();
     }
 
@@ -373,8 +374,12 @@ public class UserService {
         }
     }
 
+    public List<User> getUsersByCompany(Company company) {
+        return userRepository.findAllByCompany(company);
+    }
 
-    private void clearUserCaches(User user) {
+
+    public void clearUserCaches(User user) {
         Objects.requireNonNull(cacheManager.getCache(UserRepository.USERS_BY_LOGIN_CACHE)).evict(user.getLogin());
         if (user.getEmail() != null) {
             Objects.requireNonNull(cacheManager.getCache(UserRepository.USERS_BY_EMAIL_CACHE)).evict(user.getEmail());

@@ -3,7 +3,7 @@
         <div class="card p-4 h-100" style="border-radius: 10px" >
         <div class="row">
             <div class="col-8 my-auto">
-                <h1 class="display-5 text-responsive">{{"Bonjour,  Junior ISIT !"}}</h1>
+                <h1 class="display-5 text-responsive">{{"Bonjour, " + (account?.company ? account?.company?.name : account?.firstName) + " !"}}</h1>
             </div>
             <div class="col-4">
                 <img class="img-fluid" src="../../content/images/home%20page/illustration-bienvenue.svg" />
@@ -13,10 +13,10 @@
             <p>
                 Bienvenue sur l’espace d’administration de votre application mobile à destination des consultants de
                 votre école. Vous avez la possibilité d’y ajouter des missions à pourvoir, et d’y administrer votre
-                équipe de consultants. En cas de problème n’hésitez pas à nous écrire à support@juniorisep.com
+                équipe de consultants. En cas de problème, veuillez nous contacter par mail à <a class="text-dark" href="mailto:support@juniorisep.com">support@juniorisep.com</a>.
                 <br />
                 <br />
-                A bientôt
+                A bientôt,
             </p>
         </div>
         <div class="row">

@@ -20,6 +20,7 @@ logging:
     com.mycompany.myapp: DEBUG
 
 mobile-app-url: 'http://localhost:1234'
+firebase: './src/main/resources/google/google-service.json'
 
 spring:
   profiles:
@@ -60,6 +61,11 @@ spring:
     cache-duration: PT1S # 1 second, see the ISO 8601 standard
   thymeleaf:
     cache: false
+  minio:
+    url: http://localhost:9000
+    accessKey: adminadmin
+    secretKey: adminadmin
+    secure: false # secure if using https
 
 server:
   port: 8080

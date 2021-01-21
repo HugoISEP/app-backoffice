@@ -63,7 +63,7 @@ export const companyRoute: Routes = [
     canActivate: [UserRouteAccessService],
   },
   {
-    path: ':companyId/edit',
+    path: ':companyId/update',
     component: CompanyUpdateComponent,
     resolve: {
       company: CompanyResolve,

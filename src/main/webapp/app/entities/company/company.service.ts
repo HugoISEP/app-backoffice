@@ -21,8 +21,11 @@ export class CompanyService {
     return this.http.post<ICompany>(this.resourceUrl, formData, { observe: 'response' });
   }
 
-  update(company: ICompany): Observable<EntityResponseType> {
-    return this.http.put<ICompany>(this.resourceUrl, company, { observe: 'response' });
+  update(company: ICompany, file?: File): Observable<EntityResponseType> {
+    const formData = new FormData();
+    file && formData.append('file', file);
+    formData.append('company', JSON.stringify(company));
+    return this.http.put<ICompany>(this.resourceUrl, formData, { observe: 'response' });
   }
 
   getUserCompany(): Observable<EntityResponseType> {
@@ -47,5 +50,9 @@ export class CompanyService {
 
   delete(id: number): Observable<HttpResponse<{}>> {
     return this.http.delete(`${this.resourceUrl}/${id}`, { observe: 'response' });
+  }
+
+  getFileUrl(id: number): Observable<HttpResponse<string>> {
+    return this.http.get(`${this.resourceUrl}/${id}/file`, { observe: 'response', responseType: 'text' });
   }
 }

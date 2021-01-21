@@ -113,8 +113,8 @@ spring:
       console-available: true
   servlet:
     multipart:
-      max-file-size: 100KB
-      max-request-size: 100KB
+      max-file-size: 1024KB
+      max-request-size: 1050KB
 
 server:
   servlet:
