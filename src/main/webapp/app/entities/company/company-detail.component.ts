@@ -8,12 +8,16 @@ import { CompanyService } from './company.service';
 })
 export class CompanyDetailComponent implements OnInit {
   company: ICompany | null = null;
+  imageUrl: string | null = null;
 
   constructor(protected companyService: CompanyService) {}
 
   ngOnInit(): void {
     this.companyService.getUserCompany().subscribe(company => {
       this.company = company.body!;
+      this.companyService.getFileUrl(this.company?.id!).subscribe(url => {
+        this.imageUrl = url.body;
+      });
     });
   }
 }

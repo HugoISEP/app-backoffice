@@ -26,6 +26,7 @@ management:
         enabled: false
 
 mobile-app-url: ${MOBILE_APP_URL}
+firebase: '/app/google-service.json'
 
 spring:
   devtools:
@@ -63,6 +64,11 @@ spring:
     #password: ${MAIL_PASSWORD}
   thymeleaf:
     cache: true
+  minio:
+    url: ${MINIO_URL}
+    accessKey: ${MINIO_ACCESSKEY}
+    secretKey: ${MINIO_SECRETKEY}
+    secure: true # secure if using https
 
 # ===================================================================
 # To enable TLS in production, generate a certificate using:
@@ -131,7 +137,6 @@ jhipster:
       queue-size: 512
   audit-events:
     retention-period: 30 # Number of days before audit events are deleted.
-  #firebase: '../google-service.json'
 # ===================================================================
 # Application specific properties
 # Add your own application properties here, see the ApplicationProperties class
