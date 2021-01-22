@@ -42,6 +42,10 @@ export class PositionService {
     return this.http.get<IPosition[]>(`${this.resourceUrl}/active`, { params: options, observe: 'response' });
   }
 
+  sendNotification(id: number): Observable<string> {
+    return this.http.post<string>(`${this.resourceUrl}/${id}/notification`, { observe: 'response' });
+  }
+
   delete(id: number): Observable<HttpResponse<{}>> {
     return this.http.delete(`${this.resourceUrl}/${id}`, { observe: 'response' });
   }

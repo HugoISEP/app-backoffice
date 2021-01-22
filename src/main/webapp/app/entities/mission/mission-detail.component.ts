@@ -58,6 +58,10 @@ export class MissionDetailComponent implements OnInit, OnDestroy {
     window.history.back();
   }
 
+  sendNotification(id: number): void {
+    this.positionService.sendNotification(id).subscribe();
+  }
+
   ngOnDestroy(): void {
     if (this.eventSubscriber) {
       this.eventManager.destroy(this.eventSubscriber);

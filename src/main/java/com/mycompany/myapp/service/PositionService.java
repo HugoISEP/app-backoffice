@@ -12,6 +12,7 @@ import com.mycompany.myapp.service.dto.UserDTO;
 import com.mycompany.myapp.service.mapper.MissionMapper;
 import com.mycompany.myapp.service.mapper.PositionMapper;
 import com.mycompany.myapp.service.notification.NotificationService;
+import com.mycompany.myapp.service.notification.NotificationStatus;
 import com.mycompany.myapp.service.view.PositionView;
 import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
 import com.mycompany.myapp.web.rest.errors.ResourceNotFoundException;
@@ -40,17 +41,15 @@ public class PositionService {
     private final MissionRepository missionRepository;
     private final MissionMapper missionMapper;
     private final MissionService missionService;
-    private final JobTypeRepository jobTypeRepository;
     private final UserService userService;
     private final NotificationService notificationService;
 
-    public PositionService(PositionRepository repository, PositionMapper mapper, MissionRepository missionRepository, MissionMapper missionMapper, MissionService missionService, JobTypeRepository jobTypeRepository, UserService userService, NotificationService notificationService) {
+    public PositionService(PositionRepository repository, PositionMapper mapper, MissionRepository missionRepository, MissionMapper missionMapper, MissionService missionService, UserService userService, NotificationService notificationService) {
         this.repository = repository;
         this.mapper = mapper;
         this.missionRepository = missionRepository;
         this.missionMapper = missionMapper;
         this.missionService = missionService;
-        this.jobTypeRepository = jobTypeRepository;
         this.userService = userService;
         this.notificationService = notificationService;
     }
@@ -94,7 +93,7 @@ public class PositionService {
         mission.getPositions().add(newPosition);
         try {
             if (newPosition.isStatus()){
-                notificationService.sendMessage(newPosition);
+                notificationService.sendMessage(newPosition, NotificationStatus.NEW);
             }
         } catch (InterruptedException | ExecutionException e) {
             log.warn("Error when sending notification: " + e.toString());
@@ -111,6 +110,18 @@ public class PositionService {
         Position position = repository.findById(updatedPosition.getId()).orElseThrow(() -> new ResourceNotFoundException("position doesn't exist", ENTITY_NAME, "id doesn't exist"));
         mapper.updatePosition(mapper.fromDTO(updatedPosition), position);
         return mapper.asDto(repository.save(position));
+    }
+
+    public boolean sendNotification(Long id){
+        hasAuthorization(id);
+        Position position = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("position doesn't exist", ENTITY_NAME, "id doesn't exist"));
+        try {
+            notificationService.sendMessage(position, NotificationStatus.OLD);
+            return true;
+        } catch (InterruptedException | ExecutionException e) {
+            log.warn("Error when sending notification: " + e.toString());
+            return false;
+        }
     }
 
     public void deletePosition(Position position){
