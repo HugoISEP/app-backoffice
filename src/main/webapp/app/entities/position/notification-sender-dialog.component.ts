@@ -18,7 +18,8 @@ export class NotificationSenderDialogComponent {
   }
 
   confirmSending(id: number): void {
-    this.activeModal.close();
-    this.positionService.sendNotification(id).subscribe();
+    this.positionService.sendNotification(id).subscribe(() => {
+      this.activeModal.close();
+    });
   }
 }
