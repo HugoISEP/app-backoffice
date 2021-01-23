@@ -4,7 +4,6 @@ import com.mycompany.myapp.domain.Mission;
 import com.mycompany.myapp.domain.Position;
 import com.mycompany.myapp.repository.PositionRepository;
 import com.mycompany.myapp.repository.MissionRepository;
-import com.mycompany.myapp.repository.JobTypeRepository;
 import com.mycompany.myapp.security.AuthoritiesConstants;
 import com.mycompany.myapp.service.dto.MissionDTO;
 import com.mycompany.myapp.service.dto.PositionDTO;
@@ -115,6 +114,9 @@ public class PositionService {
     public boolean sendNotification(Long id){
         hasAuthorization(id);
         Position position = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("position doesn't exist", ENTITY_NAME, "id doesn't exist"));
+        if(!position.isStatus()){
+            return false;
+        }
         try {
             notificationService.sendMessage(position, NotificationStatus.OLD);
             return true;
