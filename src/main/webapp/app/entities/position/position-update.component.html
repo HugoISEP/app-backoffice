@@ -61,7 +61,7 @@
                     <label class="form-control-label" for="field_description">Description</label>
                     <textarea class="form-control" name="description" id="field_description"
                               formControlName="description" rows="5"></textarea>
-                    <small class="float-right" [ngClass]="editForm.get('description')!.value.length > 500 ? 'text-danger' : 'text-muted'">{{editForm.get('description')!.value.length}} / 500</small>
+                    <small class="float-right" [ngClass]="editForm.get('description')!.value?.length > 500 ? 'text-danger' : 'text-muted'">{{editForm.get('description')!.value?.length}} / 500</small>
                     <div *ngIf="editForm.get('description')!.invalid && (editForm.get('description')!.dirty || editForm.get('description')!.touched)">
                         <small class="form-text text-danger"
                                *ngIf="editForm.get('description')?.errors?.required">
@@ -79,7 +79,7 @@
 
                 <div class="form-group">
                     <div class="custom-control custom-switch">
-                        <input type="checkbox" class="custom-control-input" name="status" id="field_status" formControlName="status" >
+                        <input type="checkbox" class="custom-control-input" name="status" id="field_status" [formControlName]="'status'">
                         <label class="custom-control-label" for="field_status" >Statut</label>
                     </div>
                 </div>

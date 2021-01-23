@@ -5,7 +5,4 @@
             <column name="last_notification_at" type="timestamp"/>
         </addColumn>
     </changeSet>
-    <changeSet author="hugo (generated)" id="1611409406556-1">
-        <alterSequence sequenceName="sequence_generator"/>
-    </changeSet>
 </databaseChangeLog>
