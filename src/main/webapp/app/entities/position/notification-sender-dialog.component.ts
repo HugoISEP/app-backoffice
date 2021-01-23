@@ -17,10 +17,8 @@ export class NotificationSenderDialogComponent {
     this.activeModal.dismiss();
   }
 
-  confirmDelete(id: number): void {
-    this.positionService.sendNotification(id).subscribe(() => {
-      this.eventManager.broadcast('missionListModification');
-      this.activeModal.close();
-    });
+  confirmSending(id: number): void {
+    this.activeModal.close();
+    this.positionService.sendNotification(id).subscribe();
   }
 }
