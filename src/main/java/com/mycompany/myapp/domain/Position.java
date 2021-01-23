@@ -51,4 +51,7 @@ public class Position {
     @ManyToOne
     private JobType jobType;
 
+    @JsonIgnore
+    private LocalDateTime lastNotificationAt;
+
 }

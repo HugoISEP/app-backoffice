@@ -8,6 +8,7 @@ import { MissionDeleteDialogComponent } from './mission-delete-dialog.component'
 import { missionRoute } from './mission.route';
 import { PositionUpdateComponent } from '../position/position-update.component';
 import { PositionDeleteDialogComponent } from '../position/position-delete-dialog.component';
+import { NotificationSenderDialogComponent } from '../position/notification-sender-dialog.component';
 
 @NgModule({
   imports: [HugoIsepSharedModule, RouterModule.forChild(missionRoute)],
@@ -18,7 +19,8 @@ import { PositionDeleteDialogComponent } from '../position/position-delete-dialo
     MissionDeleteDialogComponent,
     PositionUpdateComponent,
     PositionDeleteDialogComponent,
+    NotificationSenderDialogComponent,
   ],
-  entryComponents: [MissionDeleteDialogComponent, PositionDeleteDialogComponent],
+  entryComponents: [MissionDeleteDialogComponent, PositionDeleteDialogComponent, NotificationSenderDialogComponent],
 })
 export class MissionModule {}
