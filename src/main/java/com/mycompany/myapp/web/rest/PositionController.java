@@ -6,7 +6,6 @@ import com.mycompany.myapp.security.AuthoritiesConstants;
 import com.mycompany.myapp.service.PositionService;
 import com.mycompany.myapp.service.dto.PositionDTO;
 import com.mycompany.myapp.service.mapper.PositionMapper;
-import com.mycompany.myapp.service.view.MissionView;
 import com.mycompany.myapp.service.view.PositionView;
 import io.github.jhipster.web.util.HeaderUtil;
 import io.github.jhipster.web.util.PaginationUtil;
@@ -66,7 +65,7 @@ public class PositionController {
     }
 
     @PostMapping("/mission/{missionId}")
-    public MissionView addPosition(@PathVariable Long missionId, @RequestBody PositionDTO position){
+    public PositionView addPosition(@PathVariable Long missionId, @RequestBody PositionDTO position){
         return service.addPosition(missionId, position);
     }
 
@@ -76,13 +75,14 @@ public class PositionController {
     }
 
     @PostMapping("/{id}/notification")
-    public ResponseEntity<Void> sendNotification(@PathVariable("id") Long id){
-        if (service.sendNotification(id)){
+    public ResponseEntity<Void> sendNotification(@PathVariable("id") Long id) {
+        try {
+            service.sendNotification(id);
             return ResponseEntity.ok()
                 .headers(HeaderUtil.createAlert(applicationName,  "Notification envoyée", id.toString())).build();
-        } else {
-            return ResponseEntity.notFound()
-                .headers(HeaderUtil.createFailureAlert(applicationName, false, "position", "404", "erreur lors de l'envoi de la notification")).build();
+        } catch (Exception e){
+            return ResponseEntity.badRequest()
+                .headers(HeaderUtil.createFailureAlert(applicationName, false, "position", "404", e.getMessage())).build();
         }
     }
 

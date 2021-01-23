@@ -5,10 +5,8 @@ import com.mycompany.myapp.domain.Position;
 import com.mycompany.myapp.repository.PositionRepository;
 import com.mycompany.myapp.repository.MissionRepository;
 import com.mycompany.myapp.security.AuthoritiesConstants;
-import com.mycompany.myapp.service.dto.MissionDTO;
 import com.mycompany.myapp.service.dto.PositionDTO;
 import com.mycompany.myapp.service.dto.UserDTO;
-import com.mycompany.myapp.service.mapper.MissionMapper;
 import com.mycompany.myapp.service.mapper.PositionMapper;
 import com.mycompany.myapp.service.notification.NotificationService;
 import com.mycompany.myapp.service.notification.NotificationStatus;
@@ -23,6 +21,8 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
@@ -38,16 +38,14 @@ public class PositionService {
     private final PositionRepository repository;
     private final PositionMapper mapper;
     private final MissionRepository missionRepository;
-    private final MissionMapper missionMapper;
     private final MissionService missionService;
     private final UserService userService;
     private final NotificationService notificationService;
 
-    public PositionService(PositionRepository repository, PositionMapper mapper, MissionRepository missionRepository, MissionMapper missionMapper, MissionService missionService, UserService userService, NotificationService notificationService) {
+    public PositionService(PositionRepository repository, PositionMapper mapper, MissionRepository missionRepository, MissionService missionService, UserService userService, NotificationService notificationService) {
         this.repository = repository;
         this.mapper = mapper;
         this.missionRepository = missionRepository;
-        this.missionMapper = missionMapper;
         this.missionService = missionService;
         this.userService = userService;
         this.notificationService = notificationService;
@@ -81,7 +79,7 @@ public class PositionService {
     }
 
 
-    public MissionDTO addPosition(Long missionId, PositionDTO position){
+    public PositionDTO addPosition(Long missionId, PositionDTO position){
         missionService.hasAuthorization(missionId);
         Position newPosition = mapper.fromDTO(position);
         if (newPosition.getId() != null) {
@@ -89,15 +87,15 @@ public class PositionService {
         }
         Mission mission = missionRepository.findById(missionId).orElseThrow(() -> new ResourceNotFoundException("mission doesn't exist", ENTITY_NAME, "id doesn't exist"));
         newPosition.setMission(mission);
-        mission.getPositions().add(newPosition);
         try {
             if (newPosition.isStatus()){
                 notificationService.sendMessage(newPosition, NotificationStatus.NEW);
+                newPosition.setLastNotificationAt(LocalDateTime.now());
             }
         } catch (InterruptedException | ExecutionException e) {
             log.warn("Error when sending notification: " + e.toString());
         }
-        return missionMapper.asDTO(missionRepository.save(mission));
+        return mapper.asDto(repository.save(newPosition));
     }
 
     public PositionDTO editPosition(PositionDTO updatedPosition){
@@ -111,18 +109,21 @@ public class PositionService {
         return mapper.asDto(repository.save(position));
     }
 
-    public boolean sendNotification(Long id){
+    public void sendNotification(Long id) throws Exception {
         hasAuthorization(id);
         Position position = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("position doesn't exist", ENTITY_NAME, "id doesn't exist"));
         if(!position.isStatus()){
-            return false;
+            throw new Exception("Position status incorrect");
+        }
+        if (position.getLastNotificationAt() != null || (ChronoUnit.SECONDS.between(LocalDateTime.now(), position.getLastNotificationAt()) > 2*60*60)) {
+            long timeDiff = ChronoUnit.SECONDS.between(LocalDateTime.now().minusHours(1L), position.getLastNotificationAt());
+            throw new Exception("You must wait " + timeDiff / 3600 + " h " + timeDiff % 3600 / 60 + " min before sending a new notification");
         }
         try {
             notificationService.sendMessage(position, NotificationStatus.OLD);
-            return true;
+            position.setLastNotificationAt(LocalDateTime.now());
         } catch (InterruptedException | ExecutionException e) {
             log.warn("Error when sending notification: " + e.toString());
-            return false;
         }
     }
 
