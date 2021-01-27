@@ -19,7 +19,7 @@ logging:
     io.github.jhipster: DEBUG
     com.mycompany.myapp: DEBUG
 
-mobile-app-url: 'http://localhost:1234'
+mobile-app-url: 'http://confirmation.cnje-staging.juniorisep.com'
 firebase: './src/main/resources/google/google-service.json'
 
 spring:

@@ -15,9 +15,9 @@
 
 logging:
   level:
-    ROOT: INFO
-    io.github.jhipster: INFO
-    com.mycompany.myapp: INFO
+    ROOT: ${LOGGING_LEVEL}
+    io.github.jhipster: ${LOGGING_LEVEL}
+    com.mycompany.myapp: ${LOGGING_LEVEL}
 
 management:
   metrics:

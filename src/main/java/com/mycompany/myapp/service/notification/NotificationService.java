@@ -14,9 +14,9 @@ public class NotificationService {
     private final Logger logger = LoggerFactory.getLogger(NotificationService.class);
 
 
-    public void sendMessage(Position position)
+    public void sendMessage(Position position, NotificationStatus notificationStatus)
         throws InterruptedException, ExecutionException {
-        Message message = getPreconfiguredMessage(position);
+        Message message = getPreconfiguredMessage(position, notificationStatus);
         String response = sendAndGetResponse(message);
         logger.info("Sent message Topic: " + position.getJobType().getName() + ", " + response);
     }
@@ -45,9 +45,10 @@ public class NotificationService {
     }
 
 
-    private Message getPreconfiguredMessage(Position position) {
+    private Message getPreconfiguredMessage(Position position, NotificationStatus notificationStatus) {
         return getPreconfiguredMessageBuilder(position).setTopic(position.getJobType().getId().toString())
             .putData("title", position.getMission().getCompany().getName()).putData("body", position.getJobType().getName())
+            .putData("status", notificationStatus.getValue())
             .build();
     }
 

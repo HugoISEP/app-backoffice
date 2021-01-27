@@ -1,5 +1,6 @@
 package com.mycompany.myapp.repository;
 
+import com.mycompany.myapp.domain.Company;
 import com.mycompany.myapp.domain.User;
 
 import org.springframework.cache.annotation.Cacheable;
@@ -46,6 +47,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findOneWithAuthoritiesByEmailIgnoreCase(String email);
 
     Page<User> findAllByLoginNot(Pageable pageable, String login);
+
+    List<User> findAllByCompany(Company company);
 
     @Query("select u from User u join u.authorities a " +
         "where a.name like 'ROLE_USER' and size(u.authorities)=1 and u.company.id = :id " +
