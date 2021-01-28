@@ -17,6 +17,8 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+
 
 @Service
 @Transactional
@@ -28,14 +30,12 @@ public class MissionService {
     private final MissionMapper mapper;
     private final UserService userService;
     private final CompanyMapper companyMapper;
-    private final PositionRepository positionRepository;
 
-    public MissionService(MissionRepository repository, MissionMapper mapper, UserService userService, CompanyMapper companyMapper, PositionRepository positionRepository) {
+    public MissionService(MissionRepository repository, MissionMapper mapper, UserService userService, CompanyMapper companyMapper) {
         this.repository = repository;
         this.mapper = mapper;
         this.userService = userService;
         this.companyMapper = companyMapper;
-        this.positionRepository = positionRepository;
     }
 
     public void hasAuthorization(Long id){
@@ -65,9 +65,12 @@ public class MissionService {
         return mapper.asDTO(repository.save(newMission));
     }
 
-    public void deleteMission(Mission mission){
-        hasAuthorization(mission.getId());
-        repository.delete(mission);
+    public void deleteMission(Long id){
+        hasAuthorization(id);
+        Mission mission = repository.findById(id).orElseThrow(() -> new BadRequestAlertException("position doesn't exist", ENTITY_NAME, "id doesn't exist"));
+        mission.setDeletedAt(LocalDateTime.now());
+        mission.getPositions().forEach(position -> position.setDeletedAt(LocalDateTime.now()));
+        repository.save(mission);
     }
 
     public MissionDTO editMission(MissionDTO missionToEdit){
