@@ -129,6 +129,7 @@ public class PositionService {
 
     public void deletePosition(Position position){
         hasAuthorization(position.getId());
-        repository.delete(position);
+        position.setDeletedAt(LocalDateTime.now());
+        repository.save(position);
     }
 }
