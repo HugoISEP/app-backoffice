@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
+import java.util.HashMap;
 import java.util.concurrent.ExecutionException;
 
 @Service
@@ -37,28 +38,42 @@ public class NotificationService {
     }
 
     private ApnsConfig getApnsConfig(String topic) {
+        HashMap<String, String> map = new HashMap<>();
+        map.put("apns-priority", "10");
         return ApnsConfig.builder()
             .setAps(Aps.builder().setCategory(topic).setSound("default")
                 .setContentAvailable(true)
                 .setThreadId(topic).build())
+            .putAllHeaders(map)
             .build();
     }
 
 
     private Message getPreconfiguredMessage(Position position, NotificationStatus notificationStatus) {
-        return getPreconfiguredMessageBuilder(position).setTopic(position.getJobType().getId().toString())
+        return getPreconfiguredMessageBuilder(position, notificationStatus).setTopic(position.getJobType().getId().toString())
             .putData("title", position.getMission().getCompany().getName()).putData("body", position.getJobType().getName())
             .putData("status", notificationStatus.getValue())
             .build();
     }
 
 
-    private Message.Builder getPreconfiguredMessageBuilder(Position position) {
+    private Message.Builder getPreconfiguredMessageBuilder(Position position, NotificationStatus status) {
         AndroidConfig androidConfig = getAndroidConfig(position.getJobType().getId().toString());
         ApnsConfig apnsConfig = getApnsConfig(position.getJobType().getId().toString());
-        return Message.builder()
-            .setApnsConfig(apnsConfig).setAndroidConfig(androidConfig).setNotification(
-                new Notification(position.getMission().getCompany().getName(), position.getJobType().getName()));
+        //TODO Clean this
+        if (status.equals(NotificationStatus.NEW)){
+            return Message.builder()
+                .setApnsConfig(apnsConfig).setAndroidConfig(androidConfig).setNotification(
+                    new Notification(position.getMission().getCompany().getName(), "Une nouvelle mission " + position.getJobType().getName() +  " est disponible !")
+                );
+            //Notification class doesn't even have setters :/
+        }
+        else {
+            return Message.builder()
+                .setApnsConfig(apnsConfig).setAndroidConfig(androidConfig).setNotification(
+                    new Notification(position.getMission().getCompany().getName(), "Une mission " + position.getJobType().getName() + " est toujours disponible !")
+                );
+        }
     }
 
 }
