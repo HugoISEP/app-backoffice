@@ -121,6 +121,7 @@ public class UserService {
             Company company = this.isEmailValid(userDTO.getEmail());
             newUser.setEmail(userDTO.getEmail().toLowerCase());
             newUser.setCompany(company);
+            newUser.setJobTypes(jobTypeRepository.findAllByCompany(company));
         } else {
             throw new Exception("Email is required");
         }
@@ -374,8 +375,12 @@ public class UserService {
         }
     }
 
+    public List<User> getUsersByCompany(Company company) {
+        return userRepository.findAllByCompany(company);
+    }
 
-    private void clearUserCaches(User user) {
+
+    public void clearUserCaches(User user) {
         Objects.requireNonNull(cacheManager.getCache(UserRepository.USERS_BY_LOGIN_CACHE)).evict(user.getLogin());
         if (user.getEmail() != null) {
             Objects.requireNonNull(cacheManager.getCache(UserRepository.USERS_BY_EMAIL_CACHE)).evict(user.getEmail());
