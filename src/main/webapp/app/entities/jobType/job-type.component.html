@@ -34,7 +34,7 @@
             </thead>
             <tbody>
             <tr *ngFor="let jobType of jobTypes ;trackBy: getId">
-                <td class="text-center"><a [routerLink]="['/mission', jobType.id, 'view']">{{ jobType.name }}</a></td>
+                <td class="text-center">{{ jobType.name }}</td>
                 <td class="text-center">{{ jobType.createdAt | date:'dd/MM/yy HH:mm' }}</td>
                 <td class="text-right">
                     <div class="btn-group">
