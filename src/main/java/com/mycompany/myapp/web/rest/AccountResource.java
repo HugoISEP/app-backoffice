@@ -87,8 +87,11 @@ public class AccountResource {
      * @throws RuntimeException {@code 500 (Internal Server Error)} if the user couldn't be activated.
      */
     @GetMapping("/activate")
-    public void activateAccount(@RequestParam(value = "key") String key, HttpServletResponse response) {
+    public void activateAccount(@RequestParam(value = "key") String key, @RequestParam(value = "id") Long id, HttpServletResponse response) {
         Optional<User> user = userService.activateRegistration(key);
+        if (!user.isPresent()){
+            user = userRepository.findById(id);
+        }
         if (!user.isPresent()) {
             throw new AccountResourceException("No user was found for this activation key");
         }
