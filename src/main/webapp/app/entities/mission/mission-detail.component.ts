@@ -9,6 +9,7 @@ import { JhiEventManager } from 'ng-jhipster';
 import { Subscription } from 'rxjs';
 import { HttpResponse } from '@angular/common/http';
 import { MissionService } from 'app/entities/mission/mission.service';
+import { NotificationSenderDialogComponent } from '../position/notification-sender-dialog.component';
 
 @Component({
   selector: 'jhi-mission-detail',
@@ -56,6 +57,11 @@ export class MissionDetailComponent implements OnInit, OnDestroy {
 
   previousState(): void {
     window.history.back();
+  }
+
+  sendNotification(position: IPosition): void {
+    const modalRef = this.modalService.open(NotificationSenderDialogComponent, { size: 'lg', backdrop: 'static' });
+    modalRef.componentInstance.position = position;
   }
 
   ngOnDestroy(): void {

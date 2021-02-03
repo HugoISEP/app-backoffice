@@ -1,15 +1,13 @@
-<div>
-    <div class="row">
-        <div class="col-md-4">
-            <span class="hipster img-fluid rounded"></span>
-        </div>
+<div class="col card jh-card">
+    <div class="row-12">
+        <span class="hipster img-fluid rounded"></span>
+    </div>
 
-        <div class="col-md-8">
-            <h1>Error Page!</h1>
+    <div class="row-12">
+        <h1>Error Page!</h1>
 
-            <div *ngIf="errorMessage">
-                <div class="alert alert-danger">{{ errorMessage }}</div>
-            </div>
+        <div *ngIf="errorMessage">
+            <div class="alert alert-danger">{{ errorMessage }}</div>
         </div>
     </div>
 </div>

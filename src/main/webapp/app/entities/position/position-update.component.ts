@@ -23,7 +23,7 @@ export class PositionUpdateComponent implements OnInit {
     placesNumber: [null, [Validators.required, Validators.pattern('^[1-9]\\d*$')]],
     remuneration: [null, [Validators.required, Validators.pattern('^[0-9]\\d*([.,]?[0-9]\\d*)?$')]],
     description: [null, [Validators.required, Validators.maxLength(500)]],
-    status: [null, [Validators.required]],
+    status: [true, [Validators.required]],
     jobType: [null, [Validators.required]],
   });
 
@@ -36,9 +36,11 @@ export class PositionUpdateComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.missionId = this.route.snapshot.params['missionId'];
     this.activateRoute.data.subscribe(({ position }) => {
-      this.updateForm(position);
-      this.missionId = this.route.snapshot.params['missionId']; //.params['missionId'];
+      if (position.id) {
+        this.updateForm(position);
+      }
     });
     this.jobTypeService.getAllByUser().subscribe((res: HttpResponse<IJobType[]>) => (this.jobTypes = res.body || []));
   }
@@ -54,7 +56,7 @@ export class PositionUpdateComponent implements OnInit {
       placesNumber: position.placesNumber,
       remuneration: position.remuneration,
       description: position.description,
-      status: !!position.status,
+      status: position.status,
       jobType: position.jobType,
     });
   }
@@ -95,7 +97,7 @@ export class PositionUpdateComponent implements OnInit {
   save(): void {
     this.isSaving = true;
     const position = this.createForm();
-    if (position.id !== undefined) {
+    if (position.id !== null) {
       this.subscribeToSaveResponse(this.positionService.update(position));
     } else {
       this.subscribeToSaveResponse(this.positionService.create(position, this.missionId!));

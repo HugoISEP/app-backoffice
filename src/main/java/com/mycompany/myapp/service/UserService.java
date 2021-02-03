@@ -121,6 +121,7 @@ public class UserService {
             Company company = this.isEmailValid(userDTO.getEmail());
             newUser.setEmail(userDTO.getEmail().toLowerCase());
             newUser.setCompany(company);
+            newUser.setJobTypes(jobTypeRepository.findAllByCompany(company));
         } else {
             throw new Exception("Email is required");
         }

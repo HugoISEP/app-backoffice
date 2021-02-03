@@ -1,10 +1,12 @@
 <div class="card jh-card">
+    <jhi-alert-error></jhi-alert-error>
+
+    <jhi-alert></jhi-alert>
 <div class="row justify-content-center">
     <div class="col-8">
         <div *ngIf="mission">
             <h2><span>Postes pour la mission: </span> {{ mission.name }}</h2>
             <hr>
-            <jhi-alert-error></jhi-alert-error>
             <div class="table-responsive">
                 <table *ngIf="mission.positions && mission.positions.length > 0" class="table table-striped" aria-describedby="page-heading">
                     <thead>
@@ -13,7 +15,7 @@
                         <th scope="col" class="text-center"><span>Durée</span><fa-icon></fa-icon></th>
                         <th scope="col" class="text-center"><span>Description</span><fa-icon></fa-icon></th>
                         <th scope="col" class="text-center"><span>Type de poste</span></th>
-                        <th scope="col" class="text-center"><span>Status</span></th>
+                        <th scope="col" class="text-center"><span>Statut</span></th>
                         <th></th>
                     </tr>
                     </thead>
@@ -31,12 +33,15 @@
                         </td>
                         <td class="text-center" style="width: 16%">
                             <div class="btn-group">
-                                <button type="submit" [routerLink]="['/mission', mission.id,'position', position.id, 'edit']" class="btn btn-info btn-sm">
+                                <button class="btn btn-warning btn-sm" [disabled]="!position?.status!" (click)="sendNotification(position!)">
+                                    <fa-icon icon="bell"></fa-icon><span class="d-none d-md-inline">Notification</span>
+                                </button>
+                                    <button type="submit" [routerLink]="['/mission', mission.id,'position', position.id, 'edit']" class="btn btn-info btn-sm">
                                     <fa-icon icon="pencil-alt"></fa-icon><span class="d-none d-md-inline">Modifier</span>
                                 </button>
                                 <button type="submit" (click)="delete(position)"
                                         class="btn btn-danger btn-sm">
-                                    <fa-icon icon="trash-alt"></fa-icon>
+                                    <fa-icon icon="trash-alt"></fa-icon><span class="d-none d-md-inline">Supprimer</span>
                                 </button>
                             </div>
                         </td>
