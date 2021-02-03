@@ -54,24 +54,14 @@ docker-push:
     - master
     - staging
 
-docker-trigger-staging:
+docker-trigger:
   stage: deploy
   variables:
-    ENVIRONMENT: staging
+    ENVIRONMENT: $CI_COMMIT_REF
     SERVICE: backoffice
   trigger:
     project: application-consultants-globale/app-infra
-    branch: staging
-  only:
-    - staging
-
-docker-trigger-master:
-  stage: deploy
-  variables:
-    ENVIRONMENT: master
-    SERVICE: backoffice
-  trigger:
-    project: application-consultants-globale/app-infra
-    branch: master
+    branch: ${CI_COMMIT_REF}
   only:
     - master
+    - staging
