@@ -1,11 +1,5 @@
 image: $CI_REGISTRY_IMAGE/jhipster:latest
 
-cache:
-  key: app-backoffice
-  paths:
-    - .maven/
-    - node_modules
-    - node
 stages:
   - build
   - analyze
