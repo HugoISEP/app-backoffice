@@ -22,6 +22,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
@@ -86,20 +87,18 @@ public class AccountResource {
      * @throws RuntimeException {@code 500 (Internal Server Error)} if the user couldn't be activated.
      */
     @GetMapping("/activate")
-    public RedirectView activateAccount(@RequestParam(value = "key") String key, RedirectAttributes attributes)  {
-        Optional<User> user = userService.activateRegistration(key);
-        if (!user.isPresent()) {
-            throw new AccountResourceException("No user was found for this activation key");
-        }
-        String siteUrl = user.get().getCompany().getWebsiteUrl()!= null ? user.get().getCompany().getWebsiteUrl() : "junior-entreprises.com";
-        attributes.addFlashAttribute("flashAttribute", "redirectWithRedirectView");
-        attributes.addAttribute("attribute", "redirectWithRedirectView");
+    public void activateAccount(@RequestParam(value = "key") String key, @RequestParam(value = "id") Long id, HttpServletResponse response) {
+        User user = userService.activateRegistration(key)
+            .or(() -> userRepository.findById(id))      // Prevent from multiple clicks on link
+            .orElseThrow(() -> new AccountResourceException("No user was found for this activation key"));
+        // Case where key was not found but id was, and account was not validated : not handled, but we didn't feel the need to
+        String siteUrl = user.getCompany().getWebsiteUrl()!= null ? user.getCompany().getWebsiteUrl() : "junior-entreprises.com";
         try {
-            return new RedirectView(appUrl + "?url=" + URLEncoder.encode(siteUrl, "UTF-8"));
+            response.setHeader("Location", appUrl + "?url=" + URLEncoder.encode(siteUrl, "UTF-8"));
         } catch (UnsupportedEncodingException e) {
-            return new RedirectView(appUrl);
+            response.setHeader("Location", appUrl);
         }
-
+        response.setStatus(302);
     }
 
     /**

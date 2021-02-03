@@ -4,13 +4,17 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.ToString;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 
 @Data
 @ToString(exclude = {"mission", "jobType"})
+@Where(clause = "deleted_at is null ")
 @Entity
 @Table(name = "position")
 public class Position {
@@ -21,18 +25,21 @@ public class Position {
 
     @NotNull
     @Column(name = "duration", nullable = false)
+    @Min(value = 1)
     private int duration;
 
     @NotNull
     @Column(name = "places_number", nullable = false)
+    @Min(value = 1)
     private int placesNumber;
 
     @NotNull
-    @Column(name = "remuneration", nullable = false)
+    @Column(name = "remuneration")
     private float remuneration;
 
     @NotNull
     @Column(name = "description", length = 500, nullable = false)
+    @Size(min = 1, max = 500)
     private String description;
 
     @JsonIgnore
@@ -46,9 +53,12 @@ public class Position {
     private LocalDateTime deletedAt;
 
     @Column(name = "status", nullable = false)
-    private boolean status = false;
+    private boolean status = true;
 
     @ManyToOne
     private JobType jobType;
+
+    @JsonIgnore
+    private LocalDateTime lastNotificationAt;
 
 }

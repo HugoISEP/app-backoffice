@@ -6,6 +6,7 @@ import lombok.ToString;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -15,7 +16,8 @@ import java.util.List;
 
 @Data
 @Entity
-@ToString(exclude = {"position"})
+@ToString(exclude = {"positions"})
+@Where(clause = "deleted_at is null ")
 @Table(name = "mission")
 public class Mission {
 
