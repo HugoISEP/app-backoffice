@@ -87,12 +87,12 @@ public class AccountResource {
      * @throws RuntimeException {@code 500 (Internal Server Error)} if the user couldn't be activated.
      */
     @GetMapping("/activate")
-    public void activateAccount(@RequestParam(value = "key") String key, HttpServletResponse response) {
-        Optional<User> user = userService.activateRegistration(key);
-        if (!user.isPresent()) {
-            throw new AccountResourceException("No user was found for this activation key");
-        }
-        String siteUrl = user.get().getCompany().getWebsiteUrl()!= null ? user.get().getCompany().getWebsiteUrl() : "junior-entreprises.com";
+    public void activateAccount(@RequestParam(value = "key") String key, @RequestParam(value = "id") Long id, HttpServletResponse response) {
+        User user = userService.activateRegistration(key)
+            .or(() -> userRepository.findById(id))      // Prevent from multiple clicks on link
+            .orElseThrow(() -> new AccountResourceException("No user was found for this activation key"));
+        // Case where key was not found but id was, and account was not validated : not handled, but we didn't feel the need to
+        String siteUrl = user.getCompany().getWebsiteUrl()!= null ? user.getCompany().getWebsiteUrl() : "junior-entreprises.com";
         try {
             response.setHeader("Location", appUrl + "?url=" + URLEncoder.encode(siteUrl, "UTF-8"));
         } catch (UnsupportedEncodingException e) {
