@@ -52,17 +52,15 @@ public class UserService {
 
     private final JobTypeRepository jobTypeRepository;
 
-    private final JobTypeMapper jobTypeMapper;
 
     private final CacheManager cacheManager;
 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, AuthorityRepository authorityRepository, CompanyRepository companyRepository, JobTypeRepository jobTypeRepository, JobTypeMapper jobTypeMapper, CacheManager cacheManager) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, AuthorityRepository authorityRepository, CompanyRepository companyRepository, JobTypeRepository jobTypeRepository, CacheManager cacheManager) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.authorityRepository = authorityRepository;
         this.companyRepository = companyRepository;
         this.jobTypeRepository = jobTypeRepository;
-        this.jobTypeMapper = jobTypeMapper;
         this.cacheManager = cacheManager;
     }
 
@@ -164,7 +162,7 @@ public class UserService {
             Company company = this.isEmailValid(userDTO.getEmail());
             if (!currentUser.getAuthorities().contains(AuthoritiesConstants.ADMIN)) {
                 if (!currentUser.getCompany().getId().equals(company.getId())) {
-                    throw new InvalidEmailSuffixException("Email match with the wrong company");
+                    throw new InvalidEmailSuffixException("Email not match with the company");
                 }
             }
             user.setEmail(userDTO.getEmail().toLowerCase());
