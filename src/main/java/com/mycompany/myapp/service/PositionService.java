@@ -112,7 +112,7 @@ public class PositionService {
         }
         Mission returnedMission = missionRepository.save(mission);
         this.clearPositionCacheByPosition(newPosition);
-        return mapper.asDTO(returnedMission);
+        return mapper.asDto(newPosition);
     }
 
     public PositionDTO editPosition(PositionDTO updatedPosition){
@@ -149,5 +149,19 @@ public class PositionService {
         hasAuthorization(position.getId());
         position.setDeletedAt(LocalDateTime.now());
         repository.save(position);
+        this.clearPositionCacheByPosition(position);
+    }
+
+    public void clearPositionCacheByPosition(Position position) {
+        try {
+            Objects.requireNonNull(cacheManager.getCache(PositionRepository.POSITIONS_AVAILABLE_CACHE)).evict(position.getJobType().getCompany().getId());
+        } catch (NullPointerException e) {
+            Objects.requireNonNull(cacheManager.getCache(PositionRepository.POSITIONS_AVAILABLE_CACHE)).evict(companyRepository.findCompanyByPositionId(position.getId()));
+        }
+    }
+
+    public void clearPositionCacheByCompany(Company company) {
+        Objects.requireNonNull(cacheManager.getCache(PositionRepository.POSITIONS_AVAILABLE_CACHE)).evict(company.getId());
     }
 }
+
