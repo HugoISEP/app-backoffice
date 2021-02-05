@@ -1,11 +1,8 @@
 image: $CI_REGISTRY_IMAGE/jhipster:latest
 
-cache:
-  key: app-backoffice
-  paths:
-    - .maven/
-    - node_modules
-    - node
+variables:
+  GIT_DEPTH: 10
+
 stages:
   - build
   - analyze
@@ -56,3 +53,25 @@ docker-push:
   only:
     - master
     - staging
+
+docker-trigger-staging:
+  stage: deploy
+  variables:
+    ENVIRONMENT: staging
+    SERVICE: backoffice
+  trigger:
+    project: application-consultants-globale/app-infra
+    branch: staging
+  only:
+    - staging
+
+docker-trigger-master:
+  stage: deploy
+  variables:
+    ENVIRONMENT: master
+    SERVICE: backoffice
+  trigger:
+    project: application-consultants-globale/app-infra
+    branch: master
+  only:
+    - master

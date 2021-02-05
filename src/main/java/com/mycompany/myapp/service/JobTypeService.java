@@ -19,6 +19,7 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
@@ -106,9 +107,11 @@ public class JobTypeService {
     public void deleteJobType(Long id){
         JobType jobTypeToDelete = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("JobType doesn't exist", ENTITY_NAME, "id doesn't exist"));
         hasAuthorization(id);
+        jobTypeToDelete.setDeletedAt(LocalDateTime.now());
+        jobTypeToDelete.getPositions().forEach(position -> position.setDeletedAt(LocalDateTime.now()));
         positionService.clearPositionCacheByCompany(jobTypeToDelete.getCompany());
         this.clearJobTypeCacheByCompany(jobTypeToDelete.getCompany());
-        repository.delete(jobTypeToDelete);
+        repository.save(jobTypeToDelete);
     }
 
     public void clearJobTypeCacheByCompany(Company company) {

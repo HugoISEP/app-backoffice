@@ -66,7 +66,7 @@ public class MissionController {
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable("id") Mission mission){
-        service.deleteMission(mission);
+    public void delete(@PathVariable("id") Long id){
+        service.deleteMission(id);
     }
 }

@@ -20,6 +20,7 @@ public interface PositionRepository extends JpaRepository<Position, Long> {
     @Cacheable(cacheNames = POSITIONS_AVAILABLE_CACHE, key = "#p0", condition = "#p1 == '%%' && #p2.pageSize == 50")
     @Query("select p from Position p " +
         "where p.mission.company.id = :id and p.status = true and " +
-        "lower(p.mission.name) like concat('%',lower(:searchTerm),'%')")
+        "lower(p.mission.name) like concat('%',lower(:searchTerm),'%') " +
+        "order by p.createdAt")
     Page<PositionView> findAllByMissionCompanyIdAndStatusIsTrue(@Param("id") Long id, @Param("searchTerm") String searchTerm, Pageable pageable);
 }

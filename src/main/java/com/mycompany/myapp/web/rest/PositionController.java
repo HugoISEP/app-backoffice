@@ -6,9 +6,10 @@ import com.mycompany.myapp.security.AuthoritiesConstants;
 import com.mycompany.myapp.service.PositionService;
 import com.mycompany.myapp.service.dto.PositionDTO;
 import com.mycompany.myapp.service.mapper.PositionMapper;
-import com.mycompany.myapp.service.view.MissionView;
 import com.mycompany.myapp.service.view.PositionView;
+import io.github.jhipster.web.util.HeaderUtil;
 import io.github.jhipster.web.util.PaginationUtil;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -27,6 +28,8 @@ import java.util.List;
 @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.MANAGER + "\") || hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
 public class PositionController {
 
+    @Value("${jhipster.clientApp.name}")
+    private String applicationName;
 
     private final PositionRepository repository;
     private final PositionService service;
@@ -64,13 +67,25 @@ public class PositionController {
     }
 
     @PostMapping("/mission/{missionId}")
-    public MissionView addPosition(@PathVariable Long missionId, @Valid @RequestBody PositionDTO position){
+    public PositionView addPosition(@PathVariable Long missionId, @RequestBody PositionDTO position){
         return service.addPosition(missionId, position);
     }
 
     @PutMapping()
     public PositionView edit(@Valid @RequestBody PositionDTO position){
         return service.editPosition(position);
+    }
+
+    @PostMapping("/{id}/notification")
+    public ResponseEntity<Void> sendNotification(@PathVariable("id") Long id) {
+        try {
+            service.sendNotification(id);
+            return ResponseEntity.ok()
+                .headers(HeaderUtil.createAlert(applicationName,  "Notification envoyée", id.toString())).build();
+        } catch (Exception e){
+            return ResponseEntity.badRequest()
+                .headers(HeaderUtil.createFailureAlert(applicationName, false, "position", "404", e.getMessage())).build();
+        }
     }
 
     @DeleteMapping("/{id}")

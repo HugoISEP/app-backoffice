@@ -4,13 +4,15 @@ import com.mycompany.myapp.domain.Company;
 import com.mycompany.myapp.domain.Mission;
 import com.mycompany.myapp.domain.Position;
 import com.mycompany.myapp.repository.*;
+import com.mycompany.myapp.repository.PositionRepository;
+import com.mycompany.myapp.repository.MissionRepository;
 import com.mycompany.myapp.security.AuthoritiesConstants;
-import com.mycompany.myapp.service.dto.MissionDTO;
 import com.mycompany.myapp.service.dto.PositionDTO;
 import com.mycompany.myapp.service.dto.UserDTO;
 import com.mycompany.myapp.service.mapper.MissionMapper;
 import com.mycompany.myapp.service.mapper.PositionMapper;
 import com.mycompany.myapp.service.notification.NotificationService;
+import com.mycompany.myapp.service.notification.NotificationStatus;
 import com.mycompany.myapp.service.view.PositionView;
 import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
 import com.mycompany.myapp.web.rest.errors.ResourceNotFoundException;
@@ -23,6 +25,8 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
@@ -89,7 +93,7 @@ public class PositionService {
     }
 
 
-    public MissionDTO addPosition(Long missionId, PositionDTO position){
+    public PositionDTO addPosition(Long missionId, PositionDTO position){
         missionService.hasAuthorization(missionId);
         Position newPosition = mapper.fromDTO(position);
         if (newPosition.getId() != null) {
@@ -100,14 +104,15 @@ public class PositionService {
         mission.getPositions().add(newPosition);
         try {
             if (newPosition.isStatus()){
-                notificationService.sendMessage(newPosition);
+                notificationService.sendMessage(newPosition, NotificationStatus.NEW);
+                newPosition.setLastNotificationAt(LocalDateTime.now());
             }
         } catch (InterruptedException | ExecutionException e) {
             log.warn("Error when sending notification: " + e.toString());
         }
         Mission returnedMission = missionRepository.save(mission);
         this.clearPositionCacheByPosition(newPosition);
-        return missionMapper.asDTO(returnedMission);
+        return mapper.asDTO(returnedMission);
     }
 
     public PositionDTO editPosition(PositionDTO updatedPosition){
@@ -122,21 +127,27 @@ public class PositionService {
         return mapper.asDto(repository.save(position));
     }
 
-    public void deletePosition(Position position){
-        hasAuthorization(position.getId());
-        repository.delete(position);
-        this.clearPositionCacheByPosition(position);
-    }
-
-    public void clearPositionCacheByPosition(Position position) {
+    public void sendNotification(Long id) throws Exception {
+        hasAuthorization(id);
+        Position position = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("position doesn't exist", ENTITY_NAME, "id doesn't exist"));
+        if(!position.isStatus()){
+            throw new Exception("Position status incorrect");
+        }
+        if(position.getLastNotificationAt() != null && (ChronoUnit.SECONDS.between(LocalDateTime.now(), position.getLastNotificationAt().plusHours(2)) > 0)) {
+            long timeDiff = ChronoUnit.SECONDS.between(LocalDateTime.now(), position.getLastNotificationAt().plusHours(2));
+            throw new Exception("You must wait " + timeDiff / 3600 + " h " + timeDiff % 3600 / 60 + " min before sending a new notification");
+        }
         try {
-            Objects.requireNonNull(cacheManager.getCache(PositionRepository.POSITIONS_AVAILABLE_CACHE)).evict(position.getJobType().getCompany().getId());
-        } catch (NullPointerException e) {
-            Objects.requireNonNull(cacheManager.getCache(PositionRepository.POSITIONS_AVAILABLE_CACHE)).evict(companyRepository.findCompanyByPositionId(position.getId()));
+            notificationService.sendMessage(position, NotificationStatus.OLD);
+            position.setLastNotificationAt(LocalDateTime.now());
+        } catch (InterruptedException | ExecutionException e) {
+            log.warn("Error when sending notification: " + e.toString());
         }
     }
 
-    public void clearPositionCacheByCompany(Company company) {
-        Objects.requireNonNull(cacheManager.getCache(PositionRepository.POSITIONS_AVAILABLE_CACHE)).evict(company.getId());
+    public void deletePosition(Position position){
+        hasAuthorization(position.getId());
+        position.setDeletedAt(LocalDateTime.now());
+        repository.save(position);
     }
 }

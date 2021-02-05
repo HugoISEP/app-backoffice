@@ -39,13 +39,13 @@ public class CompanyController {
     }
 
     @GetMapping("/user")
-    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.USER + "\") || hasAuthority(\"" + AuthoritiesConstants.MANAGER + "\")")
+    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.USER + "\") or hasAuthority(\"" + AuthoritiesConstants.MANAGER + "\")")
     public CompanyDetailsView getCurrentUserCompany(){
         return service.getCompanyFromCurrentUser();
     }
 
     @GetMapping
-    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.USER + "\")")
+    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\") or hasAuthority(\"" + AuthoritiesConstants.USER + "\")")
     public List<? extends CompanyView> getAllCompanies(){
         return mapper.asListDTO(repository.findAll());
     }

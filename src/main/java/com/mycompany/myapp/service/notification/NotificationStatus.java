@@ -2,12 +2,14 @@ package com.mycompany.myapp.service.notification;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.ToString;
 
 @Getter
+@ToString
 @AllArgsConstructor
-public enum NotificationParameter {
-    SOUND("default"),
-    COLOR("#1A243B");
+public enum NotificationStatus {
+    NEW("new"),
+    OLD("old");
 
     private final String value;
 }

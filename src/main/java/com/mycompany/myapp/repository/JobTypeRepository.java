@@ -1,5 +1,6 @@
 package com.mycompany.myapp.repository;
 
+import com.mycompany.myapp.domain.Company;
 import com.mycompany.myapp.domain.JobType;
 import com.mycompany.myapp.service.view.JobTypeView;
 import org.springframework.cache.annotation.Cacheable;
@@ -21,4 +22,6 @@ public interface JobTypeRepository extends JpaRepository<JobType, Long> {
 
     @Cacheable(cacheNames = JOB_TYPE_FROM_COMPANY_IN_CACHE)
     List<JobTypeView> findAllByCompany_Id(Long id);
+
+    List<JobType> findAllByCompany(Company company);
 }
