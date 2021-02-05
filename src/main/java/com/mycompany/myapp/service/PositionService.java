@@ -1,10 +1,9 @@
 package com.mycompany.myapp.service;
 
+import com.mycompany.myapp.domain.Company;
 import com.mycompany.myapp.domain.Mission;
 import com.mycompany.myapp.domain.Position;
-import com.mycompany.myapp.repository.PositionRepository;
-import com.mycompany.myapp.repository.MissionRepository;
-import com.mycompany.myapp.repository.JobTypeRepository;
+import com.mycompany.myapp.repository.*;
 import com.mycompany.myapp.security.AuthoritiesConstants;
 import com.mycompany.myapp.service.dto.MissionDTO;
 import com.mycompany.myapp.service.dto.PositionDTO;
@@ -17,6 +16,7 @@ import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
 import com.mycompany.myapp.web.rest.errors.ResourceNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.cache.CacheManager;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.AccessDeniedException;
@@ -24,6 +24,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 
 @Service
@@ -39,20 +40,25 @@ public class PositionService {
     private final PositionMapper mapper;
     private final MissionRepository missionRepository;
     private final MissionMapper missionMapper;
+    private final CompanyRepository companyRepository;
     private final MissionService missionService;
     private final JobTypeRepository jobTypeRepository;
     private final UserService userService;
     private final NotificationService notificationService;
+    private final CacheManager cacheManager;
 
-    public PositionService(PositionRepository repository, PositionMapper mapper, MissionRepository missionRepository, MissionMapper missionMapper, MissionService missionService, JobTypeRepository jobTypeRepository, UserService userService, NotificationService notificationService) {
+
+    public PositionService(PositionRepository repository, PositionMapper mapper, MissionRepository missionRepository, MissionMapper missionMapper, CompanyRepository companyRepository, MissionService missionService, JobTypeRepository jobTypeRepository, UserService userService, NotificationService notificationService, CacheManager cacheManager) {
         this.repository = repository;
         this.mapper = mapper;
         this.missionRepository = missionRepository;
         this.missionMapper = missionMapper;
+        this.companyRepository = companyRepository;
         this.missionService = missionService;
         this.jobTypeRepository = jobTypeRepository;
         this.userService = userService;
         this.notificationService = notificationService;
+        this.cacheManager = cacheManager;
     }
 
     public void hasAuthorization(Long id){
@@ -99,7 +105,9 @@ public class PositionService {
         } catch (InterruptedException | ExecutionException e) {
             log.warn("Error when sending notification: " + e.toString());
         }
-        return missionMapper.asDTO(missionRepository.save(mission));
+        Mission returnedMission = missionRepository.save(mission);
+        this.clearPositionCacheByPosition(newPosition);
+        return missionMapper.asDTO(returnedMission);
     }
 
     public PositionDTO editPosition(PositionDTO updatedPosition){
@@ -110,11 +118,25 @@ public class PositionService {
 
         Position position = repository.findById(updatedPosition.getId()).orElseThrow(() -> new ResourceNotFoundException("position doesn't exist", ENTITY_NAME, "id doesn't exist"));
         mapper.updatePosition(mapper.fromDTO(updatedPosition), position);
+        this.clearPositionCacheByPosition(position);
         return mapper.asDto(repository.save(position));
     }
 
     public void deletePosition(Position position){
         hasAuthorization(position.getId());
         repository.delete(position);
+        this.clearPositionCacheByPosition(position);
+    }
+
+    public void clearPositionCacheByPosition(Position position) {
+        try {
+            Objects.requireNonNull(cacheManager.getCache(PositionRepository.POSITIONS_AVAILABLE_CACHE)).evict(position.getJobType().getCompany().getId());
+        } catch (NullPointerException e) {
+            Objects.requireNonNull(cacheManager.getCache(PositionRepository.POSITIONS_AVAILABLE_CACHE)).evict(companyRepository.findCompanyByPositionId(position.getId()));
+        }
+    }
+
+    public void clearPositionCacheByCompany(Company company) {
+        Objects.requireNonNull(cacheManager.getCache(PositionRepository.POSITIONS_AVAILABLE_CACHE)).evict(company.getId());
     }
 }

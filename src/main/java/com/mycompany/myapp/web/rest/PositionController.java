@@ -1,6 +1,5 @@
 package com.mycompany.myapp.web.rest;
 
-import com.google.common.collect.Iterables;
 import com.mycompany.myapp.domain.Position;
 import com.mycompany.myapp.repository.PositionRepository;
 import com.mycompany.myapp.security.AuthoritiesConstants;
@@ -12,6 +11,7 @@ import com.mycompany.myapp.service.view.PositionView;
 import io.github.jhipster.web.util.PaginationUtil;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
-import java.util.Arrays;
 import java.util.List;
 
 @RestController
@@ -51,7 +50,8 @@ public class PositionController {
 
     @GetMapping("/active")
     @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.USER + "\") || hasAuthority(\"" + AuthoritiesConstants.MANAGER + "\")")
-    public ResponseEntity<List<PositionView>> getActivePositionsByUser(Pageable pageable, @RequestParam(value = "searchTerm", defaultValue = "%%") String searchTerm){
+    public ResponseEntity<List<PositionView>> getActivePositionsByUser(@PageableDefault(size = 50) Pageable pageable,
+                                                                       @RequestParam(value = "searchTerm", defaultValue = "%%") String searchTerm){
         Page<PositionView> page = service.getActivePositionsByUser(pageable, searchTerm);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);

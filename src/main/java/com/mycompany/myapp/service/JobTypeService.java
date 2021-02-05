@@ -1,5 +1,6 @@
 package com.mycompany.myapp.service;
 
+import com.mycompany.myapp.domain.Company;
 import com.mycompany.myapp.domain.JobType;
 import com.mycompany.myapp.repository.JobTypeRepository;
 import com.mycompany.myapp.repository.PositionRepository;
@@ -11,6 +12,7 @@ import com.mycompany.myapp.service.mapper.JobTypeMapper;
 import com.mycompany.myapp.service.view.JobTypeView;
 import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
 import com.mycompany.myapp.web.rest.errors.ResourceNotFoundException;
+import org.springframework.cache.CacheManager;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.AccessDeniedException;
@@ -18,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 
 
 @Service
@@ -30,13 +33,18 @@ public class JobTypeService {
     private final PositionRepository positionRepository;
     private final UserService userService;
     private final CompanyMapper companyMapper;
+    private final PositionService positionService;
+    private final CacheManager cacheManager;
 
-    public JobTypeService(JobTypeRepository repository, JobTypeMapper mapper, PositionRepository positionRepository, UserService userService, CompanyMapper companyMapper) {
+
+    public JobTypeService(JobTypeRepository repository, JobTypeMapper mapper, PositionRepository positionRepository, UserService userService, CompanyMapper companyMapper, PositionService positionService, CacheManager cacheManager) {
         this.repository = repository;
         this.mapper = mapper;
         this.positionRepository = positionRepository;
         this.userService = userService;
         this.companyMapper = companyMapper;
+        this.positionService = positionService;
+        this.cacheManager = cacheManager;
     }
 
     public void hasAuthorization(Long id){
@@ -78,6 +86,7 @@ public class JobTypeService {
             .map(UserDTO::new)
             .orElseThrow(() -> new ResourceNotFoundException("User not found", ENTITY_NAME, "id doesn't exist"));
         newJobType.setCompany(companyMapper.fromDTO(user.getCompany()));
+        this.clearJobTypeCacheByCompany(newJobType.getCompany());
         return mapper.asDTO(repository.save(newJobType));
     }
 
@@ -89,13 +98,22 @@ public class JobTypeService {
 
         JobType jobType = repository.findById(updatedJobType.getId()).orElseThrow(() -> new BadRequestAlertException("jopType doesn't exist", ENTITY_NAME, "id doesn't exist"));
         mapper.updateJobtype(mapper.fromDTO(updatedJobType), jobType);
+        positionService.clearPositionCacheByCompany(jobType.getCompany());
+        this.clearJobTypeCacheByCompany(jobType.getCompany());
         return mapper.asDTO(repository.save(jobType));
     }
 
     public void deleteJobType(Long id){
         JobType jobTypeToDelete = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("JobType doesn't exist", ENTITY_NAME, "id doesn't exist"));
         hasAuthorization(id);
+        positionService.clearPositionCacheByCompany(jobTypeToDelete.getCompany());
+        this.clearJobTypeCacheByCompany(jobTypeToDelete.getCompany());
         repository.delete(jobTypeToDelete);
     }
+
+    public void clearJobTypeCacheByCompany(Company company) {
+        Objects.requireNonNull(cacheManager.getCache(JobTypeRepository.JOB_TYPE_FROM_COMPANY_IN_CACHE)).evict(company.getId());
+    }
+
 
 }
