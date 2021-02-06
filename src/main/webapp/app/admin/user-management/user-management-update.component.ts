@@ -6,6 +6,7 @@ import { User } from 'app/core/user/user.model';
 import { UserService } from 'app/core/user/user.service';
 import { CompanyService } from '../../entities/company/company.service';
 import { ICompany } from '../../shared/model/company.model';
+import { NewUserValidator } from './NewUserValidator';
 
 @Component({
   selector: 'jhi-user-mgmt-update',
@@ -17,16 +18,21 @@ export class UserManagementUpdateComponent implements OnInit {
   companies: ICompany[] = [];
   isSaving = false;
 
-  editForm = this.fb.group({
-    id: [],
-    firstName: ['', [Validators.maxLength(50)]],
-    lastName: ['', [Validators.maxLength(50)]],
-    email: ['', [Validators.minLength(5), Validators.maxLength(254), Validators.email]],
-    activated: [],
-    langKey: [],
-    authorities: [],
-    company: [null, Validators.required],
-  });
+  editForm = this.fb.group(
+    {
+      id: [],
+      firstName: ['', [Validators.maxLength(50), Validators.required]],
+      lastName: ['', [Validators.maxLength(50), Validators.required]],
+      email: ['', [Validators.minLength(5), Validators.maxLength(254), Validators.email, Validators.required]],
+      activated: [],
+      langKey: [],
+      authorities: [null, Validators.required],
+      company: [null, Validators.required],
+    },
+    {
+      validators: NewUserValidator.newUserValidator(),
+    }
+  );
 
   constructor(
     private userService: UserService,
@@ -108,14 +114,5 @@ export class UserManagementUpdateComponent implements OnInit {
 
   trackById(index: number, item: ICompany): any {
     return item.id;
-  }
-
-  handleSelect(): void {
-    this.editForm.controls['email'].setValidators([
-      Validators.minLength(5),
-      Validators.maxLength(254),
-      Validators.email,
-      Validators.pattern(`^[\\w-\\.]+@${this.editForm.get(['company'])!.value.emailTemplate}$`),
-    ]);
   }
 }
