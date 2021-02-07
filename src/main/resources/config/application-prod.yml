@@ -23,7 +23,7 @@ management:
   metrics:
     export:
       prometheus:
-        enabled: false
+        enabled: true
 
 mobile-app-url: ${MOBILE_APP_URL}
 firebase: '/app/google-service.json'
