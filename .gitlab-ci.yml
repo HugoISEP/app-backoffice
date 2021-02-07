@@ -49,7 +49,29 @@ docker-push:
     - maven-package
   script:
     - export IMAGE_TAG=$CI_REGISTRY_IMAGE:$TAG
-    - ./mvnw -ntp compile jib:build -Pprod -Djib.to.image=$IMAGE_TAG -Djib.to.auth.username=gitlab-ci-token  -Djib.to.auth.password=$CI_BUILD_TOKEN -Dmaven.repo.local=$MAVEN_USER_HOME
+    - ./mvnw -ntp jib:build -Pprod -Djib.to.image=$IMAGE_TAG -Djib.to.auth.username=gitlab-ci-token  -Djib.to.auth.password=$CI_BUILD_TOKEN -Dmaven.repo.local=$MAVEN_USER_HOME
   only:
     - master
     - staging
+
+docker-trigger-staging:
+  stage: deploy
+  variables:
+    ENVIRONMENT: staging
+    SERVICE: backoffice
+  trigger:
+    project: application-consultants-globale/app-infra
+    branch: staging
+  only:
+    - staging
+
+docker-trigger-master:
+  stage: deploy
+  variables:
+    ENVIRONMENT: master
+    SERVICE: backoffice
+  trigger:
+    project: application-consultants-globale/app-infra
+    branch: master
+  only:
+    - master

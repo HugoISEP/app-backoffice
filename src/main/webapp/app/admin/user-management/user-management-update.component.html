@@ -24,6 +24,10 @@
                                *ngIf="editForm.get('firstName')?.errors?.maxlength">
                             This field cannot be longer than 50 characters.
                         </small>
+                        <small class="form-text text-danger"
+                               *ngIf="editForm.get('firstName')?.errors?.required">
+                            This field is required
+                        </small>
                     </div>
                 </div>
 
@@ -37,6 +41,10 @@
                                *ngIf="editForm.get('lastName')?.errors?.maxlength">
                             This field cannot be longer than 50 characters.
                         </small>
+                        <small class="form-text text-danger"
+                               *ngIf="editForm.get('lastName')?.errors?.required">
+                            This field is required
+                        </small>
                     </div>
                 </div>
 
@@ -49,7 +57,6 @@
                                *ngIf="editForm.get('email')?.errors?.required">
                             This field is required.
                         </small>
-
                         <small class="form-text text-danger"
                                *ngIf="editForm.get('email')?.errors?.maxlength">
                             This field cannot be longer than 100 characters.
@@ -65,15 +72,15 @@
                             Your email is invalid.
                         </small>
                         <small class="form-text text-danger"
-                               *ngIf="editForm.get('email')?.errors?.pattern">
-                            Your email doesn't not match with email template
+                               *ngIf="editForm.get('email')?.errors?.invalidEmailSuffix">
+                            Your email doesn't match with email template
                         </small>
                     </div>
                 </div>
 
                 <div class="form-group" [hidden]="!!user.id">
                     <label class="form-control-label" for="field_company">Junior-Entreprise</label>
-                    <select class="form-control" id="field_company" name="company" formControlName="company" (ngModelChange)="handleSelect()">
+                    <select class="form-control" id="field_company" name="company" formControlName="company">
                         <option *ngIf="!editForm.get('company')!.value" [ngValue]="null" selected></option>
                         <option [ngValue]="companyOption.id === editForm.get('company')!.value?.id ? editForm.get('company')!.value : companyOption" *ngFor="let companyOption of companies; trackBy: trackById">{{ companyOption.name }}</option>
                     </select>
@@ -95,10 +102,17 @@
 
                 <div class="form-group">
                     <label>Profiles</label>
-                    <select class="form-control" multiple name="authority" formControlName="authorities">
+                    <select class="form-control" name="authority" formControlName="authorities">
                         <option *ngFor="let authority of authorities" [value]="authority">{{ authority }}</option>
                     </select>
                 </div>
+                <div *ngIf="editForm.get('authorities')!.invalid && (editForm.get('authorities')!.dirty || editForm.get('authorities')!.touched)">
+                    <small class="form-text text-danger"
+                           *ngIf="editForm.get('authorities')?.errors?.required">
+                        This field is required.
+                    </small>
+                </div>
+
             </div>
 
             <div *ngIf="user">

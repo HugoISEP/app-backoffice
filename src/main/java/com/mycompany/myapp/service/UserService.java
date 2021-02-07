@@ -17,6 +17,7 @@ import com.mycompany.myapp.service.dto.UserDTO;
 import com.mycompany.myapp.service.mapper.JobTypeMapper;
 import com.mycompany.myapp.web.rest.errors.InvalidEmailSuffixException;
 import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
+import com.mycompany.myapp.web.rest.errors.ResourceNotFoundException;
 import io.github.jhipster.security.RandomUtil;
 
 import lombok.extern.slf4j.Slf4j;
@@ -52,17 +53,15 @@ public class UserService {
 
     private final JobTypeRepository jobTypeRepository;
 
-    private final JobTypeMapper jobTypeMapper;
 
     private final CacheManager cacheManager;
 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, AuthorityRepository authorityRepository, CompanyRepository companyRepository, JobTypeRepository jobTypeRepository, JobTypeMapper jobTypeMapper, CacheManager cacheManager) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, AuthorityRepository authorityRepository, CompanyRepository companyRepository, JobTypeRepository jobTypeRepository, CacheManager cacheManager) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.authorityRepository = authorityRepository;
         this.companyRepository = companyRepository;
         this.jobTypeRepository = jobTypeRepository;
-        this.jobTypeMapper = jobTypeMapper;
         this.cacheManager = cacheManager;
     }
 
@@ -160,11 +159,16 @@ public class UserService {
         user.setLogin(userDTO.getLogin().toLowerCase());
         user.setFirstName(userDTO.getFirstName());
         user.setLastName(userDTO.getLastName());
+        Company company;
         if (userDTO.getEmail() != null) {
-            Company company = this.isEmailValid(userDTO.getEmail());
+            if (!userDTO.getAuthorities().contains(AuthoritiesConstants.USER)) {
+                company = companyRepository.findById(userDTO.getCompany().getId()).orElseThrow(() -> new ResourceNotFoundException("Company not found", "company", "id doesn't exist"));
+            } else {
+                company = this.isEmailValid(userDTO.getEmail());
+            }
             if (!currentUser.getAuthorities().contains(AuthoritiesConstants.ADMIN)) {
                 if (!currentUser.getCompany().getId().equals(company.getId())) {
-                    throw new InvalidEmailSuffixException("Email match with the wrong company");
+                    throw new InvalidEmailSuffixException("Email not match with the company");
                 }
             }
             user.setEmail(userDTO.getEmail().toLowerCase());
