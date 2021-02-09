@@ -46,6 +46,9 @@ export class UserManagementUpdateComponent implements OnInit {
       if (user) {
         this.user = user;
         if (this.user.id === undefined) {
+          this.companyService.getAll().subscribe(companies => {
+            this.companies = companies.body!;
+          });
           this.user.activated = true;
         }
         this.updateForm(user);
@@ -53,9 +56,6 @@ export class UserManagementUpdateComponent implements OnInit {
     });
     this.userService.authorities().subscribe(authorities => {
       this.authorities = authorities;
-    });
-    this.companyService.getAll().subscribe(companies => {
-      this.companies = companies.body!;
     });
   }
 
@@ -99,7 +99,7 @@ export class UserManagementUpdateComponent implements OnInit {
     user.email = this.editForm.get(['email'])!.value;
     user.activated = this.editForm.get(['activated'])!.value;
     user.langKey = this.editForm.get(['langKey'])!.value;
-    user.authorities = [this.editForm.get(['authorities'])!.value];
+    user.authorities = [...this.editForm.get(['authorities'])!.value];
     user.company = this.editForm.get(['company'])!.value;
   }
 

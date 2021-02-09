@@ -188,7 +188,6 @@ public class UserResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the "login" user, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/users/{login:" + Constants.LOGIN_REGEX + "}")
-
     public UserView getUser(@PathVariable String login) {
         log.debug("REST request to get User : {}", login);
         return userService.getUser(login);

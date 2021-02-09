@@ -39,6 +39,12 @@ public class CompanyController {
         this.mapper = mapper;
     }
 
+    @GetMapping
+    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\") or hasAuthority(\"" + AuthoritiesConstants.MANAGER + "\")")
+    public List<? extends BasicCompanyView> getAllCompanies(){
+        return mapper.asListDTO(repository.findAll());
+    }
+
     @GetMapping("/user")
     @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.MANAGER + "\")")
     public CompanyDetailsView getCurrentUserCompany(){
