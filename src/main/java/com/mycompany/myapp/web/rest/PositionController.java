@@ -12,6 +12,7 @@ import io.github.jhipster.web.util.PaginationUtil;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -52,7 +53,8 @@ public class PositionController {
 
     @GetMapping("/active")
     @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.USER + "\") || hasAuthority(\"" + AuthoritiesConstants.MANAGER + "\")")
-    public ResponseEntity<List<PositionView>> getActivePositionsByUser(Pageable pageable, @RequestParam(value = "searchTerm", defaultValue = "%%") String searchTerm){
+    public ResponseEntity<List<PositionView>> getActivePositionsByUser(@PageableDefault(size = 50) Pageable pageable,
+                                                                       @RequestParam(value = "searchTerm", defaultValue = "%%") String searchTerm){
         Page<PositionView> page = service.getActivePositionsByUser(pageable, searchTerm);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);

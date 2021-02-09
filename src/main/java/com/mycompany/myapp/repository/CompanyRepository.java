@@ -2,7 +2,6 @@ package com.mycompany.myapp.repository;
 
 import com.mycompany.myapp.domain.Company;
 import com.mycompany.myapp.service.view.CompanyDetailsView;
-import com.mycompany.myapp.service.view.CompanyView;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -22,4 +21,10 @@ public interface CompanyRepository extends JpaRepository<Company, Long> {
     @Query("select c from Company c " +
         "where (lower(c.name) like concat('%',lower(:searchTerm),'%') or lower(c.emailTemplate) like concat('%',lower(:searchTerm),'%'))")
     Page<CompanyDetailsView> findAllPaginated(Pageable pageable, @Param("searchTerm") String searchTerm);
+
+    @Query("select c from Company c " +
+        "join Position p on p.id = :id " +
+        "join Mission m on m.id = p.mission.id " +
+        "where m.company.id = c.id")
+    Optional<Company> findCompanyByPositionId(Long id);
 }
