@@ -34,7 +34,7 @@ public class Position {
     private int placesNumber;
 
     @Column(name = "remuneration")
-    private float remuneration;
+    private Float remuneration;
 
     @NotNull
     @Column(name = "description", length = 500, nullable = false)
