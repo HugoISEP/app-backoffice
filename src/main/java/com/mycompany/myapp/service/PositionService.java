@@ -110,7 +110,7 @@ public class PositionService {
         } catch (InterruptedException | ExecutionException e) {
             log.warn("Error when sending notification: " + e.toString());
         }
-        Mission returnedMission = missionRepository.save(mission);
+        missionRepository.save(mission);
         this.clearPositionCacheByPosition(newPosition);
         return mapper.asDto(newPosition);
     }

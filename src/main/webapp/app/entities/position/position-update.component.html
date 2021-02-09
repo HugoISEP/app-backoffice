@@ -47,10 +47,6 @@
                     </div>
                     <div *ngIf="editForm.get('remuneration')!.invalid && (editForm.get('remuneration')!.dirty || editForm.get('remuneration')!.touched)">
                         <small class="form-text text-danger"
-                               *ngIf="editForm.get('remuneration')?.errors?.required">
-                            Ce champs est requis
-                        </small>
-                        <small class="form-text text-danger"
                                *ngIf="editForm.get('remuneration')?.errors?.pattern">
                             Nombre entier positif requis
                         </small>

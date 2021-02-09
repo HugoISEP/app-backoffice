@@ -26,5 +26,5 @@ public interface CompanyRepository extends JpaRepository<Company, Long> {
         "join Position p on p.id = :id " +
         "join Mission m on m.id = p.mission.id " +
         "where m.company.id = c.id")
-    Optional<Company> findCompanyByPositionId(Long id);
+    Optional<Company> findCompanyByPositionId(@Param("id") Long id);
 }

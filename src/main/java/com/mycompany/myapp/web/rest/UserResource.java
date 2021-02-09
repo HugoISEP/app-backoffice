@@ -164,7 +164,7 @@ public class UserResource {
     }
 
     @GetMapping("/users/manager")
-    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\") or hasAuthority(\"" + AuthoritiesConstants.MANAGER + "\")")
+    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.MANAGER + "\")")
     public ResponseEntity<List<UserDTO>> getAllUsersByManager(Pageable pageable, @RequestParam(value = "searchTerm", defaultValue = "%%") String searchTerm) {
         final Page<UserDTO> page = userService.getAllManagedUsersByManager(pageable, searchTerm);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);

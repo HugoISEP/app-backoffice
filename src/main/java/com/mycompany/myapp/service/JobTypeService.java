@@ -3,7 +3,6 @@ package com.mycompany.myapp.service;
 import com.mycompany.myapp.domain.Company;
 import com.mycompany.myapp.domain.JobType;
 import com.mycompany.myapp.repository.JobTypeRepository;
-import com.mycompany.myapp.repository.PositionRepository;
 import com.mycompany.myapp.security.AuthoritiesConstants;
 import com.mycompany.myapp.service.dto.JobTypeDTO;
 import com.mycompany.myapp.service.dto.UserDTO;
@@ -31,17 +30,15 @@ public class JobTypeService {
 
     private final JobTypeRepository repository;
     private final JobTypeMapper mapper;
-    private final PositionRepository positionRepository;
     private final UserService userService;
     private final CompanyMapper companyMapper;
     private final PositionService positionService;
     private final CacheManager cacheManager;
 
 
-    public JobTypeService(JobTypeRepository repository, JobTypeMapper mapper, PositionRepository positionRepository, UserService userService, CompanyMapper companyMapper, PositionService positionService, CacheManager cacheManager) {
+    public JobTypeService(JobTypeRepository repository, JobTypeMapper mapper, UserService userService, CompanyMapper companyMapper, PositionService positionService, CacheManager cacheManager) {
         this.repository = repository;
         this.mapper = mapper;
-        this.positionRepository = positionRepository;
         this.userService = userService;
         this.companyMapper = companyMapper;
         this.positionService = positionService;

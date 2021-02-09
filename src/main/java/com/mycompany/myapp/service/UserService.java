@@ -14,7 +14,6 @@ import com.mycompany.myapp.security.SecurityUtils;
 import com.mycompany.myapp.service.dto.JobTypeDTO;
 import com.mycompany.myapp.service.dto.UserDTO;
 
-import com.mycompany.myapp.service.mapper.JobTypeMapper;
 import com.mycompany.myapp.web.rest.errors.InvalidEmailSuffixException;
 import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
 import com.mycompany.myapp.web.rest.errors.ResourceNotFoundException;

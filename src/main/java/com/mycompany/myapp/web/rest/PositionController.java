@@ -1,11 +1,9 @@
 package com.mycompany.myapp.web.rest;
 
 import com.mycompany.myapp.domain.Position;
-import com.mycompany.myapp.repository.PositionRepository;
 import com.mycompany.myapp.security.AuthoritiesConstants;
 import com.mycompany.myapp.service.PositionService;
 import com.mycompany.myapp.service.dto.PositionDTO;
-import com.mycompany.myapp.service.mapper.PositionMapper;
 import com.mycompany.myapp.service.view.PositionView;
 import io.github.jhipster.web.util.HeaderUtil;
 import io.github.jhipster.web.util.PaginationUtil;
@@ -25,20 +23,16 @@ import java.util.List;
 
 @RestController
 @RequestMapping("api/position")
-@PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.MANAGER + "\") || hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
+@PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.MANAGER + "\")")
 public class PositionController {
 
     @Value("${jhipster.clientApp.name}")
     private String applicationName;
 
-    private final PositionRepository repository;
     private final PositionService service;
-    private final PositionMapper mapper;
 
-    public PositionController(PositionRepository repository, PositionService service, PositionMapper mapper) {
-        this.repository = repository;
+    public PositionController(PositionService service) {
         this.service = service;
-        this.mapper = mapper;
     }
 
     @GetMapping("/{id}")
@@ -52,7 +46,7 @@ public class PositionController {
     }
 
     @GetMapping("/active")
-    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.USER + "\") || hasAuthority(\"" + AuthoritiesConstants.MANAGER + "\")")
+    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.MANAGER + "\") or hasAuthority(\"" + AuthoritiesConstants.USER + "\")")
     public ResponseEntity<List<PositionView>> getActivePositionsByUser(@PageableDefault(size = 50) Pageable pageable,
                                                                        @RequestParam(value = "searchTerm", defaultValue = "%%") String searchTerm){
         Page<PositionView> page = service.getActivePositionsByUser(pageable, searchTerm);
@@ -60,18 +54,12 @@ public class PositionController {
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
 
-    @GetMapping("/all")
-    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
-    public List<? extends PositionView> getAll(){
-        return mapper.asListDTO(repository.findAll());
-    }
-
     @PostMapping("/mission/{missionId}")
     public PositionView addPosition(@PathVariable Long missionId, @RequestBody PositionDTO position){
         return service.addPosition(missionId, position);
     }
 
-    @PutMapping()
+    @PutMapping
     public PositionView edit(@Valid @RequestBody PositionDTO position){
         return service.editPosition(position);
     }
