@@ -4,6 +4,7 @@ import com.mycompany.myapp.repository.CompanyRepository;
 import com.mycompany.myapp.security.AuthoritiesConstants;
 import com.mycompany.myapp.service.CompanyService;
 import com.mycompany.myapp.service.mapper.CompanyMapper;
+import com.mycompany.myapp.service.view.BasicCompanyView;
 import com.mycompany.myapp.service.view.CompanyDetailsView;
 import com.mycompany.myapp.service.view.CompanyView;
 import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
@@ -39,20 +40,14 @@ public class CompanyController {
     }
 
     @GetMapping("/user")
-    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.USER + "\") or hasAuthority(\"" + AuthoritiesConstants.MANAGER + "\")")
+    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.MANAGER + "\")")
     public CompanyDetailsView getCurrentUserCompany(){
         return service.getCompanyFromCurrentUser();
     }
 
-    @GetMapping
-    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\") or hasAuthority(\"" + AuthoritiesConstants.USER + "\")")
-    public List<? extends CompanyView> getAllCompanies(){
-        return mapper.asListDTO(repository.findAll());
-    }
-
     @GetMapping("/all")
     @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
-    public ResponseEntity<List<CompanyDetailsView>> getAllCompaniesPaginated(Pageable pageable, @RequestParam(value = "searchTerm", defaultValue = "%%") String searchTerm){
+    public ResponseEntity<List<BasicCompanyView>> getAllCompaniesPaginated(Pageable pageable, @RequestParam(value = "searchTerm", defaultValue = "%%") String searchTerm){
         Page page = service.getAllPaginated(pageable, searchTerm);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
@@ -71,7 +66,7 @@ public class CompanyController {
     }
 
     @PutMapping
-    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.MANAGER + "\")")
+    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\") or hasAuthority(\"" + AuthoritiesConstants.MANAGER + "\")")
     public CompanyView editCompany(@RequestParam("company") String companyJson, @RequestParam(value = "file", required = false) MultipartFile file) throws IOException, MinioException {
         return service.edit(companyJson, file);
     }
