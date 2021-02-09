@@ -1,5 +1,6 @@
 package com.mycompany.myapp.web.rest;
 
+import com.mycompany.myapp.domain.PasswordChange;
 import com.mycompany.myapp.domain.User;
 import com.mycompany.myapp.repository.UserRepository;
 import com.mycompany.myapp.security.SecurityUtils;
@@ -89,8 +90,7 @@ public class AccountResource {
     @GetMapping("/activate")
     public void activateAccount(@RequestParam(value = "key") String key, @RequestParam(value = "id") Long id, HttpServletResponse response) {
         User user = userService.activateRegistration(key)
-            .or(() -> userRepository.findById(id))      // Prevent from multiple clicks on link
-            .orElseThrow(() -> new AccountResourceException("No user was found for this activation key"));
+            .orElse(userRepository.findById(id).orElseThrow(() -> new AccountResourceException("No user was found for this activation key")));      // Prevent from multiple clicks on link
         // Case where key was not found but id was, and account was not validated : not handled, but we didn't feel the need to
         String siteUrl = user.getCompany().getWebsiteUrl()!= null ? user.getCompany().getWebsiteUrl() : "junior-entreprises.com";
         try {
@@ -165,11 +165,11 @@ public class AccountResource {
     /**
      * {@code POST   /account/reset-password/init} : Send an email to reset the password of the user.
      *
-     * @param mail the mail of the user.
+     * @param passwordChange the mail of the user.
      */
     @PostMapping(path = "/account/reset-password/init")
-    public void requestPasswordReset(@RequestBody String mail) {
-        Optional<User> user = userService.requestPasswordReset(mail);
+    public void requestPasswordReset(@RequestBody PasswordChange passwordChange) {
+        Optional<User> user = userService.requestPasswordReset(passwordChange.getMail());
         if (user.isPresent()) {
             mailService.sendPasswordResetMail(user.get());
         } else {

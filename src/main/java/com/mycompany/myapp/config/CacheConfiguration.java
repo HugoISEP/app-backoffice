@@ -2,6 +2,8 @@ package com.mycompany.myapp.config;
 
 import java.time.Duration;
 
+import com.mycompany.myapp.repository.JobTypeRepository;
+import com.mycompany.myapp.repository.PositionRepository;
 import org.ehcache.config.builders.*;
 import org.ehcache.jsr107.Eh107Configuration;
 
@@ -39,6 +41,8 @@ public class CacheConfiguration {
         return cm -> {
             createCache(cm, com.mycompany.myapp.repository.UserRepository.USERS_BY_LOGIN_CACHE);
             createCache(cm, com.mycompany.myapp.repository.UserRepository.USERS_BY_EMAIL_CACHE);
+            createCache(cm, PositionRepository.POSITIONS_AVAILABLE_CACHE);
+            createCache(cm, JobTypeRepository.JOB_TYPE_FROM_COMPANY_IN_CACHE);
             // jhipster-needle-ehcache-add-entry
         };
     }

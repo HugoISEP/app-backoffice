@@ -33,7 +33,6 @@ public class Position {
     @Min(value = 1)
     private int placesNumber;
 
-    @NotNull
     @Column(name = "remuneration")
     private float remuneration;
 

@@ -1,10 +1,8 @@
 package com.mycompany.myapp.web.rest;
 
-import com.mycompany.myapp.repository.JobTypeRepository;
 import com.mycompany.myapp.security.AuthoritiesConstants;
 import com.mycompany.myapp.service.JobTypeService;
 import com.mycompany.myapp.service.dto.JobTypeDTO;
-import com.mycompany.myapp.service.mapper.JobTypeMapper;
 import com.mycompany.myapp.service.view.JobTypeView;
 import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
 import io.github.jhipster.web.util.PaginationUtil;
@@ -22,18 +20,14 @@ import java.util.List;
 
 @RestController
 @RequestMapping("api/job-type")
-@PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.MANAGER + "\") || hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
+@PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.MANAGER + "\")")
 public class JobTypeController {
 
     private static final String ENTITY_NAME = "jobType";
 
-    private final JobTypeRepository repository;
-    private final JobTypeMapper mapper;
     private final JobTypeService service;
 
-    public JobTypeController(JobTypeRepository repository, JobTypeMapper mapper, JobTypeService service) {
-        this.repository = repository;
-        this.mapper = mapper;
+    public JobTypeController(JobTypeService service) {
         this.service = service;
     }
 
@@ -53,12 +47,6 @@ public class JobTypeController {
     @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.USER + "\")")
     public List<JobTypeView> getAllByUser(){
         return service.getAllJobTypeByUser();
-    }
-
-    @GetMapping("/all")
-    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
-    public List<? extends JobTypeView> getAll(){
-        return mapper.asListDTO(repository.findAll());
     }
 
     @PostMapping
