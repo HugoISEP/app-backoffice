@@ -3,7 +3,6 @@ package com.mycompany.myapp.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mycompany.myapp.domain.Company;
-import com.mycompany.myapp.domain.User;
 import com.mycompany.myapp.repository.CompanyRepository;
 import com.mycompany.myapp.security.AuthoritiesConstants;
 import com.mycompany.myapp.service.dto.CompanyDTO;
@@ -90,9 +89,6 @@ public class CompanyService {
             minioService.uploadFile(file, imageName, LOGO_BUCKET);
             updatedCompany.setImagePath(imageName);
             minioService.deleteFile(company.getImagePath(), LOGO_BUCKET);
-        }
-        for (User u: userService.getUsersByCompany(company)) {
-            userService.clearUserCaches(u);
         }
         mapper.updateCompany(updatedCompany, company);
         return mapper.asDTO(company);

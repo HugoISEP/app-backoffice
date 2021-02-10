@@ -1,6 +1,5 @@
 package com.mycompany.myapp.web.rest;
 
-import com.mycompany.myapp.domain.PasswordChange;
 import com.mycompany.myapp.domain.User;
 import com.mycompany.myapp.repository.UserRepository;
 import com.mycompany.myapp.security.SecurityUtils;
@@ -19,17 +18,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.UnsupportedEncodingException;
-import java.net.URL;
 import java.net.URLEncoder;
 import java.util.*;
-import java.util.regex.Pattern;
 
 /**
  * REST controller for managing the current user's account.
@@ -165,11 +160,11 @@ public class AccountResource {
     /**
      * {@code POST   /account/reset-password/init} : Send an email to reset the password of the user.
      *
-     * @param passwordChange the mail of the user.
+     * @param mail the mail of the user.
      */
     @PostMapping(path = "/account/reset-password/init")
-    public void requestPasswordReset(@RequestBody PasswordChange passwordChange) {
-        Optional<User> user = userService.requestPasswordReset(passwordChange.getMail());
+    public void requestPasswordReset(@RequestBody String mail) {
+        Optional<User> user = userService.requestPasswordReset(mail);
         if (user.isPresent()) {
             mailService.sendPasswordResetMail(user.get());
         } else {
