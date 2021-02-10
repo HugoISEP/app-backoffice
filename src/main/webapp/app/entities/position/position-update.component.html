@@ -81,14 +81,25 @@
                 </div>
 
             </div>
-            <div>
-                <button type="button" id="cancel-save" class="btn btn-secondary" (click)="previousState()">
-                    <fa-icon icon="ban"></fa-icon>&nbsp;<span>Annuler</span>
-                </button>
+            <div class="d-flex flex-row">
+                <div class="d-flex align-items-center mr-3">
+                    <button type="button" id="cancel-save" class="btn btn-secondary" (click)="previousState()">
+                        <fa-icon icon="ban"></fa-icon>&nbsp;<span>Annuler</span>
+                    </button>
+                </div>
 
-                <button type="submit" id="save-entity" [disabled]="editForm.invalid || isSaving" class="btn btn-primary">
-                    <fa-icon icon="save"></fa-icon>&nbsp;<span>Sauvegarder</span>
-                </button>
+                <div class="d-flex align-items-center">
+                    <button *ngIf="!isSaving; else elseSavingBlock" type="submit" id="save-entity" [disabled]="editForm.invalid || isSaving" class="btn btn-primary">
+                        <fa-icon icon="save"></fa-icon>&nbsp;<span>Sauvegarder</span>
+                    </button>
+                </div>
+
+                <ng-template #elseSavingBlock>
+                    <div *ngIf="isSaving" class="spinner-border text-primary d-flex align-items-center ml-3" role="status">
+                        <span class="sr-only">Loading...</span>
+                    </div>
+                </ng-template>
+
             </div>
         </form>
     </div>
