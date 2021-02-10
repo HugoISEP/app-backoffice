@@ -1,6 +1,5 @@
 package com.mycompany.myapp.service.view;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import java.time.LocalDateTime;

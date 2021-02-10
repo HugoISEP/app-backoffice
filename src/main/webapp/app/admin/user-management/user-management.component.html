@@ -11,6 +11,11 @@
 
     <jhi-alert></jhi-alert>
 
+    <div class="text-right mt-4 mb-3" *ngIf="(users && users.length > 0) || searchTerm !== ''">
+        <label for="research">Recherche</label>
+        <input type="text" id="research" [(ngModel)]="searchTerm" (ngModelChange)="loadAll()">
+    </div>
+
     <div class="table-responsive" *ngIf="users">
         <table class="table table-striped" aria-describedby="user-management-page-heading">
             <thead>
