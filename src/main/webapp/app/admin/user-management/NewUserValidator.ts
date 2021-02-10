@@ -23,7 +23,7 @@ export class NewUserValidator {
         const company: ICompany = formGroup.get('company')!.value;
         const authorities: string = formGroup.get('authorities')!.value;
 
-        if (authorities === Authority.ADMIN || authorities === Authority.USER) {
+        if (authorities === Authority.USER) {
           if (email.split('@')[1] === company.emailTemplate) {
             removeEmailSuffixError();
           } else {

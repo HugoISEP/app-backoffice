@@ -7,6 +7,7 @@ import { UserService } from 'app/core/user/user.service';
 import { CompanyService } from '../../entities/company/company.service';
 import { ICompany } from '../../shared/model/company.model';
 import { NewUserValidator } from './NewUserValidator';
+import { Authority } from '../../shared/constants/authority.constants';
 
 @Component({
   selector: 'jhi-user-mgmt-update',
@@ -55,7 +56,7 @@ export class UserManagementUpdateComponent implements OnInit {
       }
     });
     this.userService.authorities().subscribe(authorities => {
-      this.authorities = authorities;
+      this.authorities = authorities.filter(a => a !== Authority.ADMIN);
     });
   }
 
