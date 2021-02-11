@@ -44,7 +44,7 @@ public class JobTypeController {
     }
 
     @GetMapping("/user")
-    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.USER + "\")")
+    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.MANAGER + "\") or hasAuthority(\"" + AuthoritiesConstants.USER + "\")")
     public List<JobTypeView> getAllByUser(){
         return service.getAllJobTypeByUser();
     }
