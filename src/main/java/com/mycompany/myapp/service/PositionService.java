@@ -156,7 +156,7 @@ public class PositionService {
         try {
             Objects.requireNonNull(cacheManager.getCache(PositionRepository.POSITIONS_AVAILABLE_CACHE)).evict(position.getJobType().getCompany().getId());
         } catch (NullPointerException e) {
-            Objects.requireNonNull(cacheManager.getCache(PositionRepository.POSITIONS_AVAILABLE_CACHE)).evict(companyRepository.findCompanyByPositionId(position.getId()));
+            Objects.requireNonNull(cacheManager.getCache(PositionRepository.POSITIONS_AVAILABLE_CACHE)).evict(companyRepository.findCompanyByPositionId(position.getId()).get().getId());
         }
     }
 
