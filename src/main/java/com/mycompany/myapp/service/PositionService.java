@@ -158,6 +158,7 @@ public class PositionService {
         try {
             Objects.requireNonNull(cacheManager.getCache(PositionRepository.POSITIONS_AVAILABLE_CACHE)).evict(position.getJobType().getCompany().getId());
         } catch (NullPointerException e) {
+            // when dto we must fetch data from db (for less traffic)
             Objects.requireNonNull(cacheManager.getCache(PositionRepository.POSITIONS_AVAILABLE_CACHE)).evict(companyRepository.findCompanyByPositionId(position.getId()).get().getId());
         }
     }
