@@ -111,7 +111,9 @@ public class PositionService {
             log.warn("Error when sending notification: " + e.toString());
         }
         missionRepository.save(mission);
-        this.clearPositionCacheByPosition(newPosition);
+        if(mission.getPositions().size() > 1){  //when it's not the first position
+            this.clearPositionCacheByPosition(newPosition);
+        }
         return mapper.asDto(newPosition);
     }
 
