@@ -41,7 +41,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     Page<User> findAllByLoginNot(Pageable pageable, String login);
 
-    @Query("select u from User u join u.authorities a " +
+    @Query("select u from User u " +
         "where u.login not like :login " +
         "and (lower(u.firstName) like concat('%',lower(:searchTerm),'%') or lower(u.lastName) like concat('%',lower(:searchTerm),'%') or lower(u.email) like concat('%',lower(:searchTerm),'%'))")
     Page<User> findAllWithSearchTerm(Pageable pageable, @Param("login") String login, @Param("searchTerm") String searchTerm);
