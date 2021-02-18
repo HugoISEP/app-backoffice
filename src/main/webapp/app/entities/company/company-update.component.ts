@@ -18,7 +18,7 @@ export class CompanyUpdateComponent implements OnInit {
     name: [null, [Validators.required]],
     emailTemplate: [null, [Validators.required]],
     color: [null, [Validators.required, Validators.pattern('^#(?:[0-9a-fA-F]{3}){1,2}$')]],
-    websiteUrl: [null, [Validators.pattern('(https?://)?([\\da-z.-]+)\\.([a-z.]{2,6})[/\\w .-]*/?')]],
+    websiteUrl: [null, [Validators.pattern('(https?://)([\\da-z.-]+)\\.([a-z.]{2,6})[/\\w .-]*/?')]],
     file: [null, [this.requiredIfNewCompany(), this.fileValidator()]],
   });
 
