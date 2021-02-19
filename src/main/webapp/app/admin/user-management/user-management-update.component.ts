@@ -51,7 +51,6 @@ export class UserManagementUpdateComponent implements OnInit {
             this.companies = companies.body!;
           });
           this.user.activated = true;
-          this.user.authorities = ['ROLE_MANAGER'];
         }
         this.updateForm(user);
       }
