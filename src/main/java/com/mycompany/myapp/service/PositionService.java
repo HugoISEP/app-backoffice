@@ -111,7 +111,7 @@ public class PositionService {
             log.warn("Error when sending notification: " + e.toString());
         }
         missionRepository.save(mission);
-        this.clearPositionCacheByPosition(newPosition);
+        this.clearPositionCacheByPosition(mission.getCompany().getId());
         return mapper.asDto(newPosition);
     }
 
@@ -123,7 +123,7 @@ public class PositionService {
 
         Position position = repository.findById(updatedPosition.getId()).orElseThrow(() -> new ResourceNotFoundException("position doesn't exist", ENTITY_NAME, "id doesn't exist"));
         mapper.updatePosition(mapper.fromDTO(updatedPosition), position);
-        this.clearPositionCacheByPosition(position);
+        this.clearPositionCacheByPosition(position.getMission().getCompany().getId());
         return mapper.asDto(repository.save(position));
     }
 
@@ -149,14 +149,14 @@ public class PositionService {
         hasAuthorization(position.getId());
         position.setDeletedAt(LocalDateTime.now());
         repository.save(position);
-        this.clearPositionCacheByPosition(position);
+        this.clearPositionCacheByPosition(position.getMission().getCompany().getId());
     }
 
-    public void clearPositionCacheByPosition(Position position) {
+    public void clearPositionCacheByPosition(Long companyId) {
         try {
-            Objects.requireNonNull(cacheManager.getCache(PositionRepository.POSITIONS_AVAILABLE_CACHE)).evict(position.getJobType().getCompany().getId());
-        } catch (NullPointerException e) {
-            Objects.requireNonNull(cacheManager.getCache(PositionRepository.POSITIONS_AVAILABLE_CACHE)).evict(companyRepository.findCompanyByPositionId(position.getId()).get().getId());
+            Objects.requireNonNull(cacheManager.getCache(PositionRepository.POSITIONS_AVAILABLE_CACHE)).evict(companyRepository.findById(companyId).get());
+        } catch (Exception e) {
+            log.warn("can't clear positions available cache: " + e.getMessage());
         }
     }
 
