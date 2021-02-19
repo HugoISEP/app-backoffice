@@ -81,7 +81,7 @@
                 <div class="form-group" [hidden]="!!user.id">
                     <label class="form-control-label" for="field_company">Junior-Entreprise</label>
                     <select class="form-control" id="field_company" name="company" formControlName="company">
-                        <option *ngIf="!editForm.get('company')!.value" [ngValue]="null" selected></option>
+                        <option [value]="null"></option>
                         <option [ngValue]="companyOption.id === editForm.get('company')!.value?.id ? editForm.get('company')!.value : companyOption" *ngFor="let companyOption of companies; trackBy: trackById">{{ companyOption.name }}</option>
                     </select>
                 </div>
@@ -103,6 +103,7 @@
                 <div class="form-group">
                     <label>Profiles</label>
                     <select class="form-control" name="authority" formControlName="authorities">
+                        <option [value]="null"></option>
                         <option *ngFor="let authority of authorities" [value]="authority">{{ authority }}</option>
                     </select>
                 </div>
