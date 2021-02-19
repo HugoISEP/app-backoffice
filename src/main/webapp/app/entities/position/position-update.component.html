@@ -69,6 +69,7 @@
                 <div class="form-group">
                     <label class="form-control-label" for="field_jobType">Type de poste</label>
                     <select class="form-control" id="field_jobType" name="jobType" formControlName="jobType">
+                        <option [value]="null"></option>
                         <option *ngFor="let jobTypeOption of jobTypes; trackBy: getId" [ngValue]="jobTypeOption.id === editForm.get('jobType')!.value?.id ? editForm.get('jobType')!.value : jobTypeOption" >{{ jobTypeOption.name }}</option>
                     </select>
                 </div>
