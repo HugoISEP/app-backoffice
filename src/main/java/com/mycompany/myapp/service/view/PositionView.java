@@ -9,7 +9,7 @@ public interface PositionView {
     Long getId();
     int getDuration();
     int getPlacesNumber();
-    float getRemuneration();
+    Float getRemuneration();
     String getDescription();
     LocalDateTime getCreatedAt();
     boolean isStatus();

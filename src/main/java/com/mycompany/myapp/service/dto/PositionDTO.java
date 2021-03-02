@@ -16,7 +16,7 @@ public class PositionDTO implements PositionView {
     private int duration;
     private String description;
     private int placesNumber;
-    private float remuneration;
+    private Float remuneration;
     private LocalDateTime createdAt;
     private boolean status;
     private JobTypeDTO jobType;
