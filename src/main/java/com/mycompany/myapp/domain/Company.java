@@ -10,6 +10,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @Entity
@@ -39,6 +40,15 @@ public class Company {
     @URL
     @Column(name="website_url")
     private String websiteUrl;
+
+    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL)
+    private List<User> users;
+
+    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL)
+    private List<JobType> jobTypes;
+
+    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL)
+    private List<Mission> missions;
 
     @Column(updatable = false)
     @CreationTimestamp

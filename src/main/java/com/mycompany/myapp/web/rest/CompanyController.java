@@ -83,7 +83,7 @@ public class CompanyController {
         try {
             service.delete(id);
         } catch (Exception e) {
-            throw new BadRequestAlertException("Could not delete the file", ENTITY_NAME, e.toString());
+            throw new BadRequestAlertException("Could not delete company", ENTITY_NAME, e.toString());
         }
     }
 
