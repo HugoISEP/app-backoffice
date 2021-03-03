@@ -12,7 +12,7 @@ import java.util.Optional;
 
 public interface CompanyRepository extends JpaRepository<Company, Long> {
 
-    @Query("select c from Company c where lower(:email) like lower(concat('%',c.emailTemplate))")
+    @Query("select c from Company c where lower(:email) like lower(concat('%@',c.emailTemplate))")
     Optional<Company> findCompanyByUserEmail(@Param("email") String email);
 
     @Query("select c from Company c join User u on u.company.id = c.id where u.id = :id")
