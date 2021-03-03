@@ -2,6 +2,7 @@ package com.mycompany.myapp.domain;
 
 import com.mycompany.myapp.config.Constants;
 import lombok.Data;
+import lombok.ToString;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.Formula;
 import org.hibernate.validator.constraints.URL;
@@ -13,6 +14,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
+@ToString(exclude = {"users", "jobTypes", "missions"})
 @Entity
 @Table(name = "company")
 public class Company {
