@@ -154,7 +154,7 @@ public class PositionService {
 
     public void clearPositionCacheByPosition(Long companyId) {
         try {
-            Objects.requireNonNull(cacheManager.getCache(PositionRepository.POSITIONS_AVAILABLE_CACHE)).evict(companyRepository.findById(companyId).get());
+            Objects.requireNonNull(cacheManager.getCache(PositionRepository.POSITIONS_AVAILABLE_CACHE)).evict(companyRepository.findById(companyId).get().getId());
         } catch (Exception e) {
             log.warn("can't clear positions available cache: " + e.getMessage());
         }
