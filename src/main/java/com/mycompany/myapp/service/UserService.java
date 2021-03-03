@@ -148,20 +148,20 @@ public class UserService {
         user.setLogin(userDTO.getLogin().toLowerCase());
         user.setFirstName(userDTO.getFirstName());
         user.setLastName(userDTO.getLastName());
-        Company company;
         if (userDTO.getEmail() != null) {
-            if (!userDTO.getAuthorities().contains(AuthoritiesConstants.USER)) {
-                company = companyRepository.findById(userDTO.getCompany().getId()).orElseThrow(() -> new ResourceNotFoundException("Company not found", "company", "id doesn't exist"));
-            } else {
-                company = this.isEmailValid(userDTO.getEmail());
-            }
-            if (!currentUser.getAuthorities().contains(AuthoritiesConstants.ADMIN)) {
-                if (!currentUser.getCompany().getId().equals(company.getId())) {
-                    throw new InvalidEmailSuffixException("Email not match with the company");
+            if (!userDTO.getAuthorities().contains(AuthoritiesConstants.ADMIN)){
+                Company company;
+                if (userDTO.getAuthorities().contains(AuthoritiesConstants.MANAGER)) {
+                    company = companyRepository.findById(userDTO.getCompany().getId()).orElseThrow(() -> new ResourceNotFoundException("Company not found", "company", "id doesn't exist"));
+                } else {
+                    company = this.isEmailValid(userDTO.getEmail());
+                    if (!currentUser.getAuthorities().contains(AuthoritiesConstants.ADMIN) && !currentUser.getCompany().getId().equals(company.getId())) {
+                        throw new InvalidEmailSuffixException("Email not match with the company");
+                    }
                 }
+                user.setCompany(company);
             }
             user.setEmail(userDTO.getEmail().toLowerCase());
-            user.setCompany(company);
         } else {
             throw new Exception("Email is required");
         }
