@@ -95,7 +95,7 @@ public class JobTypeService {
 
         // Add new JobType notification to all company's users
         newJobType.getCompany().getUsers().stream()
-            .filter(usr -> usr.getAuthorities().stream().anyMatch(authority -> authority.getName().equals(AuthoritiesConstants.USER)))
+            .filter(usr -> usr.getAuthorities().stream().noneMatch(authority -> authority.getName().equals(AuthoritiesConstants.ADMIN)))
             .forEach(usr ->
                 usr.setJobTypes(Streams.concat(usr.getJobTypes().stream(), Stream.of(newJobType)).collect(Collectors.toList())));
         return mapper.asDTO(repository.save(newJobType));
