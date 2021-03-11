@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { User } from '../../core/user/user.model';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, Validators } from '@angular/forms';
 import { UserService } from '../../core/user/user.service';
 import { ActivatedRoute } from '@angular/router';
 import { ICompany } from '../../shared/model/company.model';
 import { CompanyService } from '../company/company.service';
+import { Authority } from '../../shared/constants/authority.constants';
 
 @Component({
   selector: 'jhi-user-management-update',
@@ -43,7 +44,7 @@ export class UserManagementUpdateComponent implements OnInit {
               Validators.minLength(5),
               Validators.maxLength(254),
               Validators.email,
-              Validators.pattern(`^[\\w-\\.]+@${this.company.emailTemplate}$`),
+              Validators.pattern(`^[\\w-.+]+@${this.company.emailTemplate}$`),
             ]);
           });
         } else {
@@ -90,6 +91,7 @@ export class UserManagementUpdateComponent implements OnInit {
     user.lastName = this.editForm.get(['lastName'])!.value;
     user.email = this.editForm.get(['email'])!.value;
     user.activated = this.editForm.get(['activated'])!.value;
+    user.authorities = [Authority.USER];
     user.company = this.company;
   }
 

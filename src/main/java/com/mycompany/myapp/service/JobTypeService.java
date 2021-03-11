@@ -1,7 +1,9 @@
 package com.mycompany.myapp.service;
 
+import com.google.common.collect.Streams;
 import com.mycompany.myapp.domain.Company;
 import com.mycompany.myapp.domain.JobType;
+import com.mycompany.myapp.repository.CompanyRepository;
 import com.mycompany.myapp.repository.JobTypeRepository;
 import com.mycompany.myapp.security.AuthoritiesConstants;
 import com.mycompany.myapp.service.dto.JobTypeDTO;
@@ -21,6 +23,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 
 @Service
@@ -32,15 +36,17 @@ public class JobTypeService {
     private final JobTypeMapper mapper;
     private final UserService userService;
     private final CompanyMapper companyMapper;
+    private final CompanyRepository companyRepository;
     private final PositionService positionService;
     private final CacheManager cacheManager;
 
 
-    public JobTypeService(JobTypeRepository repository, JobTypeMapper mapper, UserService userService, CompanyMapper companyMapper, PositionService positionService, CacheManager cacheManager) {
+    public JobTypeService(JobTypeRepository repository, JobTypeMapper mapper, UserService userService, CompanyMapper companyMapper, CompanyRepository companyRepository, PositionService positionService, CacheManager cacheManager) {
         this.repository = repository;
         this.mapper = mapper;
         this.userService = userService;
         this.companyMapper = companyMapper;
+        this.companyRepository = companyRepository;
         this.positionService = positionService;
         this.cacheManager = cacheManager;
     }
@@ -83,8 +89,15 @@ public class JobTypeService {
         UserDTO user = userService.getUserWithAuthorities()
             .map(UserDTO::new)
             .orElseThrow(() -> new ResourceNotFoundException("User not found", ENTITY_NAME, "id doesn't exist"));
-        newJobType.setCompany(companyMapper.fromDTO(user.getCompany()));
+        Company company = companyRepository.findById(user.getCompany().getId()).orElseThrow(() -> new ResourceNotFoundException("Company not found", ENTITY_NAME, "id doesn't exist"));
+        newJobType.setCompany(company);
         this.clearJobTypeCacheByCompany(newJobType.getCompany());
+
+        // Add new JobType notification to all company's users
+        newJobType.getCompany().getUsers().stream()
+            .filter(usr -> usr.getAuthorities().stream().noneMatch(authority -> authority.getName().equals(AuthoritiesConstants.ADMIN)))
+            .forEach(usr ->
+                usr.setJobTypes(Streams.concat(usr.getJobTypes().stream(), Stream.of(newJobType)).collect(Collectors.toList())));
         return mapper.asDTO(repository.save(newJobType));
     }
 
@@ -104,6 +117,9 @@ public class JobTypeService {
     public void deleteJobType(Long id){
         JobType jobTypeToDelete = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("JobType doesn't exist", ENTITY_NAME, "id doesn't exist"));
         hasAuthorization(id);
+        //Remove user's Notifications
+        jobTypeToDelete.getCompany().getUsers().forEach(user ->
+            user.setJobTypes(user.getJobTypes().stream().filter(jobType -> !jobType.getId().equals(jobTypeToDelete.getId())).collect(Collectors.toList())));
         jobTypeToDelete.setDeletedAt(LocalDateTime.now());
         jobTypeToDelete.getPositions().forEach(position -> position.setDeletedAt(LocalDateTime.now()));
         positionService.clearPositionCacheByCompany(jobTypeToDelete.getCompany());
