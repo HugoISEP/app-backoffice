@@ -44,7 +44,7 @@ export class UserManagementUpdateComponent implements OnInit {
               Validators.minLength(5),
               Validators.maxLength(254),
               Validators.email,
-              Validators.pattern(`^[\\w-\\.]+@${this.company.emailTemplate}$`),
+              Validators.pattern(`^[\\w-.+]+@${this.company.emailTemplate}$`),
             ]);
           });
         } else {
