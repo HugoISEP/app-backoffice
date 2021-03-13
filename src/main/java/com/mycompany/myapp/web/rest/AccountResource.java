@@ -39,7 +39,7 @@ public class AccountResource {
         }
     }
 
-    @Value("${mobile-app-url}")
+    @Value("${mobile-app.url}")
     private String appUrl;
 
     private final Logger log = LoggerFactory.getLogger(AccountResource.class);

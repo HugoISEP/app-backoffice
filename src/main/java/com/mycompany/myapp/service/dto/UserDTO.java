@@ -3,8 +3,6 @@ package com.mycompany.myapp.service.dto;
 import com.mycompany.myapp.config.Constants;
 
 import com.mycompany.myapp.domain.Authority;
-import com.mycompany.myapp.domain.Company;
-import com.mycompany.myapp.domain.JobType;
 import com.mycompany.myapp.domain.User;
 import com.mycompany.myapp.service.view.UserView;
 import lombok.Data;
@@ -61,6 +59,8 @@ public class UserDTO implements UserView {
 
     private List<JobTypeDTO> jobTypes;
 
+    private List<String> devices;
+
     public UserDTO(User user) {
         this.id = user.getId();
         this.login = user.getLogin();
@@ -82,6 +82,7 @@ public class UserDTO implements UserView {
         }
         this.jobTypes = user.getJobTypes().stream()
             .map(j -> new JobTypeDTO(j.getId(), j.getName(), j.getIcon(), j.getCreatedAt(), this.company)).collect(Collectors.toList());
+        this.devices = user.getDevices();
     }
 
 }

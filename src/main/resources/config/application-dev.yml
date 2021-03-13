@@ -19,8 +19,10 @@ logging:
     io.github.jhipster: DEBUG
     com.mycompany.myapp: DEBUG
 
-mobile-app-url: 'http://confirmation.cnje-staging.juniorisep.com'
-firebase: './src/main/resources/google/google-service.json'
+mobile-app:
+  url: 'http://confirmation.cnje-staging.juniorisep.com'
+  firebase: './src/main/resources/google/google-service.json'
+  version: '1.0.0'
 
 spring:
   profiles:

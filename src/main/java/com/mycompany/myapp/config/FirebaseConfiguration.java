@@ -15,7 +15,7 @@ import java.nio.file.Paths;
 
 @Service
 public class FirebaseConfiguration {
-    @Value("${firebase}")
+    @Value("${mobile-app.firebase}")
     private String firebaseConfigPath;
 
     Logger logger = LoggerFactory.getLogger(FirebaseConfiguration.class);
