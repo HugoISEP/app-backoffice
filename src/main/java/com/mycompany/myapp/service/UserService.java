@@ -93,7 +93,7 @@ public class UserService {
             });
     }
 
-    public User registerUser(UserDTO userDTO, String password) throws Exception {
+    public User registerUser(UserDTO userDTO, String password, String deviceToken) throws Exception {
         userRepository.findOneByEmail(userDTO.getEmail().toLowerCase()).ifPresent(existingUser -> {
             boolean removed = removeNonActivatedUser(existingUser);
             if (!removed) {
@@ -125,9 +125,9 @@ public class UserService {
         Set<Authority> authorities = new HashSet<>();
         authorityRepository.findById(AuthoritiesConstants.USER).ifPresent(authorities::add);
         newUser.setAuthorities(authorities);
-        userRepository.save(newUser);
+        checkUserDevice(newUser, deviceToken);
         log.debug("Created Information for User: {}", newUser);
-        return newUser;
+        return userRepository.save(newUser);
     }
 
     private boolean removeNonActivatedUser(User existingUser) {

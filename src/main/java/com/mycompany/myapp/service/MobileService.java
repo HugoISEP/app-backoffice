@@ -2,7 +2,6 @@ package com.mycompany.myapp.service;
 
 import com.google.common.collect.Streams;
 import com.google.firebase.messaging.FirebaseMessaging;
-import com.google.firebase.messaging.FirebaseMessagingException;
 import com.mycompany.myapp.domain.JobType;
 import com.mycompany.myapp.domain.User;
 import com.mycompany.myapp.repository.JobTypeRepository;
@@ -35,19 +34,11 @@ public class MobileService {
         this.userRepository = userRepository;
     }
 
-    public void subscribeToATopic(List<String> deviceTokens, String topic){
-        FirebaseMessaging.getInstance().subscribeToTopicAsync(deviceTokens, topic);
-    }
-
-    public void unsubscribeToATopic(List<String> deviceTokens, String topic){
-        FirebaseMessaging.getInstance().unsubscribeFromTopicAsync(deviceTokens, topic);
-    }
-
     public void subscribeUserToATopic(Long id) {
             User currentUser = userService.getUserWithAuthorities()
                 .orElseThrow(() -> new BadRequestAlertException("User not found", "USER", "wrong id"));
             JobType jobType = jobTypeRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("JobTYpe not found", "JobType", "wrong id"));
-            subscribeToATopic(currentUser.getDevices(), jobType.getId().toString());
+            FirebaseMessaging.getInstance().subscribeToTopicAsync(currentUser.getDevices(), id.toString());
             currentUser.getJobTypes().add(jobType);
             userRepository.save(currentUser);
     }
@@ -56,15 +47,14 @@ public class MobileService {
         User currentUser = userService.getUserWithAuthorities()
             .orElseThrow(() -> new BadRequestAlertException("User not found", "USER", "wrong id"));
         JobType jobType = jobTypeRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("JobType not found", "JobType", "wrong id"));
-        unsubscribeToATopic(currentUser.getDevices(), jobType.getId().toString());
+        FirebaseMessaging.getInstance().unsubscribeFromTopicAsync(currentUser.getDevices(), jobType.getId().toString());
         currentUser.getJobTypes().remove(jobType);
         userRepository.save(currentUser);
     }
 
     public void subscribeUserToAllTopics(User user){
         user.getCompany().getJobTypes().forEach(jobType -> {
-            subscribeToATopic(user.getDevices(), jobType.getId().toString());
-            user.getJobTypes().add(jobType);
+            FirebaseMessaging.getInstance().subscribeToTopicAsync(user.getDevices(), jobType.getId().toString());
         });
     }
 
@@ -78,7 +68,7 @@ public class MobileService {
                 usr.setJobTypes(Streams.concat(usr.getJobTypes().stream(), Stream.of(jobType)).collect(Collectors.toList()));
                 deviceTokens.addAll(usr.getDevices());
             });
-        subscribeToATopic(deviceTokens, id.toString());
+        FirebaseMessaging.getInstance().subscribeToTopicAsync(deviceTokens, id.toString());
     }
 
     @Async
@@ -90,6 +80,6 @@ public class MobileService {
                 user.getJobTypes().remove(jobType);
             }
         });
-        unsubscribeToATopic(deviceTokens, jobType.getId().toString());
+        FirebaseMessaging.getInstance().unsubscribeFromTopicAsync(deviceTokens, jobType.getId().toString());
     }
 }

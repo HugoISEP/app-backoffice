@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -74,12 +75,12 @@ public class AccountResource {
      */
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
+    @Transactional
     public void registerUserAccount(@Valid @RequestBody ManagedUserVM managedUserVM, @RequestParam(value = "deviceToken") String deviceToken) throws Exception{
         if (!checkPasswordLength(managedUserVM.getPassword())) {
             throw new InvalidPasswordException();
         }
-        User user = userService.registerUser(managedUserVM, managedUserVM.getPassword());
-        userService.checkUserDevice(user, deviceToken);
+        User user = userService.registerUser(managedUserVM, managedUserVM.getPassword(), deviceToken);
         mobileService.subscribeUserToAllTopics(user);
         mailService.sendActivationEmail(user);
     }
@@ -123,9 +124,14 @@ public class AccountResource {
      * @throws RuntimeException {@code 500 (Internal Server Error)} if the user couldn't be returned.
      */
     @GetMapping("/account")
-    public UserView getAccount(@RequestParam(value = "deviceToken", required = false) String deviceToken) {
+    public UserView getAccount(@RequestParam(value = "deviceToken", required = false) String deviceToken,
+                               @RequestParam(value = "language", required = false) String language) {
         User user = userService.getUserWithAuthorities()
             .orElseThrow(() -> new AccountResourceException("User could not be found"));
+        if (!user.getLangKey().equals(language)){
+            user.setLangKey(language);
+            user = userRepository.save(user);
+        }
         return userMapper.userToUserDTO(userService.checkUserDevice(user, deviceToken));
     }
 
