@@ -15,6 +15,8 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -33,70 +35,61 @@ public class MobileService {
         this.userRepository = userRepository;
     }
 
-    public void subscribeFirebaseTopic(Long id) throws FirebaseMessagingException {
-        try {
-            User currentUser = userService.getUserWithAuthorities()
-                .orElseThrow(() -> new BadRequestAlertException("user not found", "USER", "id exists"));
-            JobType jobType = jobTypeRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Entity not found", "JobType", "id doesn't exist"));
-            FirebaseMessaging.getInstance().subscribeToTopic(currentUser.getDevices(), jobType.getId().toString());
-            currentUser.getJobTypes().add(jobType);
-            userRepository.save(currentUser);
-        } catch (FirebaseMessagingException e){
-            log.error(String.format("Can't subscribe to the topic %d : %s", id, e.getMessage()));
-        }
+    public void subscribeToATopic(List<String> deviceTokens, String topic){
+        FirebaseMessaging.getInstance().subscribeToTopicAsync(deviceTokens, topic);
     }
 
-    public void unsubscribeFirebaseTopic(Long id) throws FirebaseMessagingException {
-        log.warn("REST request to unsubscribeFirebaseTopic : {}", id);
-        try {
+    public void unsubscribeToATopic(List<String> deviceTokens, String topic){
+        FirebaseMessaging.getInstance().unsubscribeFromTopicAsync(deviceTokens, topic);
+    }
+
+    public void subscribeUserToATopic(Long id) {
             User currentUser = userService.getUserWithAuthorities()
-                .orElseThrow(() -> new BadRequestAlertException("user not found", "USER", "id exists"));
-            JobType jobType = jobTypeRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Entity not found", "JobType", "id doesn't exist"));
-            FirebaseMessaging.getInstance().unsubscribeFromTopic(currentUser.getDevices(), jobType.getId().toString());
-            currentUser.getJobTypes().remove(jobType);
+                .orElseThrow(() -> new BadRequestAlertException("User not found", "USER", "wrong id"));
+            JobType jobType = jobTypeRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("JobTYpe not found", "JobType", "wrong id"));
+            subscribeToATopic(currentUser.getDevices(), jobType.getId().toString());
+            currentUser.getJobTypes().add(jobType);
             userRepository.save(currentUser);
-        } catch (FirebaseMessagingException e){
-            log.error(String.format("Can't unsubscribe to the topic %d : %s", id, e.getMessage()));
-        }
+    }
+
+    public void unsubscribeUserToATopic(Long id) {
+        User currentUser = userService.getUserWithAuthorities()
+            .orElseThrow(() -> new BadRequestAlertException("User not found", "USER", "wrong id"));
+        JobType jobType = jobTypeRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("JobType not found", "JobType", "wrong id"));
+        unsubscribeToATopic(currentUser.getDevices(), jobType.getId().toString());
+        currentUser.getJobTypes().remove(jobType);
+        userRepository.save(currentUser);
     }
 
     public void subscribeUserToAllTopics(User user){
         user.getCompany().getJobTypes().forEach(jobType -> {
-            try {
-                FirebaseMessaging.getInstance().subscribeToTopic(user.getDevices(), jobType.getId().toString());
-            } catch (FirebaseMessagingException e) {
-                log.error(String.format("Can't subscribe to the topic %d : %s", jobType.getId(), e.getMessage()));
-            }
+            subscribeToATopic(user.getDevices(), jobType.getId().toString());
+            user.getJobTypes().add(jobType);
         });
     }
 
     @Async
     public void subscribeAllUsersToNewTopic(Long id){
-        JobType jobType = jobTypeRepository.findById(id).get();
+        JobType jobType = jobTypeRepository.findById(id).orElseThrow(() -> new BadRequestAlertException("jobType not found", "JobType", "wrong id"));
+        List<String> deviceTokens = new ArrayList<>();
         jobType.getCompany().getUsers().stream()
             .filter(usr -> usr.getAuthorities().stream().noneMatch(authority -> authority.getName().equals(AuthoritiesConstants.ADMIN)))
             .forEach(usr -> {
                 usr.setJobTypes(Streams.concat(usr.getJobTypes().stream(), Stream.of(jobType)).collect(Collectors.toList()));
-                if(!usr.getDevices().isEmpty()){
-                    try {
-                        FirebaseMessaging.getInstance().subscribeToTopic(usr.getDevices(), jobType.getId().toString());
-                    } catch (FirebaseMessagingException e) {
-                        log.error(String.format("Can't subscribe to the topic %d : %s", jobType.getId(), e.getMessage()));
-                    }
-                }
+                deviceTokens.addAll(usr.getDevices());
             });
+        subscribeToATopic(deviceTokens, id.toString());
     }
 
     @Async
     public void unsubscribeAllUsersDeletedTopic(JobType jobType){
+        List<String> deviceTokens = new ArrayList<>();
         jobType.getCompany().getUsers().forEach(user -> {
-            if(user.getJobTypes().contains(jobType) && !user.getDevices().isEmpty()){
-                try {
-                    FirebaseMessaging.getInstance().unsubscribeFromTopic(user.getDevices(), jobType.getId().toString());
-                } catch (FirebaseMessagingException e) {
-                    log.error(String.format("Can't unsubscribe to the topic %d : %s", jobType.getId(), e.getMessage()));
-                }
+            if(user.getJobTypes().contains(jobType)){
+                deviceTokens.addAll(user.getDevices());
+                user.getJobTypes().remove(jobType);
             }
         });
+        unsubscribeToATopic(deviceTokens, jobType.getId().toString());
     }
 }

@@ -1,6 +1,5 @@
 package com.mycompany.myapp.web.rest;
 
-import com.google.firebase.messaging.FirebaseMessagingException;
 import com.mycompany.myapp.security.AuthoritiesConstants;
 import com.mycompany.myapp.service.MobileService;
 import lombok.extern.slf4j.Slf4j;
@@ -32,16 +31,16 @@ public class MobileController {
     @PutMapping("/subscribe/{id}")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.MANAGER + "\") or hasAuthority(\"" + AuthoritiesConstants.USER + "\")")
-    public void subscribeToTopic(@PathVariable Long id) throws FirebaseMessagingException {
+    public void subscribeToTopic(@PathVariable Long id) {
         log.debug("REST request to subscribeToTopic : {}", id);
-        mobileService.subscribeFirebaseTopic(id);
+        mobileService.subscribeUserToATopic(id);
     }
 
     @PutMapping("/unsubscribe/{id}")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.MANAGER + "\") or hasAuthority(\"" + AuthoritiesConstants.USER + "\")")
-    public void unsubscribeToTopic(@PathVariable Long id) throws FirebaseMessagingException {
+    public void unsubscribeToTopic(@PathVariable Long id) {
         log.debug("REST request to unsubscribeToTopic : {}", id);
-        mobileService.unsubscribeFirebaseTopic(id);
+        mobileService.unsubscribeUserToATopic(id);
     }
 }
