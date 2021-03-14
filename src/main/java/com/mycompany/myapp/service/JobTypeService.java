@@ -1,6 +1,5 @@
 package com.mycompany.myapp.service;
 
-import com.google.common.collect.Streams;
 import com.mycompany.myapp.domain.Company;
 import com.mycompany.myapp.domain.JobType;
 import com.mycompany.myapp.repository.CompanyRepository;
@@ -8,7 +7,6 @@ import com.mycompany.myapp.repository.JobTypeRepository;
 import com.mycompany.myapp.security.AuthoritiesConstants;
 import com.mycompany.myapp.service.dto.JobTypeDTO;
 import com.mycompany.myapp.service.dto.UserDTO;
-import com.mycompany.myapp.service.mapper.CompanyMapper;
 import com.mycompany.myapp.service.mapper.JobTypeMapper;
 import com.mycompany.myapp.service.view.JobTypeView;
 import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
@@ -24,7 +22,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 
 @Service
@@ -35,17 +32,17 @@ public class JobTypeService {
     private final JobTypeRepository repository;
     private final JobTypeMapper mapper;
     private final UserService userService;
-    private final CompanyMapper companyMapper;
+    private final MobileService mobileService;
     private final CompanyRepository companyRepository;
     private final PositionService positionService;
     private final CacheManager cacheManager;
 
 
-    public JobTypeService(JobTypeRepository repository, JobTypeMapper mapper, UserService userService, CompanyMapper companyMapper, CompanyRepository companyRepository, PositionService positionService, CacheManager cacheManager) {
+    public JobTypeService(JobTypeRepository repository, JobTypeMapper mapper, UserService userService, MobileService mobileService, CompanyRepository companyRepository, PositionService positionService, CacheManager cacheManager) {
         this.repository = repository;
         this.mapper = mapper;
         this.userService = userService;
-        this.companyMapper = companyMapper;
+        this.mobileService = mobileService;
         this.companyRepository = companyRepository;
         this.positionService = positionService;
         this.cacheManager = cacheManager;
@@ -92,13 +89,10 @@ public class JobTypeService {
         Company company = companyRepository.findById(user.getCompany().getId()).orElseThrow(() -> new ResourceNotFoundException("Company not found", ENTITY_NAME, "id doesn't exist"));
         newJobType.setCompany(company);
         this.clearJobTypeCacheByCompany(newJobType.getCompany());
-
-        // Add new JobType notification to all company's users
-        newJobType.getCompany().getUsers().stream()
-            .filter(usr -> usr.getAuthorities().stream().noneMatch(authority -> authority.getName().equals(AuthoritiesConstants.ADMIN)))
-            .forEach(usr ->
-                usr.setJobTypes(Streams.concat(usr.getJobTypes().stream(), Stream.of(newJobType)).collect(Collectors.toList())));
-        return mapper.asDTO(repository.save(newJobType));
+        //We need to get its id
+        JobType jobTypeSaved = repository.save(newJobType);
+        mobileService.subscribeAllUsersToNewTopic(jobTypeSaved.getId());
+        return mapper.asDTO(jobTypeSaved);
     }
 
     public JobTypeDTO editJobType(JobTypeDTO updatedJobType){
@@ -124,12 +118,12 @@ public class JobTypeService {
         jobTypeToDelete.getPositions().forEach(position -> position.setDeletedAt(LocalDateTime.now()));
         positionService.clearPositionCacheByCompany(jobTypeToDelete.getCompany());
         this.clearJobTypeCacheByCompany(jobTypeToDelete.getCompany());
+        mobileService.unsubscribeAllUsersDeletedTopic(jobTypeToDelete);
         repository.save(jobTypeToDelete);
     }
 
     public void clearJobTypeCacheByCompany(Company company) {
         Objects.requireNonNull(cacheManager.getCache(JobTypeRepository.JOB_TYPE_FROM_COMPANY_IN_CACHE)).evict(company.getId());
     }
-
 
 }

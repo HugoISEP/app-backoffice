@@ -366,4 +366,12 @@ public class UserService {
         return userRepository.findAllByCompany(company);
     }
 
+    public User checkUserDevice(User user, String deviceToken){
+        if(!user.getDevices().contains(deviceToken)){
+            user.getDevices().add(deviceToken);
+            return userRepository.save(user);
+        }
+        return user;
+    }
+
 }

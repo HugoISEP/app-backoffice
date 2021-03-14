@@ -4,9 +4,11 @@ import com.mycompany.myapp.domain.User;
 import com.mycompany.myapp.repository.UserRepository;
 import com.mycompany.myapp.security.SecurityUtils;
 import com.mycompany.myapp.service.MailService;
+import com.mycompany.myapp.service.MobileService;
 import com.mycompany.myapp.service.UserService;
 import com.mycompany.myapp.service.dto.PasswordChangeDTO;
 import com.mycompany.myapp.service.dto.UserDTO;
+import com.mycompany.myapp.service.mapper.UserMapper;
 import com.mycompany.myapp.service.view.UserView;
 import com.mycompany.myapp.web.rest.errors.*;
 import com.mycompany.myapp.web.rest.vm.KeyAndPasswordVM;
@@ -48,14 +50,18 @@ public class AccountResource {
 
     private final UserService userService;
 
+    private final UserMapper userMapper;
+
     private final MailService mailService;
 
+    private final MobileService mobileService;
 
-    public AccountResource(UserRepository userRepository, UserService userService, MailService mailService) {
-
+    public AccountResource(UserRepository userRepository, UserService userService, UserMapper userMapper, MailService mailService, MobileService mobileService) {
         this.userRepository = userRepository;
         this.userService = userService;
+        this.userMapper = userMapper;
         this.mailService = mailService;
+        this.mobileService = mobileService;
     }
 
     /**
@@ -68,11 +74,13 @@ public class AccountResource {
      */
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
-    public void registerUserAccount(@Valid @RequestBody ManagedUserVM managedUserVM) throws Exception{
+    public void registerUserAccount(@Valid @RequestBody ManagedUserVM managedUserVM, @RequestParam(value = "deviceToken") String deviceToken) throws Exception{
         if (!checkPasswordLength(managedUserVM.getPassword())) {
             throw new InvalidPasswordException();
         }
         User user = userService.registerUser(managedUserVM, managedUserVM.getPassword());
+        userService.checkUserDevice(user, deviceToken);
+        mobileService.subscribeUserToAllTopics(user);
         mailService.sendActivationEmail(user);
     }
 
@@ -115,10 +123,10 @@ public class AccountResource {
      * @throws RuntimeException {@code 500 (Internal Server Error)} if the user couldn't be returned.
      */
     @GetMapping("/account")
-    public UserView getAccount() {
-        return userService.getUserWithAuthorities()
-            .map(UserDTO::new)
+    public UserView getAccount(@RequestParam(value = "deviceToken", required = false) String deviceToken) {
+        User user = userService.getUserWithAuthorities()
             .orElseThrow(() -> new AccountResourceException("User could not be found"));
+        return userMapper.userToUserDTO(userService.checkUserDevice(user, deviceToken));
     }
 
     /**
