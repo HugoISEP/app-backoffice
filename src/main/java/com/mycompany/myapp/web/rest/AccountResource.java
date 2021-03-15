@@ -128,7 +128,7 @@ public class AccountResource {
                                @RequestParam(value = "language", required = false) String language) {
         User user = userService.getUserWithAuthorities()
             .orElseThrow(() -> new AccountResourceException("User could not be found"));
-        if (!user.getLangKey().equals(language)){
+        if (Objects.nonNull(language) && !user.getLangKey().equals(language)){
             user.setLangKey(language);
             user = userRepository.save(user);
         }
