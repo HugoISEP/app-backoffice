@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -25,27 +26,21 @@ import java.util.stream.Stream;
 public class MobileService {
 
     private final JobTypeRepository jobTypeRepository;
-    private final UserService userService;
     private final UserRepository userRepository;
 
-    public MobileService(JobTypeRepository jobTypeRepository, UserService userService, UserRepository userRepository) {
+    public MobileService(JobTypeRepository jobTypeRepository, UserRepository userRepository) {
         this.jobTypeRepository = jobTypeRepository;
-        this.userService = userService;
         this.userRepository = userRepository;
     }
 
-    public void subscribeUserToATopic(Long id) {
-            User currentUser = userService.getUserWithAuthorities()
-                .orElseThrow(() -> new BadRequestAlertException("User not found", "USER", "wrong id"));
+    public void subscribeUserToATopic(User currentUser, Long id) {
             JobType jobType = jobTypeRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("JobTYpe not found", "JobType", "wrong id"));
             FirebaseMessaging.getInstance().subscribeToTopicAsync(currentUser.getDevices(), id.toString());
             currentUser.getJobTypes().add(jobType);
             userRepository.save(currentUser);
     }
 
-    public void unsubscribeUserToATopic(Long id) {
-        User currentUser = userService.getUserWithAuthorities()
-            .orElseThrow(() -> new BadRequestAlertException("User not found", "USER", "wrong id"));
+    public void unsubscribeUserToATopic(User currentUser, Long id) {
         JobType jobType = jobTypeRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("JobType not found", "JobType", "wrong id"));
         FirebaseMessaging.getInstance().unsubscribeFromTopicAsync(currentUser.getDevices(), jobType.getId().toString());
         currentUser.getJobTypes().remove(jobType);
@@ -56,6 +51,10 @@ public class MobileService {
         user.getCompany().getJobTypes().forEach(jobType -> {
             FirebaseMessaging.getInstance().subscribeToTopicAsync(user.getDevices(), jobType.getId().toString());
         });
+    }
+
+    public void subscribeNewDeviceToTopics(List<JobType> jobTypes, String newDeviceToken) {
+        jobTypes.forEach(jobType -> FirebaseMessaging.getInstance().subscribeToTopicAsync(Collections.singletonList(newDeviceToken), jobType.getId().toString()));
     }
 
     @Async

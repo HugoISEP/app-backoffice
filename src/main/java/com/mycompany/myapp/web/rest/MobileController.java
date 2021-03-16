@@ -1,7 +1,10 @@
 package com.mycompany.myapp.web.rest;
 
+import com.mycompany.myapp.domain.User;
 import com.mycompany.myapp.security.AuthoritiesConstants;
 import com.mycompany.myapp.service.MobileService;
+import com.mycompany.myapp.service.UserService;
+import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -18,8 +21,11 @@ public class MobileController {
 
     private final MobileService mobileService;
 
-    public MobileController(MobileService mobileService) {
+    private final UserService userService;
+
+    public MobileController(MobileService mobileService, UserService userService) {
         this.mobileService = mobileService;
+        this.userService = userService;
     }
 
     @GetMapping("/version")
@@ -33,7 +39,9 @@ public class MobileController {
     @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.MANAGER + "\") or hasAuthority(\"" + AuthoritiesConstants.USER + "\")")
     public void subscribeToTopic(@PathVariable Long id) {
         log.debug("REST request to subscribeToTopic : {}", id);
-        mobileService.subscribeUserToATopic(id);
+        User currentUser = userService.getUserWithAuthorities()
+            .orElseThrow(() -> new BadRequestAlertException("User not found", "USER", "wrong id"));
+        mobileService.subscribeUserToATopic(currentUser, id);
     }
 
     @PutMapping("/unsubscribe/{id}")
@@ -41,6 +49,8 @@ public class MobileController {
     @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.MANAGER + "\") or hasAuthority(\"" + AuthoritiesConstants.USER + "\")")
     public void unsubscribeToTopic(@PathVariable Long id) {
         log.debug("REST request to unsubscribeToTopic : {}", id);
-        mobileService.unsubscribeUserToATopic(id);
+        User currentUser = userService.getUserWithAuthorities()
+            .orElseThrow(() -> new BadRequestAlertException("User not found", "USER", "wrong id"));
+        mobileService.unsubscribeUserToATopic(currentUser, id);
     }
 }
