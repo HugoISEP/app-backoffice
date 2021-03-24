@@ -4,7 +4,7 @@ import com.mycompany.myapp.domain.User;
 import com.mycompany.myapp.repository.UserRepository;
 import com.mycompany.myapp.security.SecurityUtils;
 import com.mycompany.myapp.service.MailService;
-import com.mycompany.myapp.service.MobileService;
+import com.mycompany.myapp.service.DeviceService;
 import com.mycompany.myapp.service.UserService;
 import com.mycompany.myapp.service.dto.PasswordChangeDTO;
 import com.mycompany.myapp.service.dto.UserDTO;
@@ -56,14 +56,14 @@ public class AccountResource {
 
     private final MailService mailService;
 
-    private final MobileService mobileService;
+    private final DeviceService deviceService;
 
-    public AccountResource(UserRepository userRepository, UserService userService, UserMapper userMapper, MailService mailService, MobileService mobileService) {
+    public AccountResource(UserRepository userRepository, UserService userService, UserMapper userMapper, MailService mailService, DeviceService deviceService) {
         this.userRepository = userRepository;
         this.userService = userService;
         this.userMapper = userMapper;
         this.mailService = mailService;
-        this.mobileService = mobileService;
+        this.deviceService = deviceService;
     }
 
     /**
@@ -82,7 +82,7 @@ public class AccountResource {
             throw new InvalidPasswordException();
         }
         User user = userService.registerUser(managedUserVM, managedUserVM.getPassword(), deviceToken);
-        mobileService.subscribeUserToAllTopics(user);
+        deviceService.subscribeUserToAllTopics(user);
         mailService.sendActivationEmail(user);
     }
 
@@ -131,7 +131,7 @@ public class AccountResource {
             .orElseThrow(() -> new AccountResourceException("User could not be found"));
         if (Objects.nonNull(language) && !user.getLangKey().equals(language) && AVAILABLE_LANGUAGES.contains(language)){
             user.setLangKey(language);
-            mobileService.changeUserLanguageNotifications(user, language);
+            deviceService.changeUserLanguageNotifications(user, language);
             user = userRepository.save(user);
         }
         return userMapper.userToUserDTO(userService.checkUserDevice(user, deviceToken));

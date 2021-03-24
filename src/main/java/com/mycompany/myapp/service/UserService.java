@@ -54,15 +54,15 @@ public class UserService {
 
     private final JobTypeRepository jobTypeRepository;
 
-    private final MobileService mobileService;
+    private final DeviceService deviceService;
 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, AuthorityRepository authorityRepository, CompanyRepository companyRepository, JobTypeRepository jobTypeRepository, MobileService mobileService) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, AuthorityRepository authorityRepository, CompanyRepository companyRepository, JobTypeRepository jobTypeRepository, DeviceService deviceService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.authorityRepository = authorityRepository;
         this.companyRepository = companyRepository;
         this.jobTypeRepository = jobTypeRepository;
-        this.mobileService = mobileService;
+        this.deviceService = deviceService;
     }
 
     public Optional<User> activateRegistration(String key) {
@@ -376,7 +376,7 @@ public class UserService {
 
     public User checkUserDevice(User user, String deviceToken){
         if(Objects.nonNull(deviceToken) && !user.getDevices().contains(deviceToken)){
-            mobileService.subscribeNewDeviceToTopics(user, deviceToken);
+            deviceService.subscribeNewDeviceToTopics(user, deviceToken);
             user.getDevices().add(deviceToken);
             return userRepository.save(user);
         }

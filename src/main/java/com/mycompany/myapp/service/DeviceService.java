@@ -23,12 +23,12 @@ import static com.mycompany.myapp.config.Constants.DEFAULT_LANGUAGE;
 @Slf4j
 @Service
 @Transactional
-public class MobileService {
+public class DeviceService {
 
     private final JobTypeRepository jobTypeRepository;
     private final UserRepository userRepository;
 
-    public MobileService(JobTypeRepository jobTypeRepository, UserRepository userRepository) {
+    public DeviceService(JobTypeRepository jobTypeRepository, UserRepository userRepository) {
         this.jobTypeRepository = jobTypeRepository;
         this.userRepository = userRepository;
     }

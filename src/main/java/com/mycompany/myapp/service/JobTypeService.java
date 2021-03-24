@@ -32,17 +32,17 @@ public class JobTypeService {
     private final JobTypeRepository repository;
     private final JobTypeMapper mapper;
     private final UserService userService;
-    private final MobileService mobileService;
+    private final DeviceService deviceService;
     private final CompanyRepository companyRepository;
     private final PositionService positionService;
     private final CacheManager cacheManager;
 
 
-    public JobTypeService(JobTypeRepository repository, JobTypeMapper mapper, UserService userService, MobileService mobileService, CompanyRepository companyRepository, PositionService positionService, CacheManager cacheManager) {
+    public JobTypeService(JobTypeRepository repository, JobTypeMapper mapper, UserService userService, DeviceService deviceService, CompanyRepository companyRepository, PositionService positionService, CacheManager cacheManager) {
         this.repository = repository;
         this.mapper = mapper;
         this.userService = userService;
-        this.mobileService = mobileService;
+        this.deviceService = deviceService;
         this.companyRepository = companyRepository;
         this.positionService = positionService;
         this.cacheManager = cacheManager;
@@ -91,7 +91,7 @@ public class JobTypeService {
         this.clearJobTypeCacheByCompany(newJobType.getCompany());
         //We need to get its id
         JobType jobTypeSaved = repository.save(newJobType);
-        mobileService.subscribeAllUsersToNewTopic(jobTypeSaved.getId());
+        deviceService.subscribeAllUsersToNewTopic(jobTypeSaved.getId());
         return mapper.asDTO(jobTypeSaved);
     }
 
@@ -118,7 +118,7 @@ public class JobTypeService {
         jobTypeToDelete.getPositions().forEach(position -> position.setDeletedAt(LocalDateTime.now()));
         positionService.clearPositionCacheByCompany(jobTypeToDelete.getCompany());
         this.clearJobTypeCacheByCompany(jobTypeToDelete.getCompany());
-        mobileService.unsubscribeAllUsersDeletedTopic(jobTypeToDelete);
+        deviceService.unsubscribeAllUsersDeletedTopic(jobTypeToDelete);
         repository.save(jobTypeToDelete);
     }
 
