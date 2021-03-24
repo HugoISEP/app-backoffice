@@ -13,6 +13,7 @@ import com.mycompany.myapp.service.view.UserView;
 import com.mycompany.myapp.web.rest.errors.*;
 import com.mycompany.myapp.web.rest.vm.KeyAndPasswordVM;
 import com.mycompany.myapp.web.rest.vm.ManagedUserVM;
+import static com.mycompany.myapp.config.Constants.AVAILABLE_LANGUAGES;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -128,8 +129,9 @@ public class AccountResource {
                                @RequestParam(value = "language", required = false) String language) {
         User user = userService.getUserWithAuthorities()
             .orElseThrow(() -> new AccountResourceException("User could not be found"));
-        if (Objects.nonNull(language) && !user.getLangKey().equals(language)){
+        if (Objects.nonNull(language) && !user.getLangKey().equals(language) && AVAILABLE_LANGUAGES.contains(language)){
             user.setLangKey(language);
+            mobileService.changeUserLanguageNotifications(user, language);
             user = userRepository.save(user);
         }
         return userMapper.userToUserDTO(userService.checkUserDevice(user, deviceToken));

@@ -33,6 +33,9 @@ import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static com.mycompany.myapp.config.Constants.AVAILABLE_LANGUAGES;
+import static com.mycompany.myapp.config.Constants.DEFAULT_LANGUAGE;
+
 /**
  * Service class for managing users.
  */
@@ -120,7 +123,7 @@ public class UserService {
         }
         userDTO.setLogin(userDTO.getLogin());
         newUser.setImageUrl(userDTO.getImageUrl());
-        newUser.setLangKey(userDTO.getLangKey());
+        newUser.setLangKey(Optional.ofNullable(userDTO.getLangKey()).orElse(DEFAULT_LANGUAGE));
         // new user is not active
         newUser.setActivated(false);
         // new user gets registration key
@@ -170,7 +173,7 @@ public class UserService {
         }
         user.setImageUrl(userDTO.getImageUrl());
         if (userDTO.getLangKey() == null) {
-            user.setLangKey(Constants.DEFAULT_LANGUAGE); // default language
+            user.setLangKey(DEFAULT_LANGUAGE); // default language
         } else {
             user.setLangKey(userDTO.getLangKey());
         }
@@ -225,7 +228,9 @@ public class UserService {
                 }*/
                 user.setImageUrl(userDTO.getImageUrl());
                 user.setActivated(userDTO.isActivated());
-                user.setLangKey(userDTO.getLangKey());
+                if (Objects.nonNull(userDTO.getLangKey()) && AVAILABLE_LANGUAGES.contains(userDTO.getLangKey())){
+                    user.setLangKey(userDTO.getLangKey());
+                }
                 if (currentUser.getAuthorities().contains(AuthoritiesConstants.ADMIN)){
                     Set<Authority> managedAuthorities = user.getAuthorities();
                     managedAuthorities.clear();
@@ -371,7 +376,7 @@ public class UserService {
 
     public User checkUserDevice(User user, String deviceToken){
         if(Objects.nonNull(deviceToken) && !user.getDevices().contains(deviceToken)){
-            mobileService.subscribeNewDeviceToTopics(user.getJobTypes(), deviceToken);
+            mobileService.subscribeNewDeviceToTopics(user, deviceToken);
             user.getDevices().add(deviceToken);
             return userRepository.save(user);
         }
