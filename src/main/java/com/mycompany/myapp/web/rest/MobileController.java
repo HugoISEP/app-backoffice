@@ -11,6 +11,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
+import java.util.Map;
+
 @Slf4j
 @RestController
 @RequestMapping("api/mobile")
@@ -30,8 +33,8 @@ public class MobileController {
 
     @GetMapping("/version")
     @ResponseStatus(HttpStatus.OK)
-    public String getAppVersion(){
-        return appVersion;
+    public Map<String, String> getAppVersion(){
+        return Collections.singletonMap("version", appVersion);
     }
 
     @PutMapping("/subscribe/{id}")
