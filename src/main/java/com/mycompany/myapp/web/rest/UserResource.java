@@ -144,9 +144,21 @@ public class UserResource {
      * @return the {@link List<? extends JobTypeView>} with status {@code 200 (OK)} and with list of jobTypes.
      */
     @PutMapping("/users/{id}")
-    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.USER + "\")")
+    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.USER + "\") or hasAuthority(\"" + AuthoritiesConstants.MANAGER + "\")")
     public List<? extends JobTypeView> editJobTypes(@PathVariable("id") Long id, @Valid @RequestBody List<JobTypeDTO> jobTypes) {
         return userService.updateNotificationPreferences(id, jobTypes);
+    }
+
+    /**
+     * {@code PUT /users/:id/job-types} : get user's jobTypes.
+     *
+     * @return the {@link List<? extends JobTypeView>} with status {@code 200 (OK)} and with list of jobTypes.
+     */
+    @GetMapping("/users/job-types")
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.USER + "\") or hasAuthority(\"" + AuthoritiesConstants.MANAGER + "\")")
+    public List<? extends JobTypeView> getUserJobTypes() {
+        return userService.getUserWithAuthorities().map(UserDTO::new).orElseThrow(() -> new BadRequestAlertException("user not found", "USER", "id exists")).getJobTypes();
     }
 
     /**

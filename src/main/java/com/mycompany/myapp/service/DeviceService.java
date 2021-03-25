@@ -37,16 +37,20 @@ public class DeviceService {
         String userLangKey = Optional.ofNullable(currentUser.getLangKey()).orElse(DEFAULT_LANGUAGE);
         JobType jobType = jobTypeRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("JobTYpe not found", "JobType", "wrong id"));
         FirebaseMessaging.getInstance().subscribeToTopicAsync(currentUser.getDevices(), userLangKey + id.toString());
-        currentUser.getJobTypes().add(jobType);
-        userRepository.save(currentUser);
+        if (!currentUser.getJobTypes().contains(jobType)){
+            currentUser.getJobTypes().add(jobType);
+            userRepository.save(currentUser);
+        }
     }
 
     public void unsubscribeUserToATopic(User currentUser, Long id) {
         String userLangKey = Optional.ofNullable(currentUser.getLangKey()).orElse(DEFAULT_LANGUAGE);
         JobType jobType = jobTypeRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("JobType not found", "JobType", "wrong id"));
         FirebaseMessaging.getInstance().unsubscribeFromTopicAsync(currentUser.getDevices(), userLangKey + jobType.getId().toString());
-        currentUser.getJobTypes().remove(jobType);
-        userRepository.save(currentUser);
+        if (currentUser.getJobTypes().contains(jobType)){
+            currentUser.getJobTypes().remove(jobType);
+            userRepository.save(currentUser);
+        }
     }
 
     public void subscribeUserToAllTopics(User user){

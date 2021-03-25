@@ -27,7 +27,7 @@ public class NotificationService {
         for (String language : AVAILABLE_LANGUAGES) {
             Message message = getPreconfiguredMessage(position, notificationStatus, language);
             String response = sendAndGetResponse(message);
-            log.info("Sent message Topic: " + position.getJobType().getName() + " - " + language + ", " + response);
+            log.info("Sent message Topic: " + language + position.getJobType().getName() + ", " + response);
         }
     }
 

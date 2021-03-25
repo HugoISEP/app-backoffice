@@ -16,7 +16,7 @@ import java.util.Map;
 
 @Slf4j
 @RestController
-@RequestMapping("api/mobile")
+@RequestMapping("api/device")
 public class DeviceController {
 
     @Value("${mobile-app.version}")
