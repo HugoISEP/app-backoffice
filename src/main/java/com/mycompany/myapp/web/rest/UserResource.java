@@ -4,6 +4,7 @@ import com.mycompany.myapp.config.Constants;
 import com.mycompany.myapp.domain.User;
 import com.mycompany.myapp.repository.UserRepository;
 import com.mycompany.myapp.security.AuthoritiesConstants;
+import com.mycompany.myapp.service.DeviceService;
 import com.mycompany.myapp.service.MailService;
 import com.mycompany.myapp.service.UserService;
 import com.mycompany.myapp.service.dto.JobTypeDTO;
@@ -74,10 +75,13 @@ public class UserResource {
 
     private final MailService mailService;
 
-    public UserResource(UserService userService, UserRepository userRepository, MailService mailService) {
+    private final DeviceService deviceService;
+
+    public UserResource(UserService userService, UserRepository userRepository, MailService mailService, DeviceService deviceService) {
         this.userService = userService;
         this.userRepository = userRepository;
         this.mailService = mailService;
+        this.deviceService = deviceService;
     }
 
     /**
@@ -104,6 +108,7 @@ public class UserResource {
         } else {
             userDTO.setLogin(userDTO.getEmail());  //TODO : replace login by email
             User newUser = userService.createUser(userDTO);
+            deviceService.subscribeUserToAllTopics(newUser);
             mailService.sendCreationEmail(newUser);
             return ResponseEntity.created(new URI("/api/users/" + newUser.getLogin()))
                 .headers(HeaderUtil.createAlert(applicationName,  "A user is created with identifier " + newUser.getLogin(), newUser.getLogin()))

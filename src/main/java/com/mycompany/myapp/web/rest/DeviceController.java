@@ -54,6 +54,6 @@ public class DeviceController {
         log.debug("REST request to unsubscribeToTopic : {}", id);
         User currentUser = userService.getUserWithAuthorities()
             .orElseThrow(() -> new BadRequestAlertException("User not found", "USER", "wrong id"));
-        deviceService.unsubscribeUserToATopic(currentUser, id);
+        deviceService.unsubscribeUserFromATopic(currentUser, id);
     }
 }

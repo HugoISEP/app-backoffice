@@ -9,7 +9,6 @@ import com.mycompany.myapp.repository.MissionRepository;
 import com.mycompany.myapp.security.AuthoritiesConstants;
 import com.mycompany.myapp.service.dto.PositionDTO;
 import com.mycompany.myapp.service.dto.UserDTO;
-import com.mycompany.myapp.service.mapper.MissionMapper;
 import com.mycompany.myapp.service.mapper.PositionMapper;
 import com.mycompany.myapp.service.notification.NotificationService;
 import com.mycompany.myapp.service.notification.NotificationStatus;
@@ -43,23 +42,19 @@ public class PositionService {
     private final PositionRepository repository;
     private final PositionMapper mapper;
     private final MissionRepository missionRepository;
-    private final MissionMapper missionMapper;
     private final CompanyRepository companyRepository;
     private final MissionService missionService;
-    private final JobTypeRepository jobTypeRepository;
     private final UserService userService;
     private final NotificationService notificationService;
     private final CacheManager cacheManager;
 
 
-    public PositionService(PositionRepository repository, PositionMapper mapper, MissionRepository missionRepository, MissionMapper missionMapper, CompanyRepository companyRepository, MissionService missionService, JobTypeRepository jobTypeRepository, UserService userService, NotificationService notificationService, CacheManager cacheManager) {
+    public PositionService(PositionRepository repository, PositionMapper mapper, MissionRepository missionRepository, CompanyRepository companyRepository, MissionService missionService, UserService userService, NotificationService notificationService, CacheManager cacheManager) {
         this.repository = repository;
         this.mapper = mapper;
         this.missionRepository = missionRepository;
-        this.missionMapper = missionMapper;
         this.companyRepository = companyRepository;
         this.missionService = missionService;
-        this.jobTypeRepository = jobTypeRepository;
         this.userService = userService;
         this.notificationService = notificationService;
         this.cacheManager = cacheManager;

@@ -2,6 +2,7 @@ package com.mycompany.myapp.service;
 
 import com.google.common.collect.Streams;
 import com.google.firebase.messaging.FirebaseMessaging;
+import com.mycompany.myapp.domain.Company;
 import com.mycompany.myapp.domain.JobType;
 import com.mycompany.myapp.domain.User;
 import com.mycompany.myapp.repository.JobTypeRepository;
@@ -43,7 +44,7 @@ public class DeviceService {
         }
     }
 
-    public void unsubscribeUserToATopic(User currentUser, Long id) {
+    public void unsubscribeUserFromATopic(User currentUser, Long id) {
         String userLangKey = Optional.ofNullable(currentUser.getLangKey()).orElse(DEFAULT_LANGUAGE);
         JobType jobType = jobTypeRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("JobType not found", "JobType", "wrong id"));
         FirebaseMessaging.getInstance().unsubscribeFromTopicAsync(currentUser.getDevices(), userLangKey + jobType.getId().toString());
@@ -60,6 +61,13 @@ public class DeviceService {
         });
     }
 
+    public void unsubscribeUserFromAllTopics(User user){
+        String userLangKey = Optional.ofNullable(user.getLangKey()).orElse(DEFAULT_LANGUAGE);
+        user.getCompany().getJobTypes().forEach(jobType -> {
+            FirebaseMessaging.getInstance().unsubscribeFromTopicAsync(user.getDevices(), userLangKey + jobType.getId().toString());
+        });
+    }
+
     public void subscribeNewDeviceToTopics(User user, String newDeviceToken) {
         String userLangKey = Optional.ofNullable(user.getLangKey()).orElse(DEFAULT_LANGUAGE);
         user.getJobTypes().forEach(jobType -> FirebaseMessaging.getInstance().subscribeToTopicAsync(Collections.singletonList(newDeviceToken), userLangKey + jobType.getId().toString()));
@@ -72,6 +80,17 @@ public class DeviceService {
             FirebaseMessaging.getInstance().subscribeToTopicAsync(user.getDevices(), newLanguage + jobType.getId().toString());
         });
     }
+
+    @Async
+    public void unsubscribeAllCompanyUsersToNotifications(Company company){
+        company.getJobTypes().forEach(jobType -> {
+            Map<String, List<String>> usersDevicesByLanguage = company.getUsers().stream()
+                .filter(u -> u.getJobTypes().contains(jobType))
+                .collect(Collectors.toMap(usr -> Optional.ofNullable(usr.getLangKey()).orElse(DEFAULT_LANGUAGE), User::getDevices, (item, identicalItem) -> item));
+            usersDevicesByLanguage.keySet().forEach(lang -> FirebaseMessaging.getInstance().unsubscribeFromTopicAsync(usersDevicesByLanguage.get(lang), lang + jobType.getId().toString()));
+        });
+    }
+
 
     @Async
     public void subscribeAllUsersToNewTopic(Long id){

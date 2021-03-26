@@ -253,6 +253,7 @@ public class UserService {
 
         User user = userRepository.findById(id).orElseThrow(() -> new BadRequestAlertException("User not found", "USER", "login doesn't exist"));
         if (currentUser.getAuthorities().contains(AuthoritiesConstants.ADMIN) || currentUser.getCompany().getId().equals(user.getCompany().getId())){
+            deviceService.unsubscribeUserFromAllTopics(user);
             userRepository.delete(user);
             log.debug("Deleted User: {}", user);
         }
