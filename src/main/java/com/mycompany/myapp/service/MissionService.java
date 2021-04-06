@@ -2,7 +2,6 @@ package com.mycompany.myapp.service;
 
 import com.mycompany.myapp.domain.Mission;
 import com.mycompany.myapp.repository.MissionRepository;
-import com.mycompany.myapp.repository.PositionRepository;
 import com.mycompany.myapp.security.AuthoritiesConstants;
 import com.mycompany.myapp.service.dto.MissionDTO;
 import com.mycompany.myapp.service.dto.UserDTO;
@@ -11,6 +10,7 @@ import com.mycompany.myapp.service.mapper.MissionMapper;
 import com.mycompany.myapp.service.view.MissionView;
 import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
 import com.mycompany.myapp.web.rest.errors.ResourceNotFoundException;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.AccessDeniedException;
@@ -30,12 +30,14 @@ public class MissionService {
     private final MissionMapper mapper;
     private final UserService userService;
     private final CompanyMapper companyMapper;
+    private final PositionService positionService;
 
-    public MissionService(MissionRepository repository, MissionMapper mapper, UserService userService, CompanyMapper companyMapper) {
+    public MissionService(MissionRepository repository, MissionMapper mapper, UserService userService, CompanyMapper companyMapper, @Lazy PositionService positionService) {
         this.repository = repository;
         this.mapper = mapper;
         this.userService = userService;
         this.companyMapper = companyMapper;
+        this.positionService = positionService;
     }
 
     public void hasAuthorization(Long id){
@@ -70,6 +72,7 @@ public class MissionService {
         Mission mission = repository.findById(id).orElseThrow(() -> new BadRequestAlertException("position doesn't exist", ENTITY_NAME, "id doesn't exist"));
         mission.setDeletedAt(LocalDateTime.now());
         mission.getPositions().forEach(position -> position.setDeletedAt(LocalDateTime.now()));
+        positionService.clearPositionCacheByCompany(mission.getCompany());
         repository.save(mission);
     }
 
