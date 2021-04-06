@@ -21,7 +21,7 @@ logging:
 
 mobile-app:
   url: 'http://confirmation.cnje-staging.juniorisep.com'
-  firebase: '/Users/hugo/JE/app-backoffice/src/main/resources/google/google-services.json'
+  firebase: './src/main/resources/google/google-service.json'
   version: '2.0.0'
 
 spring:
