@@ -1,5 +1,9 @@
 package com.mycompany.myapp.domain;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
@@ -13,6 +17,9 @@ import java.util.Objects;
  * An authority (a security role) used by Spring Security.
  */
 @Entity
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "jhi_authority")
 public class Authority implements Serializable {
 

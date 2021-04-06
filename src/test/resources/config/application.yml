@@ -13,6 +13,11 @@
 # http://docs.spring.io/spring-boot/docs/current/reference/html/common-application-properties.html
 # ===================================================================
 
+mobile-app:
+  url: 'http://confirmation.cnje-staging.juniorisep.com'
+  firebase: '/Users/hugo/JE/app-backoffice/src/main/resources/google/google-services.json'
+  version: '2.0.0'
+
 spring:
   profiles:
   # Uncomment the following line to enable tests against production database type rather than H2, using Testcontainers
@@ -68,6 +73,11 @@ spring:
         size: 1
   thymeleaf:
     mode: HTML
+  minio:
+    url: http://localhost:9000
+    accessKey: adminadmin
+    secretKey: adminadmin
+    secure: false # secure if using https
 
 server:
   port: 10344
