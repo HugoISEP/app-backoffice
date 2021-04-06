@@ -64,15 +64,17 @@ public class NotificationService {
         if (status.equals(NotificationStatus.NEW)){
             return Message.builder()
                 .setApnsConfig(apnsConfig).setAndroidConfig(androidConfig).setNotification(
-                    new Notification(position.getMission().getCompany().getName(), "Une nouvelle mission " + position.getJobType().getName() +  " est disponible !")
-                );
+                    Notification.builder()
+                        .setTitle(position.getMission().getCompany().getName())
+                        .setBody("Une nouvelle mission " + position.getJobType().getName() +  " est disponible !").build());
             //Notification class doesn't even have setters :/
         }
         else {
             return Message.builder()
                 .setApnsConfig(apnsConfig).setAndroidConfig(androidConfig).setNotification(
-                    new Notification(position.getMission().getCompany().getName(), "Une mission " + position.getJobType().getName() + " est toujours disponible !")
-                );
+                    Notification.builder()
+                        .setTitle(position.getMission().getCompany().getName())
+                        .setBody("Une mission " + position.getJobType().getName() + " est toujours disponible !").build());
         }
     }
 
