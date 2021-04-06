@@ -1,4 +1,4 @@
-image: $CI_REGISTRY_IMAGE/jhipster:latest
+image: jhipster/jhipster:v7.0.1
 
 variables:
   GIT_DEPTH: 10
