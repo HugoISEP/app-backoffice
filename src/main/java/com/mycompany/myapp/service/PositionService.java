@@ -105,9 +105,10 @@ public class PositionService {
         } catch (InterruptedException | ExecutionException e) {
             log.warn("Error when sending notification: " + e.toString());
         }
-        missionRepository.save(mission);
+        Mission missionSaved = missionRepository.save(mission);
         this.clearPositionCacheByPosition(mission.getCompany().getId());
-        return mapper.asDto(newPosition);
+        PositionDTO positionDTO = mapper.asDto(missionSaved.getPositions().stream().sorted((p1, p2) -> p2.getCreatedAt().compareTo(p1.getCreatedAt())).findFirst().get());
+        return positionDTO;
     }
 
     public PositionDTO editPosition(PositionDTO updatedPosition){

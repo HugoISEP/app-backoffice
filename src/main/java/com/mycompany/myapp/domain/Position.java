@@ -1,8 +1,7 @@
 package com.mycompany.myapp.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.Data;
-import lombok.ToString;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.Where;
 
@@ -13,6 +12,9 @@ import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @ToString(exclude = {"mission", "jobType"})
 @Where(clause = "deleted_at is null ")
 @Entity

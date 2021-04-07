@@ -2,12 +2,14 @@ package com.mycompany.myapp.service.dto;
 
 import com.mycompany.myapp.service.view.PositionView;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
 @Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class PositionDTO implements PositionView {

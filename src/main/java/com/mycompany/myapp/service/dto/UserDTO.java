@@ -80,8 +80,10 @@ public class UserDTO implements UserView {
         if (user.getCompany() != null){
             this.company = new CompanyDTO(user.getCompany().getId(), user.getCompany().getName(), user.getCompany().getCreatedAt(), user.getCompany().getEmailTemplate(), user.getCompany().getColor(), user.getCompany().getImagePath(), user.getCompany().getWebsiteUrl());
         }
-        this.jobTypes = user.getJobTypes().stream()
-            .map(j -> new JobTypeDTO(j.getId(), j.getName(), j.getIcon(), j.getCreatedAt(), this.company)).collect(Collectors.toList());
+        if (user.getJobTypes() != null) {
+            this.jobTypes = user.getJobTypes().stream()
+                .map(j -> new JobTypeDTO(j.getId(), j.getName(), j.getIcon(), j.getCreatedAt(), this.company)).collect(Collectors.toList());
+        }
         this.devices = user.getDevices();
     }
 
