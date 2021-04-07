@@ -4,6 +4,7 @@ import com.mycompany.myapp.config.Constants;
 import com.mycompany.myapp.domain.User;
 import com.mycompany.myapp.repository.UserRepository;
 import com.mycompany.myapp.security.AuthoritiesConstants;
+import com.mycompany.myapp.service.DeviceService;
 import com.mycompany.myapp.service.MailService;
 import com.mycompany.myapp.service.UserService;
 import com.mycompany.myapp.service.dto.JobTypeDTO;
@@ -74,10 +75,13 @@ public class UserResource {
 
     private final MailService mailService;
 
-    public UserResource(UserService userService, UserRepository userRepository, MailService mailService) {
+    private final DeviceService deviceService;
+
+    public UserResource(UserService userService, UserRepository userRepository, MailService mailService, DeviceService deviceService) {
         this.userService = userService;
         this.userRepository = userRepository;
         this.mailService = mailService;
+        this.deviceService = deviceService;
     }
 
     /**
@@ -104,6 +108,7 @@ public class UserResource {
         } else {
             userDTO.setLogin(userDTO.getEmail());  //TODO : replace login by email
             User newUser = userService.createUser(userDTO);
+            deviceService.subscribeUserToAllTopics(newUser);
             mailService.sendCreationEmail(newUser);
             return ResponseEntity.created(new URI("/api/users/" + newUser.getLogin()))
                 .headers(HeaderUtil.createAlert(applicationName,  "A user is created with identifier " + newUser.getLogin(), newUser.getLogin()))
@@ -144,9 +149,21 @@ public class UserResource {
      * @return the {@link List<? extends JobTypeView>} with status {@code 200 (OK)} and with list of jobTypes.
      */
     @PutMapping("/users/{id}")
-    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.USER + "\")")
+    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.USER + "\") or hasAuthority(\"" + AuthoritiesConstants.MANAGER + "\")")
     public List<? extends JobTypeView> editJobTypes(@PathVariable("id") Long id, @Valid @RequestBody List<JobTypeDTO> jobTypes) {
         return userService.updateNotificationPreferences(id, jobTypes);
+    }
+
+    /**
+     * {@code PUT /users/:id/job-types} : get user's jobTypes.
+     *
+     * @return the {@link List<? extends JobTypeView>} with status {@code 200 (OK)} and with list of jobTypes.
+     */
+    @GetMapping("/users/job-types")
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.USER + "\") or hasAuthority(\"" + AuthoritiesConstants.MANAGER + "\")")
+    public List<? extends JobTypeView> getUserJobTypes() {
+        return userService.getUserWithAuthorities().map(UserDTO::new).orElseThrow(() -> new BadRequestAlertException("user not found", "USER", "id exists")).getJobTypes();
     }
 
     /**

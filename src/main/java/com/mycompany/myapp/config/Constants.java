@@ -1,5 +1,8 @@
 package com.mycompany.myapp.config;
 
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * Application constants.
  */
@@ -11,6 +14,7 @@ public final class Constants {
     public static final String SYSTEM_ACCOUNT = "system";
     public static final String DEFAULT_LANGUAGE = "en";
     public static final String ANONYMOUS_USER = "anonymoususer";
+    public static final List<String> AVAILABLE_LANGUAGES = Arrays.asList("en", "fr");
 
     public static final String HEX_COLOR_REGEX = "^#(?:[0-9a-fA-F]{3}){1,2}$";
 
