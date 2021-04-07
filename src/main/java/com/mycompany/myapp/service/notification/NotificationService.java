@@ -2,26 +2,34 @@ package com.mycompany.myapp.service.notification;
 
 import com.google.firebase.messaging.*;
 import com.mycompany.myapp.domain.Position;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
-import java.util.HashMap;
+import java.util.Locale;
 import java.util.concurrent.ExecutionException;
 
+import static com.mycompany.myapp.config.Constants.AVAILABLE_LANGUAGES;
+
+@Slf4j
 @Service
 public class NotificationService {
-    private final Logger logger = LoggerFactory.getLogger(NotificationService.class);
 
+    private final MessageSource messageSource;
+
+    public NotificationService(MessageSource messageSource) {
+        this.messageSource = messageSource;
+    }
 
     public void sendMessage(Position position, NotificationStatus notificationStatus)
         throws InterruptedException, ExecutionException {
-        Message message = getPreconfiguredMessage(position, notificationStatus);
-        String response = sendAndGetResponse(message);
-        logger.info("Sent message Topic: " + position.getJobType().getName() + ", " + response);
+        for (String language : AVAILABLE_LANGUAGES) {
+            Message message = getPreconfiguredMessage(position, notificationStatus, language);
+            String response = sendAndGetResponse(message);
+            log.info("Sent message Topic: " + language + position.getJobType().getName() + ", " + response);
+        }
     }
-
 
     private String sendAndGetResponse(Message message) throws InterruptedException, ExecutionException {
         return FirebaseMessaging.getInstance().sendAsync(message).get();
@@ -32,50 +40,44 @@ public class NotificationService {
             .setTtl(Duration.ofMinutes(2).toMillis())
             .setCollapseKey(topic)
             .setPriority(AndroidConfig.Priority.HIGH)
-            .setNotification(AndroidNotification.builder().setSound(NotificationParameter.SOUND.getValue()).setIcon("ic_stat")
-                .setColor(NotificationParameter.COLOR.getValue()).setTag(topic).build())
             .build();
     }
 
-    private ApnsConfig getApnsConfig(String topic) {
-        HashMap<String, String> map = new HashMap<>();
-        map.put("apns-priority", "10");
+    private ApnsConfig getApnsConfig(Position position, NotificationStatus notificationStatus, String language) {
         return ApnsConfig.builder()
-            .setAps(Aps.builder().setCategory(topic).setSound("default")
+            .setAps(Aps.builder().setCategory(position.getJobType().getId().toString()).setSound("default")
+                .setAlert(ApsAlert.builder()
+                    .setTitle(position.getMission().getCompany().getName())
+                    .setBody(String.format("%s %s %s",
+                        messageSource.getMessage("mission_status." + notificationStatus.getValue() + ".text1", null, Locale.forLanguageTag(language)),
+                        position.getJobType().getName(),
+                        messageSource.getMessage("mission_status." + notificationStatus.getValue() + ".text2", null, Locale.forLanguageTag(language))
+                        ))
+                    .build())
                 .setContentAvailable(true)
-                .setThreadId(topic).build())
-            .putAllHeaders(map)
+                .build())
+            .putHeader("apns-priority", "10")
             .build();
     }
 
 
-    private Message getPreconfiguredMessage(Position position, NotificationStatus notificationStatus) {
-        return getPreconfiguredMessageBuilder(position, notificationStatus).setTopic(position.getJobType().getId().toString())
-            .putData("title", position.getMission().getCompany().getName()).putData("body", position.getJobType().getName())
-            .putData("status", notificationStatus.getValue())
+    private Message getPreconfiguredMessage(Position position, NotificationStatus notificationStatus, String language) {
+        return getPreconfiguredMessageBuilder(position, notificationStatus, language).setTopic(language + position.getJobType().getId().toString())
+            .putData("title", position.getMission().getCompany().getName())
+            .putData("body",
+                String.format("%s %s %s",
+                    messageSource.getMessage("mission_status." + notificationStatus.getValue() + ".text1", null, Locale.forLanguageTag(language)),
+                    position.getJobType().getName(),
+                    messageSource.getMessage("mission_status." + notificationStatus.getValue() + ".text2", null, Locale.forLanguageTag(language))
+                ))
             .build();
     }
 
-
-    private Message.Builder getPreconfiguredMessageBuilder(Position position, NotificationStatus status) {
+    private Message.Builder getPreconfiguredMessageBuilder(Position position, NotificationStatus notificationStatus, String language) {
         AndroidConfig androidConfig = getAndroidConfig(position.getJobType().getId().toString());
-        ApnsConfig apnsConfig = getApnsConfig(position.getJobType().getId().toString());
-        //TODO Clean this
-        if (status.equals(NotificationStatus.NEW)){
-            return Message.builder()
-                .setApnsConfig(apnsConfig).setAndroidConfig(androidConfig).setNotification(
-                    Notification.builder()
-                        .setTitle(position.getMission().getCompany().getName())
-                        .setBody("Une nouvelle mission " + position.getJobType().getName() +  " est disponible !").build());
-            //Notification class doesn't even have setters :/
-        }
-        else {
-            return Message.builder()
-                .setApnsConfig(apnsConfig).setAndroidConfig(androidConfig).setNotification(
-                    Notification.builder()
-                        .setTitle(position.getMission().getCompany().getName())
-                        .setBody("Une mission " + position.getJobType().getName() + " est toujours disponible !").build());
-        }
+        ApnsConfig apnsConfig = getApnsConfig(position, notificationStatus, language);
+        return Message.builder()
+            .setApnsConfig(apnsConfig).setAndroidConfig(androidConfig);
     }
 
 }

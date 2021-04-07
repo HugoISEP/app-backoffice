@@ -4,13 +4,16 @@ import com.mycompany.myapp.domain.User;
 import com.mycompany.myapp.repository.UserRepository;
 import com.mycompany.myapp.security.SecurityUtils;
 import com.mycompany.myapp.service.MailService;
+import com.mycompany.myapp.service.DeviceService;
 import com.mycompany.myapp.service.UserService;
 import com.mycompany.myapp.service.dto.PasswordChangeDTO;
 import com.mycompany.myapp.service.dto.UserDTO;
+import com.mycompany.myapp.service.mapper.UserMapper;
 import com.mycompany.myapp.service.view.UserView;
 import com.mycompany.myapp.web.rest.errors.*;
 import com.mycompany.myapp.web.rest.vm.KeyAndPasswordVM;
 import com.mycompany.myapp.web.rest.vm.ManagedUserVM;
+import static com.mycompany.myapp.config.Constants.AVAILABLE_LANGUAGES;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -21,6 +24,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -39,7 +43,7 @@ public class AccountResource {
         }
     }
 
-    @Value("${mobile-app-url}")
+    @Value("${mobile-app.url}")
     private String appUrl;
 
     private final Logger log = LoggerFactory.getLogger(AccountResource.class);
@@ -48,14 +52,18 @@ public class AccountResource {
 
     private final UserService userService;
 
+    private final UserMapper userMapper;
+
     private final MailService mailService;
 
+    private final DeviceService deviceService;
 
-    public AccountResource(UserRepository userRepository, UserService userService, MailService mailService) {
-
+    public AccountResource(UserRepository userRepository, UserService userService, UserMapper userMapper, MailService mailService, DeviceService deviceService) {
         this.userRepository = userRepository;
         this.userService = userService;
+        this.userMapper = userMapper;
         this.mailService = mailService;
+        this.deviceService = deviceService;
     }
 
     /**
@@ -68,11 +76,13 @@ public class AccountResource {
      */
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
-    public void registerUserAccount(@Valid @RequestBody ManagedUserVM managedUserVM) throws Exception{
+    @Transactional
+    public void registerUserAccount(@Valid @RequestBody ManagedUserVM managedUserVM, @RequestParam(value = "deviceToken") String deviceToken) throws Exception{
         if (!checkPasswordLength(managedUserVM.getPassword())) {
             throw new InvalidPasswordException();
         }
-        User user = userService.registerUser(managedUserVM, managedUserVM.getPassword());
+        User user = userService.registerUser(managedUserVM, managedUserVM.getPassword(), deviceToken);
+        deviceService.subscribeUserToAllTopics(user);
         mailService.sendActivationEmail(user);
     }
 
@@ -115,10 +125,16 @@ public class AccountResource {
      * @throws RuntimeException {@code 500 (Internal Server Error)} if the user couldn't be returned.
      */
     @GetMapping("/account")
-    public UserView getAccount() {
-        return userService.getUserWithAuthorities()
-            .map(UserDTO::new)
+    public UserView getAccount(@RequestParam(value = "deviceToken", required = false) String deviceToken,
+                               @RequestParam(value = "language", required = false) String language) {
+        User user = userService.getUserWithAuthorities()
             .orElseThrow(() -> new AccountResourceException("User could not be found"));
+        if (Objects.nonNull(language) && !user.getLangKey().equals(language) && AVAILABLE_LANGUAGES.contains(language)){
+            user.setLangKey(language);
+            deviceService.changeUserLanguageNotifications(user, language);
+            user = userRepository.save(user);
+        }
+        return userMapper.userToUserDTO(userService.checkUserDevice(user, deviceToken));
     }
 
     /**

@@ -32,12 +32,14 @@ public class CompanyService {
     private final CompanyRepository repository;
     private final CompanyMapper mapper;
     private final UserService userService;
+    private final DeviceService deviceService;
     private final MinioService minioService;
 
-    public CompanyService(CompanyRepository repository, CompanyMapper mapper, UserService userService, MinioService minioService) {
+    public CompanyService(CompanyRepository repository, CompanyMapper mapper, UserService userService, DeviceService deviceService, MinioService minioService) {
         this.repository = repository;
         this.mapper = mapper;
         this.userService = userService;
+        this.deviceService = deviceService;
         this.minioService = minioService;
     }
 
@@ -98,6 +100,7 @@ public class CompanyService {
         hasAuthorization(id);
         Company companyToDelete = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("company doesn't exist", ENTITY_NAME, "id doesn't exist"));
         minioService.deleteFile(companyToDelete.getImagePath(), LOGO_BUCKET);
+        deviceService.unsubscribeAllCompanyUsersToNotifications(companyToDelete);
         repository.delete(companyToDelete);
     }
 

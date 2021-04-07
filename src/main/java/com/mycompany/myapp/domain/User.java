@@ -14,10 +14,7 @@ import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.time.Instant;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.Set;
+import java.util.*;
 
 /**
  * A user.
@@ -99,6 +96,8 @@ public class User extends AbstractAuditingEntity implements Serializable {
     @ManyToMany
     private List<JobType> jobTypes;
 
+    @ElementCollection
+    private List<String> devices = new ArrayList<>();
 
     public Long getId() {
         return id;
@@ -219,6 +218,14 @@ public class User extends AbstractAuditingEntity implements Serializable {
 
     public void setJobTypes(List<JobType> jobTypes) {
         this.jobTypes = jobTypes;
+    }
+
+    public List<String> getDevices() {
+        return devices;
+    }
+
+    public void setDevices(List<String> devices) {
+        this.devices = devices;
     }
 
     @Override
