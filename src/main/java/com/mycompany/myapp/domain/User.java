@@ -96,7 +96,7 @@ public class User extends AbstractAuditingEntity implements Serializable {
     @ManyToMany
     private List<JobType> jobTypes;
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     private List<String> devices = new ArrayList<>();
 
     public Long getId() {
