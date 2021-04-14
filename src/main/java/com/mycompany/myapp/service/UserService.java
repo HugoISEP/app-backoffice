@@ -377,7 +377,7 @@ public class UserService {
 
     public User checkUserDevice(User user, String deviceToken){
         if(Objects.nonNull(deviceToken) && !user.getDevices().contains(deviceToken)){
-            deviceService.subscribeNewDeviceToTopics(user, deviceToken);
+            deviceService.subscribeNewDeviceToTopics(deviceToken);
             user.getDevices().add(deviceToken);
             return userRepository.save(user);
         }

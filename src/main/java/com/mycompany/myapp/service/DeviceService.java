@@ -11,8 +11,10 @@ import com.mycompany.myapp.security.AuthoritiesConstants;
 import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
 import com.mycompany.myapp.web.rest.errors.ResourceNotFoundException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
@@ -27,10 +29,12 @@ import static com.mycompany.myapp.config.Constants.DEFAULT_LANGUAGE;
 public class DeviceService {
 
     private final JobTypeRepository jobTypeRepository;
+    private final UserService userService;
     private final UserRepository userRepository;
 
-    public DeviceService(JobTypeRepository jobTypeRepository, UserRepository userRepository) {
+    public DeviceService(JobTypeRepository jobTypeRepository, @Lazy UserService userService, UserRepository userRepository) {
         this.jobTypeRepository = jobTypeRepository;
+        this.userService = userService;
         this.userRepository = userRepository;
     }
 
@@ -68,7 +72,9 @@ public class DeviceService {
         });
     }
 
-    public void subscribeNewDeviceToTopics(User user, String newDeviceToken) {
+    public void subscribeNewDeviceToTopics(String newDeviceToken) {
+        User user = userService.getUserWithAuthorities()
+            .orElseThrow(() -> new BadRequestAlertException("User not found", "USER", "id doesn't exist"));
         String userLangKey = Optional.ofNullable(user.getLangKey()).orElse(DEFAULT_LANGUAGE);
         user.getJobTypes().forEach(jobType -> FirebaseMessaging.getInstance().subscribeToTopicAsync(Collections.singletonList(newDeviceToken), userLangKey + jobType.getId().toString()));
     }
@@ -87,10 +93,9 @@ public class DeviceService {
             Map<String, List<String>> usersDevicesByLanguage = company.getUsers().stream()
                 .filter(u -> u.getJobTypes().contains(jobType))
                 .collect(Collectors.toMap(usr -> Optional.ofNullable(usr.getLangKey()).orElse(DEFAULT_LANGUAGE), User::getDevices, (item, identicalItem) -> item));
-            usersDevicesByLanguage.keySet().forEach(lang -> FirebaseMessaging.getInstance().unsubscribeFromTopicAsync(usersDevicesByLanguage.get(lang), lang + jobType.getId().toString()));
+            usersDevicesByLanguage.keySet().stream().filter(lang -> !usersDevicesByLanguage.get(lang).isEmpty()).forEach(lang -> FirebaseMessaging.getInstance().unsubscribeFromTopicAsync(usersDevicesByLanguage.get(lang), lang + jobType.getId().toString()));
         });
     }
-
 
     @Async
     public void subscribeAllUsersToNewTopic(Long id){
@@ -100,8 +105,7 @@ public class DeviceService {
             .filter(usr -> usr.getAuthorities().stream().noneMatch(authority -> authority.getName().equals(AuthoritiesConstants.ADMIN)))
             .peek(usr -> usr.setJobTypes(Streams.concat(usr.getJobTypes().stream(), Stream.of(jobType)).collect(Collectors.toList())))
             .collect(Collectors.toMap(usr -> Optional.ofNullable(usr.getLangKey()).orElse(DEFAULT_LANGUAGE), User::getDevices, (item, identicalItem) -> item));
-
-        usersDevicesByLanguage.keySet().forEach(lang -> {
+        usersDevicesByLanguage.keySet().stream().filter(lang -> !usersDevicesByLanguage.get(lang).isEmpty()).forEach(lang -> {
             FirebaseMessaging.getInstance().subscribeToTopicAsync(usersDevicesByLanguage.get(lang), lang + id.toString());
         });
     }
@@ -113,6 +117,6 @@ public class DeviceService {
             .peek(usr -> usr.getJobTypes().remove(jobType))
             .collect(Collectors.toMap(usr -> Optional.ofNullable(usr.getLangKey()).orElse(DEFAULT_LANGUAGE), User::getDevices, (item, identicalItem) -> item));
 
-        usersDevicesByLanguage.keySet().forEach(lang -> FirebaseMessaging.getInstance().unsubscribeFromTopicAsync(usersDevicesByLanguage.get(lang), lang + jobType.getId().toString()));
+        usersDevicesByLanguage.keySet().stream().filter(lang -> !usersDevicesByLanguage.get(lang).isEmpty()).forEach(lang -> FirebaseMessaging.getInstance().unsubscribeFromTopicAsync(usersDevicesByLanguage.get(lang), lang + jobType.getId().toString()));
     }
 }

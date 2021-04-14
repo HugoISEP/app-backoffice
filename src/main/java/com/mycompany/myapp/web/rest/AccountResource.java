@@ -124,17 +124,19 @@ public class AccountResource {
      * @return the current user.
      * @throws RuntimeException {@code 500 (Internal Server Error)} if the user couldn't be returned.
      */
+    @Transactional
     @GetMapping("/account")
     public UserView getAccount(@RequestParam(value = "deviceToken", required = false) String deviceToken,
                                @RequestParam(value = "language", required = false) String language) {
         User user = userService.getUserWithAuthorities()
             .orElseThrow(() -> new AccountResourceException("User could not be found"));
+        user = userService.checkUserDevice(user, deviceToken);
         if (Objects.nonNull(language) && !user.getLangKey().equals(language) && AVAILABLE_LANGUAGES.contains(language)){
             user.setLangKey(language);
             deviceService.changeUserLanguageNotifications(user, language);
             user = userRepository.save(user);
         }
-        return userMapper.userToUserDTO(userService.checkUserDevice(user, deviceToken));
+        return userMapper.userToUserDTO(user);
     }
 
     /**
