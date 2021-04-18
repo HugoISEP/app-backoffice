@@ -35,10 +35,18 @@ public class NotificationService {
         return FirebaseMessaging.getInstance().sendAsync(message).get();
     }
 
-    private AndroidConfig getAndroidConfig(String topic) {
+    private AndroidConfig getAndroidConfig(Position position, NotificationStatus notificationStatus, String language) {
         return AndroidConfig.builder()
             .setTtl(Duration.ofMinutes(2).toMillis())
-            .setCollapseKey(topic)
+            .setNotification(AndroidNotification.builder()
+                .setTitle(position.getMission().getCompany().getName())
+                .setBody(String.format("%s %s %s",
+                    messageSource.getMessage("mission_status." + notificationStatus.getValue() + ".text1", null, Locale.forLanguageTag(language)),
+                    position.getJobType().getName(),
+                    messageSource.getMessage("mission_status." + notificationStatus.getValue() + ".text2", null, Locale.forLanguageTag(language))
+                ))
+                .build())
+            .setCollapseKey(position.getJobType().getId().toString())
             .setPriority(AndroidConfig.Priority.HIGH)
             .build();
     }
@@ -74,7 +82,7 @@ public class NotificationService {
     }
 
     private Message.Builder getPreconfiguredMessageBuilder(Position position, NotificationStatus notificationStatus, String language) {
-        AndroidConfig androidConfig = getAndroidConfig(position.getJobType().getId().toString());
+        AndroidConfig androidConfig = getAndroidConfig(position, notificationStatus, language);
         ApnsConfig apnsConfig = getApnsConfig(position, notificationStatus, language);
         return Message.builder()
             .setApnsConfig(apnsConfig).setAndroidConfig(androidConfig);
