@@ -144,8 +144,7 @@ public class UserResource {
      * @return the {@link List<? extends JobTypeView>} with status {@code 200 (OK)} and with list of jobTypes.
      */
     @PutMapping("/users/{id}")
-    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.USER + "\")")
-    public List<? extends JobTypeView> editJobTypes(@PathVariable("id") Long id, @Valid @RequestBody List<JobTypeDTO> jobTypes) {
+    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.USER + "\") or hasAuthority(\"" + AuthoritiesConstants.MANAGER + "\")")    public List<? extends JobTypeView> editJobTypes(@PathVariable("id") Long id, @Valid @RequestBody List<JobTypeDTO> jobTypes) {
         return userService.updateNotificationPreferences(id, jobTypes);
     }
 
