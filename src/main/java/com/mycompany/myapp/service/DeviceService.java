@@ -38,38 +38,47 @@ public class DeviceService {
         this.userRepository = userRepository;
     }
 
-    public void subscribeUserToATopic(User currentUser, Long id) {
-        String userLangKey = Optional.ofNullable(currentUser.getLangKey()).orElse(DEFAULT_LANGUAGE);
+    public void subscribeUserToATopic(Long id) {
+        User user = userService.getUserWithAuthorities()
+            .orElseThrow(() -> new ResourceNotFoundException("User not found", "USER", "id doesn't exist"));
+        String userLangKey = Optional.ofNullable(user.getLangKey()).orElse(DEFAULT_LANGUAGE);
         JobType jobType = jobTypeRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("JobTYpe not found", "JobType", "wrong id"));
-        FirebaseMessaging.getInstance().subscribeToTopicAsync(currentUser.getDevices(), userLangKey + id.toString());
-        if (!currentUser.getJobTypes().contains(jobType)){
-            currentUser.getJobTypes().add(jobType);
-            userRepository.save(currentUser);
+        FirebaseMessaging.getInstance().subscribeToTopicAsync(user.getDevices(), userLangKey + id.toString());
+        if (!user.getJobTypes().contains(jobType)){
+            user.getJobTypes().add(jobType);
+            userRepository.save(user);
         }
     }
 
-    public void unsubscribeUserFromATopic(User currentUser, Long id) {
-        String userLangKey = Optional.ofNullable(currentUser.getLangKey()).orElse(DEFAULT_LANGUAGE);
+    public void unsubscribeUserFromATopic(Long id) {
+        User user = userService.getUserWithAuthorities()
+            .orElseThrow(() -> new ResourceNotFoundException("User not found", "USER", "id doesn't exist"));
+        String userLangKey = Optional.ofNullable(user.getLangKey()).orElse(DEFAULT_LANGUAGE);
         JobType jobType = jobTypeRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("JobType not found", "JobType", "wrong id"));
-        FirebaseMessaging.getInstance().unsubscribeFromTopicAsync(currentUser.getDevices(), userLangKey + jobType.getId().toString());
-        if (currentUser.getJobTypes().contains(jobType)){
-            currentUser.getJobTypes().remove(jobType);
-            userRepository.save(currentUser);
+        FirebaseMessaging.getInstance().unsubscribeFromTopicAsync(user.getDevices(), userLangKey + jobType.getId().toString());
+        if (user.getJobTypes().contains(jobType)){
+            user.getJobTypes().remove(jobType);
+            userRepository.save(user);
         }
     }
 
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void subscribeUserToAllTopics(User user){
         String userLangKey = Optional.ofNullable(user.getLangKey()).orElse(DEFAULT_LANGUAGE);
-        user.getCompany().getJobTypes().forEach(jobType -> {
-            FirebaseMessaging.getInstance().subscribeToTopicAsync(user.getDevices(), userLangKey + jobType.getId().toString());
-        });
+        if (!user.getDevices().isEmpty()){
+            user.getCompany().getJobTypes().forEach(jobType -> {
+                FirebaseMessaging.getInstance().subscribeToTopicAsync(user.getDevices(), userLangKey + jobType.getId().toString());
+            });
+        }
     }
 
     public void unsubscribeUserFromAllTopics(User user){
         String userLangKey = Optional.ofNullable(user.getLangKey()).orElse(DEFAULT_LANGUAGE);
-        user.getCompany().getJobTypes().forEach(jobType -> {
-            FirebaseMessaging.getInstance().unsubscribeFromTopicAsync(user.getDevices(), userLangKey + jobType.getId().toString());
-        });
+        if (!user.getDevices().isEmpty()) {
+            user.getCompany().getJobTypes().forEach(jobType -> {
+                FirebaseMessaging.getInstance().unsubscribeFromTopicAsync(user.getDevices(), userLangKey + jobType.getId().toString());
+            });
+        }
     }
 
     public void subscribeNewDeviceToTopics(String newDeviceToken) {
@@ -85,6 +94,7 @@ public class DeviceService {
             FirebaseMessaging.getInstance().unsubscribeFromTopicAsync(user.getDevices(), userLangKey + jobType.getId().toString());
             FirebaseMessaging.getInstance().subscribeToTopicAsync(user.getDevices(), newLanguage + jobType.getId().toString());
         });
+        user.setLangKey(newLanguage);
     }
 
     @Async

@@ -76,7 +76,6 @@ public class AccountResource {
      */
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
-    @Transactional
     public void registerUserAccount(@Valid @RequestBody ManagedUserVM managedUserVM, @RequestParam(value = "deviceToken") String deviceToken) throws Exception{
         if (!checkPasswordLength(managedUserVM.getPassword())) {
             throw new InvalidPasswordException();
@@ -132,7 +131,6 @@ public class AccountResource {
             .orElseThrow(() -> new AccountResourceException("User could not be found"));
         user = userService.checkUserDevice(user, deviceToken);
         if (Objects.nonNull(language) && !user.getLangKey().equals(language) && AVAILABLE_LANGUAGES.contains(language)){
-            user.setLangKey(language);
             deviceService.changeUserLanguageNotifications(user, language);
             user = userRepository.save(user);
         }

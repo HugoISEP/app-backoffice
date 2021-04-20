@@ -70,14 +70,8 @@ public class NotificationService {
 
 
     private Message getPreconfiguredMessage(Position position, NotificationStatus notificationStatus, String language) {
-        return getPreconfiguredMessageBuilder(position, notificationStatus, language).setTopic(language + position.getJobType().getId().toString())
-            .putData("title", position.getMission().getCompany().getName())
-            .putData("body",
-                String.format("%s %s %s",
-                    messageSource.getMessage("mission_status." + notificationStatus.getValue() + ".text1", null, Locale.forLanguageTag(language)),
-                    position.getJobType().getName(),
-                    messageSource.getMessage("mission_status." + notificationStatus.getValue() + ".text2", null, Locale.forLanguageTag(language))
-                ))
+        return getPreconfiguredMessageBuilder(position, notificationStatus, language)
+            .setTopic(language + position.getJobType().getId().toString())
             .build();
     }
 

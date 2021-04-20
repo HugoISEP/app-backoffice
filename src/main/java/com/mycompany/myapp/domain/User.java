@@ -19,7 +19,7 @@ import java.util.*;
 /**
  * A user.
  */
-@ToString
+@ToString(exclude = {"devices"})
 @Entity
 @Table(name = "jhi_user")
 public class User extends AbstractAuditingEntity implements Serializable {

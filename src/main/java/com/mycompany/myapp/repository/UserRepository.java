@@ -49,7 +49,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     List<User> findAllByCompany(Company company);
 
     @Query("select u from User u join u.authorities a " +
-        "where a.name like 'ROLE_USER' and size(u.authorities)=1 and u.company.id = :id " +
+        "where a.name not like 'ROLE_ADMIN' and u.company.id = :id " +
         "and (lower(u.firstName) like concat('%',lower(:searchTerm),'%') or lower(u.lastName) like concat('%',lower(:searchTerm),'%') or lower(u.email) like concat('%',lower(:searchTerm),'%'))")
     Page<User> findAllUsersByManager(Pageable pageable, @Param("id") Long id, @Param("searchTerm") String searchTerm);
 }

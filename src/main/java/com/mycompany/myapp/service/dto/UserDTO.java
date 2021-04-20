@@ -59,8 +59,6 @@ public class UserDTO implements UserView {
 
     private List<JobTypeDTO> jobTypes;
 
-    private List<String> devices;
-
     public UserDTO(User user) {
         this.id = user.getId();
         this.login = user.getLogin();
@@ -84,7 +82,6 @@ public class UserDTO implements UserView {
             this.jobTypes = user.getJobTypes().stream()
                 .map(j -> new JobTypeDTO(j.getId(), j.getName(), j.getIcon(), j.getCreatedAt(), this.company)).collect(Collectors.toList());
         }
-        this.devices = user.getDevices();
     }
 
 }

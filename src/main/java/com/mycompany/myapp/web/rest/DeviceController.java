@@ -11,7 +11,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import javax.transaction.Transactional;
 import java.util.Collections;
 import java.util.Map;
 
@@ -40,23 +39,17 @@ public class DeviceController {
 
     @PutMapping("/subscribe/{id}")
     @ResponseStatus(HttpStatus.OK)
-    @Transactional
     @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.MANAGER + "\") or hasAuthority(\"" + AuthoritiesConstants.USER + "\")")
     public void subscribeToTopic(@PathVariable Long id) {
         log.debug("REST request to subscribeToTopic : {}", id);
-        User currentUser = userService.getUserWithAuthorities()
-            .orElseThrow(() -> new BadRequestAlertException("User not found", "USER", "wrong id"));
-        deviceService.subscribeUserToATopic(currentUser, id);
+        deviceService.subscribeUserToATopic(id);
     }
 
     @PutMapping("/unsubscribe/{id}")
     @ResponseStatus(HttpStatus.OK)
-    @Transactional
     @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.MANAGER + "\") or hasAuthority(\"" + AuthoritiesConstants.USER + "\")")
     public void unsubscribeToTopic(@PathVariable Long id) {
         log.debug("REST request to unsubscribeToTopic : {}", id);
-        User currentUser = userService.getUserWithAuthorities()
-            .orElseThrow(() -> new BadRequestAlertException("User not found", "USER", "wrong id"));
-        deviceService.unsubscribeUserFromATopic(currentUser, id);
+        deviceService.unsubscribeUserFromATopic(id);
     }
 }
