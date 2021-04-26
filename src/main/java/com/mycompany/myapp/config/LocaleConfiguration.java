@@ -19,10 +19,4 @@ public class LocaleConfiguration implements WebMvcConfigurer {
         return slr;
     }
 
-    @Override
-    public void addInterceptors(InterceptorRegistry registry) {
-        LocaleChangeInterceptor localeChangeInterceptor = new LocaleChangeInterceptor();
-        localeChangeInterceptor.setParamName("language");
-        registry.addInterceptor(localeChangeInterceptor);
-    }
 }

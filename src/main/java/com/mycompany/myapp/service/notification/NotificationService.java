@@ -36,14 +36,17 @@ public class NotificationService {
     }
 
     private AndroidConfig getAndroidConfig(Position position, NotificationStatus notificationStatus, String language) {
+        String beginBody = messageSource.getMessage("mission_status." + notificationStatus.getValue() + ".text1", null, Locale.forLanguageTag(language));
+        String endBody = messageSource.getMessage("mission_status." + notificationStatus.getValue() + ".text2", null, Locale.forLanguageTag(language));
+        log.info("Send notification " + Locale.forLanguageTag(language).getLanguage() + ", message: " + beginBody + " " + endBody);
         return AndroidConfig.builder()
             .setTtl(Duration.ofMinutes(2).toMillis())
             .setNotification(AndroidNotification.builder()
                 .setTitle(position.getMission().getCompany().getName())
                 .setBody(String.format("%s %s %s",
-                    messageSource.getMessage("mission_status." + notificationStatus.getValue() + ".text1", null, Locale.forLanguageTag(language)),
+                    beginBody,
                     position.getJobType().getName(),
-                    messageSource.getMessage("mission_status." + notificationStatus.getValue() + ".text2", null, Locale.forLanguageTag(language))
+                    endBody
                 ))
                 .build())
             .setCollapseKey(position.getJobType().getId().toString())
