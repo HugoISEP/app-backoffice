@@ -1,10 +1,7 @@
 package com.mycompany.myapp.web.rest;
 
-import com.mycompany.myapp.domain.User;
 import com.mycompany.myapp.security.AuthoritiesConstants;
 import com.mycompany.myapp.service.DeviceService;
-import com.mycompany.myapp.service.UserService;
-import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -24,11 +21,8 @@ public class DeviceController {
 
     private final DeviceService deviceService;
 
-    private final UserService userService;
-
-    public DeviceController(DeviceService deviceService, UserService userService) {
+    public DeviceController(DeviceService deviceService) {
         this.deviceService = deviceService;
-        this.userService = userService;
     }
 
     @GetMapping("/version")
