@@ -187,3 +187,5 @@ jhipster:
 # ===================================================================
 
 # application:
+springdoc:
+  paths-to-exclude: /swagger-resources/**

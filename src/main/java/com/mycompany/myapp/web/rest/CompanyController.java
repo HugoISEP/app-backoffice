@@ -1,5 +1,6 @@
 package com.mycompany.myapp.web.rest;
 
+import com.mycompany.myapp.config.annotations.AdminSecured;
 import com.mycompany.myapp.repository.CompanyRepository;
 import com.mycompany.myapp.security.AuthoritiesConstants;
 import com.mycompany.myapp.service.CompanyService;
@@ -41,7 +42,7 @@ public class CompanyController {
     }
 
     @GetMapping
-    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
+    @AdminSecured
     public List<? extends BasicCompanyView> getAllCompanies(){
         return mapper.asListDTO(repository.findAll());
     }
@@ -53,7 +54,7 @@ public class CompanyController {
     }
 
     @GetMapping("/all")
-    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
+    @AdminSecured
     public ResponseEntity<List<CompanyDetailsView>> getAllCompaniesPaginated(Pageable pageable, @RequestParam(value = "searchTerm", defaultValue = "%%") String searchTerm){
         Page page = service.getAllPaginated(pageable, searchTerm);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
@@ -61,13 +62,13 @@ public class CompanyController {
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
+    @AdminSecured
     public CompanyView getCompanyById(@PathVariable("id") Long id){
         return mapper.asDTO(repository.findById(id).orElseThrow(() -> new BadRequestAlertException("company doesn't exist", ENTITY_NAME, "id doesn't exist")));
     }
 
     @PostMapping
-    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
+    @AdminSecured
     public CompanyView createCompany(@RequestParam("company") String companyJson, @RequestParam("file") MultipartFile file) throws Exception {
         return service.create(companyJson, file);
     }
@@ -79,7 +80,7 @@ public class CompanyController {
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
+    @AdminSecured
     public void deleteCompany(@PathVariable Long id){
         try {
             service.delete(id);

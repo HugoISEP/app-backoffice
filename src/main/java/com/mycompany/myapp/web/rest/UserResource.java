@@ -1,6 +1,7 @@
 package com.mycompany.myapp.web.rest;
 
 import com.mycompany.myapp.config.Constants;
+import com.mycompany.myapp.config.annotations.AdminSecured;
 import com.mycompany.myapp.domain.User;
 import com.mycompany.myapp.repository.UserRepository;
 import com.mycompany.myapp.security.AuthoritiesConstants;
@@ -174,7 +175,7 @@ public class UserResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body all users.
      */
     @GetMapping("/users")
-    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
+    @AdminSecured
     public ResponseEntity<List<UserDTO>> getAllUsers(Pageable pageable, @RequestParam(value = "searchTerm", defaultValue = "%%") String searchTerm) {
         final Page<UserDTO> page = userService.getAllManagedUsers(pageable, searchTerm);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
@@ -194,7 +195,7 @@ public class UserResource {
      * @return a string list of all roles.
      */
     @GetMapping("/users/authorities")
-    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
+    @AdminSecured
     public List<String> getAuthorities() {
         return userService.getAuthorities();
     }
