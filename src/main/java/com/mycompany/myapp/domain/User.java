@@ -94,7 +94,7 @@ public class User extends AbstractAuditingEntity implements Serializable {
     private Company company;
 
     @ManyToMany
-    private List<JobType> jobTypes;
+    private List<JobType> jobTypes = new ArrayList<>();
 
     @ElementCollection
     private List<String> devices = new ArrayList<>();
