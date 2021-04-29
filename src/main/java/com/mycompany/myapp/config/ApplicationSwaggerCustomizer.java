@@ -9,6 +9,9 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * Allows to override JHipster's Swagger properties
+ */
 public class ApplicationSwaggerCustomizer implements SwaggerCustomizer {
 
 
