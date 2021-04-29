@@ -4,6 +4,7 @@ import com.mycompany.myapp.service.AuditEventService;
 
 import io.github.jhipster.web.util.PaginationUtil;
 import io.github.jhipster.web.util.ResponseUtil;
+import io.swagger.v3.oas.annotations.Hidden;
 import org.springframework.boot.actuate.audit.AuditEvent;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,6 +23,7 @@ import java.util.List;
  * REST controller for getting the {@link AuditEvent}s.
  */
 @RestController
+@Hidden
 @RequestMapping("/management/audits")
 public class AuditResource {
 

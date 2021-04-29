@@ -15,11 +15,15 @@ import com.mycompany.myapp.web.rest.vm.KeyAndPasswordVM;
 import com.mycompany.myapp.web.rest.vm.ManagedUserVM;
 import static com.mycompany.myapp.config.Constants.AVAILABLE_LANGUAGES;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.Authorization;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -34,7 +38,8 @@ import java.util.*;
  * REST controller for managing the current user's account.
  */
 @RestController
-@RequestMapping("/api")
+@Api(value="Account resource", authorizations = {@Authorization("api_key")})
+@RequestMapping(value = "/api", produces = MediaType.APPLICATION_JSON_VALUE)
 public class AccountResource {
 
     private static class AccountResourceException extends RuntimeException {
@@ -58,7 +63,7 @@ public class AccountResource {
 
     private final DeviceService deviceService;
 
-    public AccountResource(UserRepository userRepository, UserService userService, UserMapper userMapper, MailService mailService, DeviceService deviceService) {
+    public AccountResource(UserRepository userRepository, @Lazy UserService userService, UserMapper userMapper, MailService mailService, DeviceService deviceService) {
         this.userRepository = userRepository;
         this.userService = userService;
         this.userMapper = userMapper;
