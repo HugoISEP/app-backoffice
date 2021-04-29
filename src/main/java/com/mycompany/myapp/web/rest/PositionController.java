@@ -77,6 +77,7 @@ public class PositionController {
         }
     }
 
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/{id}")
     public void delete(@PathVariable("id") Position position){
         service.deletePosition(position);

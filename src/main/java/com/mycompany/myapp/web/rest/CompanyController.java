@@ -79,6 +79,7 @@ public class CompanyController {
         return service.edit(companyJson, file);
     }
 
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/{id}")
     @AdminSecured
     public void deleteCompany(@PathVariable Long id){

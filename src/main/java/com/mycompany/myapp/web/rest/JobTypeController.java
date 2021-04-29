@@ -68,6 +68,7 @@ public class JobTypeController {
         }
     }
 
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/{id}")
     public void delete(@PathVariable Long id){
         service.deleteJobType(id);

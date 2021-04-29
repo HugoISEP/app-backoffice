@@ -52,6 +52,7 @@ public class MissionController {
         return service.editMission(mission);
     }
 
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/{id}")
     public void delete(@PathVariable("id") Long id){
         service.deleteMission(id);
