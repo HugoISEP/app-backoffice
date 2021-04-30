@@ -52,12 +52,12 @@ public class MissionService {
 
     public MissionDTO getById(Long id){
         hasAuthorization(id);
-        return mapper.asDTO(repository.findById(id).orElseThrow(() -> new BadRequestAlertException("position doesn't exist", ENTITY_NAME, "id doesn't exist")));
+        return mapper.asDTO(repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("mission not found", ENTITY_NAME, "id doesn't exist")));
     }
 
     public MissionDTO createMission(MissionDTO mission){
         if (mission.getId() != null) {
-            throw new ResourceNotFoundException("A new mission cannot already have an ID", ENTITY_NAME, "id exists");
+            throw new BadRequestAlertException("A new mission cannot already have an ID", ENTITY_NAME, "id already exists");
         }
         UserDTO user = userService.getUserWithAuthorities()
             .map(UserDTO::new)
@@ -69,7 +69,7 @@ public class MissionService {
 
     public void deleteMission(Long id){
         hasAuthorization(id);
-        Mission mission = repository.findById(id).orElseThrow(() -> new BadRequestAlertException("position doesn't exist", ENTITY_NAME, "id doesn't exist"));
+        Mission mission = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("position doesn't exist", ENTITY_NAME, "id doesn't exist"));
         mission.setDeletedAt(LocalDateTime.now());
         mission.getPositions().forEach(position -> position.setDeletedAt(LocalDateTime.now()));
         positionService.clearPositionCacheByCompany(mission.getCompany());
