@@ -361,4 +361,14 @@ public class PositionServiceTest {
         assertNotNull(deletedPosition.get().getDeletedAt());
         verify(positionService, times(1)).clearPositionCacheByPosition(position.getMission().getCompany().getId());
     }
+
+    @Test
+    public void clearPositionCacheByPositionSuccess(){
+        Pageable pageable = PageRequest.of(0, 10);
+        List<PositionView> positionViewsBefore = positionRepository.findAllByMissionCompanyIdAndStatusIsTrue(position.getMission().getCompany().getId(), "%%",  pageable).getContent();
+        positionService.deletePosition(position);
+        List<PositionView> positionViewsAfter = positionRepository.findAllByMissionCompanyIdAndStatusIsTrue(position.getMission().getCompany().getId(), "%%",  pageable).getContent();
+        assertNotEquals(positionViewsBefore, positionViewsAfter);
+        assertFalse(positionViewsAfter.stream().anyMatch(p -> p.getId().equals(position.getId())));
+    }
 }

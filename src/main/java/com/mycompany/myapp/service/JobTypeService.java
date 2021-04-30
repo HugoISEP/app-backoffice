@@ -101,7 +101,7 @@ public class JobTypeService {
         }
         hasAuthorization(updatedJobType.getId());
 
-        JobType jobType = repository.findById(updatedJobType.getId()).orElseThrow(() -> new BadRequestAlertException("jopType doesn't exist", ENTITY_NAME, "id doesn't exist"));
+        JobType jobType = repository.findById(updatedJobType.getId()).orElseThrow(() -> new ResourceNotFoundException("jopType doesn't exist", ENTITY_NAME, "id doesn't exist"));
         mapper.updateJobtype(mapper.fromDTO(updatedJobType), jobType);
         positionService.clearPositionCacheByCompany(jobType.getCompany());
         this.clearJobTypeCacheByCompany(jobType.getCompany());
