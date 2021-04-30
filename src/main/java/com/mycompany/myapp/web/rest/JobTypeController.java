@@ -6,6 +6,7 @@ import com.mycompany.myapp.service.dto.JobTypeDTO;
 import com.mycompany.myapp.service.view.JobTypeView;
 import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
 import io.github.jhipster.web.util.PaginationUtil;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
@@ -19,6 +20,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import javax.validation.Valid;
 import java.util.List;
 
+@Tag(name = "Job Type", description = "Endpoints for Job Type resource")
 @RestController
 @RequestMapping(value = "api/job-type", produces = MediaType.APPLICATION_JSON_VALUE)
 @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.MANAGER + "\")")

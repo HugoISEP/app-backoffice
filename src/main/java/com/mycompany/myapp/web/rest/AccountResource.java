@@ -17,6 +17,7 @@ import static com.mycompany.myapp.config.Constants.AVAILABLE_LANGUAGES;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.Authorization;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,6 +39,7 @@ import java.util.*;
  * REST controller for managing the current user's account.
  */
 @RestController
+@Tag(name = "Account", description = "Endpoints for Account resource")
 @Api(value="Account resource", authorizations = {@Authorization("api_key")})
 @RequestMapping(value = "/api", produces = MediaType.APPLICATION_JSON_VALUE)
 public class AccountResource {

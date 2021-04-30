@@ -5,6 +5,7 @@ import com.mycompany.myapp.service.MissionService;
 import com.mycompany.myapp.service.dto.MissionDTO;
 import com.mycompany.myapp.service.view.MissionView;
 import io.github.jhipster.web.util.PaginationUtil;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
@@ -20,6 +21,7 @@ import java.util.List;
 
 
 @RestController
+@Tag(name = "Mission", description = "Endpoints for Mission resource")
 @RequestMapping(value = "api/mission", produces = MediaType.APPLICATION_JSON_VALUE)
 @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.MANAGER + "\")")
 public class MissionController {

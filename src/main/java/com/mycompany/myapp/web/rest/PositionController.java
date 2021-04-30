@@ -7,6 +7,7 @@ import com.mycompany.myapp.service.dto.PositionDTO;
 import com.mycompany.myapp.service.view.PositionView;
 import io.github.jhipster.web.util.HeaderUtil;
 import io.github.jhipster.web.util.PaginationUtil;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,6 +23,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import javax.validation.Valid;
 import java.util.List;
 
+@Tag(name = "Position", description = "Endpoints for Position resource")
 @RestController
 @RequestMapping(value = "api/position", produces = MediaType.APPLICATION_JSON_VALUE)
 @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.MANAGER + "\")")

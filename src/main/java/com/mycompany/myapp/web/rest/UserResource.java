@@ -20,6 +20,7 @@ import io.github.jhipster.web.util.HeaderUtil;
 import io.github.jhipster.web.util.PaginationUtil;
 import io.github.jhipster.web.util.ResponseUtil;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -63,6 +64,7 @@ import java.util.*;
  * Another option would be to have a specific JPA entity graph to handle this case.
  */
 @RestController
+@Tag(name = "User", description = "Endpoints for User resource")
 @RequestMapping(value = "/api", produces = MediaType.APPLICATION_JSON_VALUE)
 public class UserResource {
 

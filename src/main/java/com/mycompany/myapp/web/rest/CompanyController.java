@@ -11,6 +11,7 @@ import com.mycompany.myapp.service.view.CompanyView;
 import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
 import io.github.jhipster.web.util.PaginationUtil;
 import io.minio.errors.MinioException;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
@@ -25,6 +26,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.io.IOException;
 import java.util.List;
 
+@Tag(name = "Job Type", description = "Endpoints for Job Type resource")
 @RestController
 @RequestMapping(value = "api/company", produces = MediaType.APPLICATION_JSON_VALUE)
 public class CompanyController {
