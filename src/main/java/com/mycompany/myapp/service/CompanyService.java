@@ -94,7 +94,7 @@ public class CompanyService {
         hasAuthorization(id);
         Company companyToDelete = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("company doesn't exist", ENTITY_NAME, "id doesn't exist"));
         minioService.deleteFile(companyToDelete.getImagePath(), LOGO_BUCKET);
-        deviceService.unsubscribeAllCompanyUsersToNotifications(companyToDelete);
+        //deviceService.unsubscribeAllCompanyUsersToNotifications(companyToDelete);
         repository.delete(companyToDelete);
     }
 

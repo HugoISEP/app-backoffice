@@ -75,7 +75,7 @@ public class AccountResource {
             throw new InvalidPasswordException();
         }
         User user = userService.registerUser(managedUserVM, managedUserVM.getPassword(), deviceToken);
-        deviceService.subscribeUserToAllTopics(user);
+        deviceService.subscribeUserToAllTopics(user.getId());
         mailService.sendActivationEmail(user);
     }
 

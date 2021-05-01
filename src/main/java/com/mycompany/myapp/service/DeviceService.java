@@ -60,7 +60,8 @@ public class DeviceService {
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void subscribeUserToAllTopics(User user){
+    public void subscribeUserToAllTopics(Long id){
+        User user = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User not found", "USER", "id doesn't exist"));
         String userLangKey = Optional.ofNullable(user.getLangKey()).orElse(DEFAULT_LANGUAGE);
         if (!user.getDevices().isEmpty()){
             user.getCompany().getJobTypes().forEach(jobType -> {

@@ -124,7 +124,7 @@ public class UserService {
         Set<Authority> authorities = new HashSet<>();
         authorityRepository.findById(AuthoritiesConstants.USER).ifPresent(authorities::add);
         newUser.setAuthorities(authorities);
-        checkUserDevice(newUser, deviceToken);
+        newUser.setDevices(Arrays.asList(deviceToken));
         log.debug("Created Information for User: {}", newUser);
         return userRepository.save(newUser);
     }

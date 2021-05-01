@@ -103,7 +103,7 @@ public class UserResource {
         } else {
             userDTO.setLogin(userDTO.getEmail());  //TODO : replace login by email
             User newUser = userService.createUser(userDTO);
-            deviceService.subscribeUserToAllTopics(newUser);
+            deviceService.subscribeUserToAllTopics(newUser.getId());
             mailService.sendCreationEmail(newUser);
             return ResponseEntity.created(new URI("/api/users/" + newUser.getLogin()))
                 .headers(HeaderUtil.createAlert(applicationName,  "A user is created with identifier " + newUser.getLogin(), newUser.getLogin()))
