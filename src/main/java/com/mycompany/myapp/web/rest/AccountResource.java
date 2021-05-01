@@ -15,6 +15,7 @@ import com.mycompany.myapp.web.rest.vm.KeyAndPasswordVM;
 import com.mycompany.myapp.web.rest.vm.ManagedUserVM;
 import static com.mycompany.myapp.config.Constants.AVAILABLE_LANGUAGES;
 
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,6 +36,7 @@ import java.util.*;
  */
 @RestController
 @RequestMapping("/api")
+@RequiredArgsConstructor
 public class AccountResource {
 
     private static class AccountResourceException extends RuntimeException {
@@ -57,14 +59,6 @@ public class AccountResource {
     private final MailService mailService;
 
     private final DeviceService deviceService;
-
-    public AccountResource(UserRepository userRepository, UserService userService, UserMapper userMapper, MailService mailService, DeviceService deviceService) {
-        this.userRepository = userRepository;
-        this.userService = userService;
-        this.userMapper = userMapper;
-        this.mailService = mailService;
-        this.deviceService = deviceService;
-    }
 
     /**
      * {@code POST  /register} : register the user.

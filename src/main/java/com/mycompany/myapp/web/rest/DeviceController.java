@@ -2,6 +2,7 @@ package com.mycompany.myapp.web.rest;
 
 import com.mycompany.myapp.security.AuthoritiesConstants;
 import com.mycompany.myapp.service.DeviceService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -14,16 +15,13 @@ import java.util.Map;
 @Slf4j
 @RestController
 @RequestMapping("api/device")
+@RequiredArgsConstructor
 public class DeviceController {
 
     @Value("${mobile-app.version}")
     private String appVersion;
 
     private final DeviceService deviceService;
-
-    public DeviceController(DeviceService deviceService) {
-        this.deviceService = deviceService;
-    }
 
     @GetMapping("/version")
     @ResponseStatus(HttpStatus.OK)

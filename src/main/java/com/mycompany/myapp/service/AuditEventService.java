@@ -3,6 +3,7 @@ package com.mycompany.myapp.service;
 import io.github.jhipster.config.JHipsterProperties;
 import com.mycompany.myapp.config.audit.AuditEventConverter;
 import com.mycompany.myapp.repository.PersistenceAuditEventRepository;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.actuate.audit.AuditEvent;
@@ -23,6 +24,7 @@ import java.util.Optional;
  */
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class AuditEventService {
 
     private final Logger log = LoggerFactory.getLogger(AuditEventService.class);
@@ -32,15 +34,6 @@ public class AuditEventService {
     private final PersistenceAuditEventRepository persistenceAuditEventRepository;
 
     private final AuditEventConverter auditEventConverter;
-
-    public AuditEventService(
-        PersistenceAuditEventRepository persistenceAuditEventRepository,
-        AuditEventConverter auditEventConverter, JHipsterProperties jhipsterProperties) {
-
-        this.persistenceAuditEventRepository = persistenceAuditEventRepository;
-        this.auditEventConverter = auditEventConverter;
-        this.jHipsterProperties = jhipsterProperties;
-    }
 
     /**
      * Old audit events should be automatically deleted after 30 days.

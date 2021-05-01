@@ -15,6 +15,7 @@ import com.mycompany.myapp.service.notification.NotificationStatus;
 import com.mycompany.myapp.service.view.PositionView;
 import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
 import com.mycompany.myapp.web.rest.errors.ResourceNotFoundException;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cache.CacheManager;
@@ -32,6 +33,7 @@ import java.util.concurrent.ExecutionException;
 
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class PositionService {
 
     private static final String ENTITY_NAME = "position";
@@ -47,18 +49,6 @@ public class PositionService {
     private final UserService userService;
     private final NotificationService notificationService;
     private final CacheManager cacheManager;
-
-
-    public PositionService(PositionRepository repository, PositionMapper mapper, MissionRepository missionRepository, CompanyRepository companyRepository, MissionService missionService, UserService userService, NotificationService notificationService, CacheManager cacheManager) {
-        this.repository = repository;
-        this.mapper = mapper;
-        this.missionRepository = missionRepository;
-        this.companyRepository = companyRepository;
-        this.missionService = missionService;
-        this.userService = userService;
-        this.notificationService = notificationService;
-        this.cacheManager = cacheManager;
-    }
 
     public void hasAuthorization(Long id){
         UserDTO user = userService.getUserWithAuthorities()

@@ -19,6 +19,7 @@ import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
 import com.mycompany.myapp.web.rest.errors.ResourceNotFoundException;
 import io.github.jhipster.security.RandomUtil;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -42,6 +43,7 @@ import static com.mycompany.myapp.config.Constants.DEFAULT_LANGUAGE;
 @Slf4j
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class UserService {
 
     private final UserRepository userRepository;
@@ -55,15 +57,6 @@ public class UserService {
     private final JobTypeRepository jobTypeRepository;
 
     private final DeviceService deviceService;
-
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, AuthorityRepository authorityRepository, CompanyRepository companyRepository, JobTypeRepository jobTypeRepository, DeviceService deviceService) {
-        this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
-        this.authorityRepository = authorityRepository;
-        this.companyRepository = companyRepository;
-        this.jobTypeRepository = jobTypeRepository;
-        this.deviceService = deviceService;
-    }
 
     public Optional<User> activateRegistration(String key) {
         log.debug("Activating user for activation key {}", key);

@@ -10,6 +10,7 @@ import com.mycompany.myapp.repository.UserRepository;
 import com.mycompany.myapp.security.AuthoritiesConstants;
 import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
 import com.mycompany.myapp.web.rest.errors.ResourceNotFoundException;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.scheduling.annotation.Async;
@@ -26,17 +27,13 @@ import static com.mycompany.myapp.config.Constants.DEFAULT_LANGUAGE;
 @Slf4j
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class DeviceService {
 
     private final JobTypeRepository jobTypeRepository;
+    @Lazy
     private final UserService userService;
     private final UserRepository userRepository;
-
-    public DeviceService(JobTypeRepository jobTypeRepository, @Lazy UserService userService, UserRepository userRepository) {
-        this.jobTypeRepository = jobTypeRepository;
-        this.userService = userService;
-        this.userRepository = userRepository;
-    }
 
     public void subscribeUserToATopic(Long id) {
         User user = userService.getUserWithAuthorities()
@@ -108,8 +105,9 @@ public class DeviceService {
     }
 
     @Async
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void subscribeAllUsersToNewTopic(Long id){
-        JobType jobType = jobTypeRepository.findById(id).orElseThrow(() -> new BadRequestAlertException("jobType not found", "JobType", "wrong id"));
+        JobType jobType = jobTypeRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("jobType not found", "JobType", "wrong id"));
 
         Map<String, List<String>> usersDevicesByLanguage = jobType.getCompany().getUsers().stream()
             .filter(usr -> usr.getAuthorities().stream().noneMatch(authority -> authority.getName().equals(AuthoritiesConstants.ADMIN)))
@@ -121,12 +119,13 @@ public class DeviceService {
     }
 
     @Async
-    public void unsubscribeAllUsersDeletedTopic(JobType jobType){
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void unsubscribeAllUsersDeletedTopic(Long id){
+        JobType jobType = jobTypeRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("jobType not found", "JobType", "wrong id"));
         Map<String, List<String>> usersDevicesByLanguage = jobType.getCompany().getUsers().stream()
             .filter(usr -> usr.getJobTypes().contains(jobType))
             .peek(usr -> usr.getJobTypes().remove(jobType))
             .collect(Collectors.toMap(usr -> Optional.ofNullable(usr.getLangKey()).orElse(DEFAULT_LANGUAGE), User::getDevices, (item, identicalItem) -> item));
-
         usersDevicesByLanguage.keySet().stream().filter(lang -> !usersDevicesByLanguage.get(lang).isEmpty()).forEach(lang -> FirebaseMessaging.getInstance().unsubscribeFromTopicAsync(usersDevicesByLanguage.get(lang), lang + jobType.getId().toString()));
     }
 }

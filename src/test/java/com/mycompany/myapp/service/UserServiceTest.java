@@ -2,7 +2,9 @@ package com.mycompany.myapp.service;
 
 import com.mycompany.myapp.HugoIsepApp;
 import com.mycompany.myapp.config.Constants;
+import com.mycompany.myapp.domain.Company;
 import com.mycompany.myapp.domain.User;
+import com.mycompany.myapp.repository.CompanyRepository;
 import com.mycompany.myapp.repository.UserRepository;
 import com.mycompany.myapp.service.dto.UserDTO;
 
@@ -34,7 +36,7 @@ import static org.mockito.Mockito.when;
  */
 @SpringBootTest(classes = HugoIsepApp.class)
 @Transactional
-public class UserServiceIT {
+public class UserServiceTest {
 
     private static final String DEFAULT_LOGIN = "johndoe";
 
@@ -52,6 +54,9 @@ public class UserServiceIT {
     private UserRepository userRepository;
 
     @Autowired
+    private CompanyRepository companyRepository;
+
+    @Autowired
     private UserService userService;
 
     @Autowired
@@ -61,6 +66,8 @@ public class UserServiceIT {
     private DateTimeProvider dateTimeProvider;
 
     private User user;
+
+    private Company company;
 
     @BeforeEach
     public void init() {
@@ -73,6 +80,14 @@ public class UserServiceIT {
         user.setLastName(DEFAULT_LASTNAME);
         user.setImageUrl(DEFAULT_IMAGEURL);
         user.setLangKey(DEFAULT_LANGKEY);
+
+        company = Company.builder()
+            .name("Junior Isep")
+            .color("#666666")
+            .emailTemplate("juniorisep.com")
+            .imagePath("image/path")
+            .build();
+        company = companyRepository.saveAndFlush(company);
 
         when(dateTimeProvider.getNow()).thenReturn(Optional.of(LocalDateTime.now()));
         auditingHandler.setDateTimeProvider(dateTimeProvider);

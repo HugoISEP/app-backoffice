@@ -5,6 +5,7 @@ import com.mycompany.myapp.service.MissionService;
 import com.mycompany.myapp.service.dto.MissionDTO;
 import com.mycompany.myapp.service.view.MissionView;
 import io.github.jhipster.web.util.PaginationUtil;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
@@ -21,13 +22,10 @@ import java.util.List;
 @RestController
 @RequestMapping("api/mission")
 @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.MANAGER + "\")")
+@RequiredArgsConstructor
 public class MissionController {
 
     private final MissionService service;
-
-    public MissionController(MissionService service) {
-        this.service = service;
-    }
 
     @GetMapping("/{id}")
     public MissionView getById(@PathVariable Long id){

@@ -229,7 +229,6 @@ public class JobTypeServiceTest {
         JobTypeDTO jobTypeDTO = JobTypeDTO.builder().id(jobType.getId()).name("powerball").icon("symfony").build();
 
         JobTypeDTO jobTypeDTOSaved = jobTypeService.editJobType(jobTypeDTO);
-        System.out.println("After: " + jobType.getName() + " " + jobType.getIcon());
 
         verify(jobTypeService, times(1)).clearJobTypeCacheByCompany(company);
         verify(positionService, times(1)).clearPositionCacheByCompany(company);
@@ -257,7 +256,7 @@ public class JobTypeServiceTest {
         assertTrue(Objects.nonNull(jobTypeDeleted.get().getPositions().get(0).getDeletedAt()));
         assertTrue(user.getJobTypes().isEmpty());
         verify(jobTypeService, times(1)).clearJobTypeCacheByCompany(company);
-        verify(deviceService, times(1)).unsubscribeAllUsersDeletedTopic(jobTypeDeleted.get());
+        verify(deviceService, times(1)).unsubscribeAllUsersDeletedTopic(jobTypeDeleted.get().getId());
     }
 
     @Test

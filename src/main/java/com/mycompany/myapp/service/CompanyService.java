@@ -11,6 +11,7 @@ import com.mycompany.myapp.service.mapper.CompanyMapper;
 import com.mycompany.myapp.service.view.CompanyDetailsView;
 import com.mycompany.myapp.web.rest.errors.ResourceNotFoundException;
 import io.minio.errors.*;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.AccessDeniedException;
@@ -25,6 +26,7 @@ import static com.mycompany.myapp.config.Constants.LOGO_BUCKET;
 
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class CompanyService {
 
     private static final String ENTITY_NAME = "company";
@@ -34,14 +36,6 @@ public class CompanyService {
     private final UserService userService;
     private final DeviceService deviceService;
     private final MinioService minioService;
-
-    public CompanyService(CompanyRepository repository, CompanyMapper mapper, UserService userService, DeviceService deviceService, MinioService minioService) {
-        this.repository = repository;
-        this.mapper = mapper;
-        this.userService = userService;
-        this.deviceService = deviceService;
-        this.minioService = minioService;
-    }
 
     public void hasAuthorization(Long id){
         UserDTO user = userService.getUserWithAuthorities()

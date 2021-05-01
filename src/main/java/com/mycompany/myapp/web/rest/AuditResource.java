@@ -4,6 +4,7 @@ import com.mycompany.myapp.service.AuditEventService;
 
 import io.github.jhipster.web.util.PaginationUtil;
 import io.github.jhipster.web.util.ResponseUtil;
+import lombok.RequiredArgsConstructor;
 import org.springframework.boot.actuate.audit.AuditEvent;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -23,13 +24,10 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/management/audits")
+@RequiredArgsConstructor
 public class AuditResource {
 
     private final AuditEventService auditEventService;
-
-    public AuditResource(AuditEventService auditEventService) {
-        this.auditEventService = auditEventService;
-    }
 
     /**
      * {@code GET /audits} : get a page of {@link AuditEvent}s.

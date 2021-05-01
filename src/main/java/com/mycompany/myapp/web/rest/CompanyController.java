@@ -10,6 +10,7 @@ import com.mycompany.myapp.service.view.CompanyView;
 import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
 import io.github.jhipster.web.util.PaginationUtil;
 import io.minio.errors.MinioException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
@@ -25,6 +26,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("api/company")
+@RequiredArgsConstructor
 public class CompanyController {
 
     private static final String ENTITY_NAME = "company";
@@ -32,12 +34,6 @@ public class CompanyController {
     private final CompanyRepository repository;
     private final CompanyService service;
     private final CompanyMapper mapper;
-
-    public CompanyController(CompanyRepository repository, CompanyService service, CompanyMapper mapper) {
-        this.repository = repository;
-        this.service = service;
-        this.mapper = mapper;
-    }
 
     @GetMapping
     @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")

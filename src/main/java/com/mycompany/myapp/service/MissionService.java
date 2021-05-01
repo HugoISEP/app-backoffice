@@ -10,6 +10,7 @@ import com.mycompany.myapp.service.mapper.MissionMapper;
 import com.mycompany.myapp.service.view.MissionView;
 import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
 import com.mycompany.myapp.web.rest.errors.ResourceNotFoundException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,6 +23,7 @@ import java.time.LocalDateTime;
 
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class MissionService {
 
     private static final String ENTITY_NAME = "mission";
@@ -30,15 +32,8 @@ public class MissionService {
     private final MissionMapper mapper;
     private final UserService userService;
     private final CompanyMapper companyMapper;
+    @Lazy
     private final PositionService positionService;
-
-    public MissionService(MissionRepository repository, MissionMapper mapper, UserService userService, CompanyMapper companyMapper, @Lazy PositionService positionService) {
-        this.repository = repository;
-        this.mapper = mapper;
-        this.userService = userService;
-        this.companyMapper = companyMapper;
-        this.positionService = positionService;
-    }
 
     public void hasAuthorization(Long id){
         UserDTO user = userService.getUserWithAuthorities()

@@ -2,6 +2,7 @@ package com.mycompany.myapp.service.notification;
 
 import com.google.firebase.messaging.*;
 import com.mycompany.myapp.domain.Position;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
@@ -14,13 +15,10 @@ import static com.mycompany.myapp.config.Constants.AVAILABLE_LANGUAGES;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class NotificationService {
 
     private final MessageSource messageSource;
-
-    public NotificationService(MessageSource messageSource) {
-        this.messageSource = messageSource;
-    }
 
     public void sendMessage(Position position, NotificationStatus notificationStatus)
         throws InterruptedException, ExecutionException {
