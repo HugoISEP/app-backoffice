@@ -15,8 +15,7 @@ import com.mycompany.myapp.web.rest.vm.KeyAndPasswordVM;
 import com.mycompany.myapp.web.rest.vm.ManagedUserVM;
 import static com.mycompany.myapp.config.Constants.AVAILABLE_LANGUAGES;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.Authorization;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
@@ -41,7 +40,6 @@ import java.util.*;
 @RestController
 @RequiredArgsConstructor
 @Tag(name = "Account", description = "Endpoints for Account resource")
-@Api(value="Account resource", authorizations = {@Authorization("api_key")})
 @RequestMapping(value = "/api", produces = MediaType.APPLICATION_JSON_VALUE)
 public class AccountResource {
 
@@ -74,6 +72,7 @@ public class AccountResource {
      * @throws EmailAlreadyUsedException {@code 400 (Bad Request)} if the email is already used.
      * @throws LoginAlreadyUsedException {@code 400 (Bad Request)} if the login is already used.
      */
+    @Operation(description="Create a new account", summary = "Register account")
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
     public void registerUserAccount(@Valid @RequestBody ManagedUserVM managedUserVM, @RequestParam(value = "deviceToken") String deviceToken) throws Exception{
