@@ -6,6 +6,7 @@ import com.mycompany.myapp.service.dto.MissionDTO;
 import com.mycompany.myapp.service.view.MissionView;
 import io.github.jhipster.web.util.PaginationUtil;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
@@ -24,13 +25,10 @@ import java.util.List;
 @Tag(name = "Mission", description = "Endpoints for Mission resource")
 @RequestMapping(value = "api/mission", produces = MediaType.APPLICATION_JSON_VALUE)
 @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.MANAGER + "\")")
+@RequiredArgsConstructor
 public class MissionController {
 
     private final MissionService service;
-
-    public MissionController(MissionService service) {
-        this.service = service;
-    }
 
     @GetMapping("/{id}")
     public MissionView getById(@PathVariable Long id){

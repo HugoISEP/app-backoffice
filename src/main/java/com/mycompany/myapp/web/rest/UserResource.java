@@ -20,6 +20,7 @@ import io.github.jhipster.web.util.HeaderUtil;
 import io.github.jhipster.web.util.PaginationUtil;
 import io.github.jhipster.web.util.ResponseUtil;
 
+import lombok.RequiredArgsConstructor;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -66,6 +67,7 @@ import java.util.*;
 @RestController
 @Tag(name = "User", description = "Endpoints for User resource")
 @RequestMapping(value = "/api", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequiredArgsConstructor
 public class UserResource {
 
     private final Logger log = LoggerFactory.getLogger(UserResource.class);
@@ -80,13 +82,6 @@ public class UserResource {
     private final MailService mailService;
 
     private final DeviceService deviceService;
-
-    public UserResource(UserService userService, UserRepository userRepository, MailService mailService, DeviceService deviceService) {
-        this.userService = userService;
-        this.userRepository = userRepository;
-        this.mailService = mailService;
-        this.deviceService = deviceService;
-    }
 
     /**
      * {@code POST  /users}  : Creates a new user.
@@ -112,7 +107,7 @@ public class UserResource {
         } else {
             userDTO.setLogin(userDTO.getEmail());  //TODO : replace login by email
             User newUser = userService.createUser(userDTO);
-            deviceService.subscribeUserToAllTopics(newUser);
+            deviceService.subscribeUserToAllTopics(newUser.getId());
             mailService.sendCreationEmail(newUser);
             return ResponseEntity.created(new URI("/api/users/" + newUser.getLogin()))
                 .headers(HeaderUtil.createAlert(applicationName,  "A user is created with identifier " + newUser.getLogin(), newUser.getLogin()))

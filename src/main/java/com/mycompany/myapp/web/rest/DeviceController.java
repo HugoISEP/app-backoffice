@@ -1,8 +1,8 @@
 package com.mycompany.myapp.web.rest;
 
-import com.mycompany.myapp.domain.User;
 import com.mycompany.myapp.security.AuthoritiesConstants;
 import com.mycompany.myapp.service.DeviceService;
+import lombok.RequiredArgsConstructor;
 import com.mycompany.myapp.service.UserService;
 import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
 import io.swagger.v3.oas.annotations.Hidden;
@@ -20,19 +20,13 @@ import java.util.Map;
 @Hidden
 @RestController
 @RequestMapping("api/device")
+@RequiredArgsConstructor
 public class DeviceController {
 
     @Value("${mobile-app.version}")
     private String appVersion;
 
     private final DeviceService deviceService;
-
-    private final UserService userService;
-
-    public DeviceController(DeviceService deviceService, UserService userService) {
-        this.deviceService = deviceService;
-        this.userService = userService;
-    }
 
     @GetMapping(value = "/version", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)

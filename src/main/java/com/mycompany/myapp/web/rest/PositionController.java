@@ -8,6 +8,7 @@ import com.mycompany.myapp.service.view.PositionView;
 import io.github.jhipster.web.util.HeaderUtil;
 import io.github.jhipster.web.util.PaginationUtil;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -27,16 +28,13 @@ import java.util.List;
 @RestController
 @RequestMapping(value = "api/position", produces = MediaType.APPLICATION_JSON_VALUE)
 @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.MANAGER + "\")")
+@RequiredArgsConstructor
 public class PositionController {
 
     @Value("${jhipster.clientApp.name}")
     private String applicationName;
 
     private final PositionService service;
-
-    public PositionController(PositionService service) {
-        this.service = service;
-    }
 
     @GetMapping("/{id}")
     public PositionView getById(@PathVariable Long id){

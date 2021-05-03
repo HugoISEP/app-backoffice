@@ -7,6 +7,7 @@ import com.mycompany.myapp.service.view.JobTypeView;
 import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
 import io.github.jhipster.web.util.PaginationUtil;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
@@ -24,15 +25,12 @@ import java.util.List;
 @RestController
 @RequestMapping(value = "api/job-type", produces = MediaType.APPLICATION_JSON_VALUE)
 @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.MANAGER + "\")")
+@RequiredArgsConstructor
 public class JobTypeController {
 
     private static final String ENTITY_NAME = "jobType";
 
     private final JobTypeService service;
-
-    public JobTypeController(JobTypeService service) {
-        this.service = service;
-    }
 
     @GetMapping("/{id}")
     public JobTypeView getById(@PathVariable Long id){

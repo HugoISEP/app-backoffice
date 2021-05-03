@@ -11,6 +11,7 @@ import com.mycompany.myapp.service.mapper.JobTypeMapper;
 import com.mycompany.myapp.service.view.JobTypeView;
 import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
 import com.mycompany.myapp.web.rest.errors.ResourceNotFoundException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.cache.CacheManager;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -26,6 +27,7 @@ import java.util.stream.Collectors;
 
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class JobTypeService {
     private static final String ENTITY_NAME = "jobType";
 
@@ -36,17 +38,6 @@ public class JobTypeService {
     private final CompanyRepository companyRepository;
     private final PositionService positionService;
     private final CacheManager cacheManager;
-
-
-    public JobTypeService(JobTypeRepository repository, JobTypeMapper mapper, UserService userService, DeviceService deviceService, CompanyRepository companyRepository, PositionService positionService, CacheManager cacheManager) {
-        this.repository = repository;
-        this.mapper = mapper;
-        this.userService = userService;
-        this.deviceService = deviceService;
-        this.companyRepository = companyRepository;
-        this.positionService = positionService;
-        this.cacheManager = cacheManager;
-    }
 
     public void hasAuthorization(Long id){
         UserDTO user = userService.getUserWithAuthorities()
@@ -101,7 +92,7 @@ public class JobTypeService {
         }
         hasAuthorization(updatedJobType.getId());
 
-        JobType jobType = repository.findById(updatedJobType.getId()).orElseThrow(() -> new BadRequestAlertException("jopType doesn't exist", ENTITY_NAME, "id doesn't exist"));
+        JobType jobType = repository.findById(updatedJobType.getId()).orElseThrow(() -> new ResourceNotFoundException("jopType doesn't exist", ENTITY_NAME, "id doesn't exist"));
         mapper.updateJobtype(mapper.fromDTO(updatedJobType), jobType);
         positionService.clearPositionCacheByCompany(jobType.getCompany());
         this.clearJobTypeCacheByCompany(jobType.getCompany());
@@ -118,7 +109,7 @@ public class JobTypeService {
         jobTypeToDelete.getPositions().forEach(position -> position.setDeletedAt(LocalDateTime.now()));
         positionService.clearPositionCacheByCompany(jobTypeToDelete.getCompany());
         this.clearJobTypeCacheByCompany(jobTypeToDelete.getCompany());
-        deviceService.unsubscribeAllUsersDeletedTopic(jobTypeToDelete);
+        deviceService.unsubscribeAllUsersDeletedTopic(id);
         repository.save(jobTypeToDelete);
     }
 

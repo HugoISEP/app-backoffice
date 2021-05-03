@@ -16,6 +16,7 @@ public class CompanyDTO extends BasicCompanyDTO implements CompanyView {
     private String imagePath;
     private String websiteUrl;
 
+    @Builder
     public CompanyDTO(Long id, String name, LocalDateTime createdAt, String emailTemplate, String color, String imagePath, String websiteUrl){
         super(id, name);
         this.createdAt = createdAt;

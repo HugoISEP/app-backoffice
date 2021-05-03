@@ -18,11 +18,11 @@ import static com.mycompany.myapp.config.Constants.AVAILABLE_LANGUAGES;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.Authorization;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -39,6 +39,7 @@ import java.util.*;
  * REST controller for managing the current user's account.
  */
 @RestController
+@RequiredArgsConstructor
 @Tag(name = "Account", description = "Endpoints for Account resource")
 @Api(value="Account resource", authorizations = {@Authorization("api_key")})
 @RequestMapping(value = "/api", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -65,14 +66,6 @@ public class AccountResource {
 
     private final DeviceService deviceService;
 
-    public AccountResource(UserRepository userRepository, @Lazy UserService userService, UserMapper userMapper, MailService mailService, DeviceService deviceService) {
-        this.userRepository = userRepository;
-        this.userService = userService;
-        this.userMapper = userMapper;
-        this.mailService = mailService;
-        this.deviceService = deviceService;
-    }
-
     /**
      * {@code POST  /register} : register the user.
      *
@@ -88,7 +81,7 @@ public class AccountResource {
             throw new InvalidPasswordException();
         }
         User user = userService.registerUser(managedUserVM, managedUserVM.getPassword(), deviceToken);
-        deviceService.subscribeUserToAllTopics(user);
+        deviceService.subscribeUserToAllTopics(user.getId());
         mailService.sendActivationEmail(user);
     }
 

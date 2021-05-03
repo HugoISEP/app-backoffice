@@ -2,11 +2,13 @@ package com.mycompany.myapp.service.dto;
 
 import com.mycompany.myapp.service.view.JobTypeView;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
+@Builder
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
