@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.*;
+
 @Configuration
 class OpenApi3Config {
 
@@ -45,7 +47,11 @@ class OpenApi3Config {
                 .version(version)
                 .contact(new Contact().name(contactName))
                 .license(new License().name(license).url(licenseUrl))
-                .termsOfService(termsOfServiceUrl))
+                .termsOfService(termsOfServiceUrl)
+                .extensions(Collections.singletonMap("x-logo",
+                    Map.of("url","https://upload.wikimedia.org/wikipedia/commons/7/7d/JE_logo.png",
+                        "backgroundColor","#ffffff", "altText", "JE Consultants logo")))
+            )
             .components(new Components()
                 .addSecuritySchemes("apiKey", new SecurityScheme()
                     .type(SecurityScheme.Type.APIKEY)

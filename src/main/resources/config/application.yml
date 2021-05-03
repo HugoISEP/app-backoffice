@@ -149,22 +149,18 @@ jhipster:
     default-include-pattern: /api/.*
     title: JE Consultants API
     description: "
-      This is a sample server Petstore server.
-      You can find out more about Swagger at
-      [http://swagger.io](http://swagger.io) or on [irc.freenode.net, #swagger](http://swagger.io/irc/).\n
-      For this sample, you can use the api key `special-key` to test the authorization filters.\n
       ### Introduction\n
-      This API is documented in **OpenAPI format** and is based on\n
-      [Petstore sample](http://petstore.swagger.io/) provided by [swagger.io](http://swagger.io) team.\n
-      It was **extended** to illustrate features of [generator-openapi-repo](https://github.com/Rebilly/generator-openapi-repo)
-      tool and [ReDoc](https://github.com/Redocly/redoc) documentation. In addition to standard
-      OpenAPI syntax we use a few [vendor extensions](https://github.com/Redocly/redoc/blob/master/docs/redoc-vendor-extensions.md).\n
-      ### OpenAPI Specification\n
-      This API is documented in **OpenAPI format** and is based on
-      [Petstore sample](http://petstore.swagger.io/) provided by [swagger.io](http://swagger.io) team.\n
-      It was **extended** to illustrate features of [generator-openapi-repo](https://github.com/Rebilly/generator-openapi-repo)
-      tool and [ReDoc](https://github.com/Redocly/redoc) documentation. In addition to standard
-      OpenAPI syntax we use a few [vendor extensions](https://github.com/Redocly/redoc/blob/master/docs/redoc-vendor-extensions.md).\n
+      This application provides access from JE Consultants application. It is aimed to be integrated to Junior Entreprises tools, to automate tasks.\n
+      This API is documented in **OpenAPI format**.\n
+      ### Authentication methods\n
+      Authentication is required to all endpoints, excluding registration and login ones.\n
+      A non-authentication will return a **401 Unauthorized**.\n
+      Missing authorizations (due to inappropriate Junior Entreprise) will return a **403 Forbidden**.\n
+      This app provides two ways of authentication:\n
+      #### JWT\n
+      You can use a JWT to authenticate to the API, which can be granted with username and password.\n
+      #### API Token\n
+      You can generate API Token from Back-Office to consume API.\n
       ### Cross-Origin Resource Sharing\n
       This API features Cross-Origin Resource Sharing (CORS) implemented in compliance with  [W3C spec](https://www.w3.org/TR/cors/).
       And that allows cross-domain communication from the browser.\n
@@ -189,3 +185,6 @@ jhipster:
 # application:
 springdoc:
   paths-to-exclude: /swagger-resources/**
+  swagger-ui:
+    operations-sorter: method
+    tags-sorter: alpha
