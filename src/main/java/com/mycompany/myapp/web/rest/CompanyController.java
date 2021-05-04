@@ -11,6 +11,8 @@ import com.mycompany.myapp.service.view.CompanyView;
 import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
 import io.github.jhipster.web.util.PaginationUtil;
 import io.minio.errors.MinioException;
+import io.swagger.v3.oas.annotations.Hidden;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -46,6 +48,7 @@ public class CompanyController {
     }
 
     @GetMapping("/user")
+    @Operation(summary = "Get current company", description = "Retrieve own complete company resource")
     @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.MANAGER + "\")")
     public CompanyDetailsView getCurrentUserCompany(){
         return service.getCompanyFromCurrentUser();
@@ -71,6 +74,7 @@ public class CompanyController {
         return service.create(companyJson, file);
     }
 
+    @Operation(summary = "Edit company")
     @PutMapping
     @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\") or hasAuthority(\"" + AuthoritiesConstants.MANAGER + "\")")
     public CompanyView editCompany(@RequestParam("company") String companyJson, @RequestParam(value = "file", required = false) MultipartFile file) throws IOException, MinioException {
@@ -89,6 +93,7 @@ public class CompanyController {
     }
 
     @GetMapping("/{id}/file")
+    @Hidden
     public String getFileUrl(@PathVariable Long id) {
         try {
             return service.getFileUrl(id);
