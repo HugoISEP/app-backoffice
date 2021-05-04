@@ -4,7 +4,7 @@ This application was generated using JHipster 6.10.1, you can find documentation
 
 ## OpenAPI
 
-This API has two generated documentations, a Swagger UI with all endpoints and an OpenAPI V3 with Admin endpoints hidden, for **public documentation**. Annotations in controllers are used in OpenAPI V3.
+This API has two generated documentations, a Swagger UI with all endpoints _at /swagger-ui/index.html_ and an OpenAPI V3 with Admin endpoints hidden _at /v3/api-docs_, for **public documentation**. Annotations in controllers are used in OpenAPI V3.
 
 ## Development
 
