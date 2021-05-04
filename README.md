@@ -2,6 +2,10 @@
 
 This application was generated using JHipster 6.10.1, you can find documentation and help at [https://www.jhipster.tech/documentation-archive/v6.10.1](https://www.jhipster.tech/documentation-archive/v6.10.1).
 
+## OpenAPI
+
+This API has two generated documentations, a Swagger UI with all endpoints and an OpenAPI V3 with Admin endpoints hidden, for **public documentation**. Annotations in controllers are used in OpenAPI V3.
+
 ## Development
 
 Before you can build this project, you must install and configure the following dependencies on your machine:
