@@ -53,13 +53,14 @@ class OpenApi3Config {
                         "backgroundColor","#ffffff", "altText", "JE Consultants logo")))
             )
             .components(new Components()
-                .addSecuritySchemes("apiKey", new SecurityScheme()
+                .addSecuritySchemes("api-key", new SecurityScheme()
                     .type(SecurityScheme.Type.APIKEY)
                     .in(SecurityScheme.In.HEADER)
                     .name("x-api-key"))
                 .addSecuritySchemes("oauth2", new SecurityScheme()
-                    .type(SecurityScheme.Type.OAUTH2)
-                    .bearerFormat("bearer")
+                    .type(SecurityScheme.Type.HTTP)
+                    .scheme("bearer")
+                    .description("JWT token in Authorization Header")
                 )
             );
     }
