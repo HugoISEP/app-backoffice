@@ -12,7 +12,6 @@ import com.mycompany.myapp.service.dto.CompanyDTO;
 import com.mycompany.myapp.service.dto.JobTypeDTO;
 import com.mycompany.myapp.service.mapper.JobTypeMapper;
 import com.mycompany.myapp.service.view.JobTypeView;
-import com.mycompany.myapp.service.view.PositionView;
 import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
 import com.mycompany.myapp.web.rest.errors.ResourceNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
@@ -22,7 +21,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
-import org.springframework.cache.CacheManager;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -252,8 +250,8 @@ public class JobTypeServiceTest {
 
         Optional<JobType> jobTypeDeleted = repository.findById(JobTypeId);
         assertTrue(jobTypeDeleted.isPresent());
-        assertTrue(Objects.nonNull(jobTypeDeleted.get().getDeletedAt()));
-        assertTrue(Objects.nonNull(jobTypeDeleted.get().getPositions().get(0).getDeletedAt()));
+        assertNotNull(jobTypeDeleted.get().getDeletedAt());
+        assertNotNull(jobTypeDeleted.get().getPositions().get(0).getDeletedAt());
         assertTrue(user.getJobTypes().isEmpty());
         verify(jobTypeService, times(1)).clearJobTypeCacheByCompany(company);
         verify(deviceService, times(1)).unsubscribeAllUsersDeletedTopic(jobTypeDeleted.get().getId());
