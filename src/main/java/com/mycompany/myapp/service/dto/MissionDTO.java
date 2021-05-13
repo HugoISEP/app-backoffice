@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Builder
@@ -19,7 +20,7 @@ public class MissionDTO implements MissionView {
     private String name;
     private String projectManagerEmail;
     private LocalDateTime createdAt;
-    private List<PositionDTO> positions;
+    private List<PositionDTO> positions = new ArrayList<>();
     private Company company;
 
 }

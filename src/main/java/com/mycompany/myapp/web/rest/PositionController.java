@@ -1,6 +1,5 @@
 package com.mycompany.myapp.web.rest;
 
-import com.mycompany.myapp.domain.Position;
 import com.mycompany.myapp.security.AuthoritiesConstants;
 import com.mycompany.myapp.service.PositionService;
 import com.mycompany.myapp.service.dto.PositionDTO;
@@ -75,7 +74,7 @@ public class PositionController {
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable("id") Position position){
-        service.deletePosition(position);
+    public void delete(@PathVariable("id") Long id){
+        service.deletePosition(id);
     }
 }

@@ -7,7 +7,6 @@ import com.mycompany.myapp.service.dto.MissionDTO;
 import com.mycompany.myapp.service.dto.UserDTO;
 import com.mycompany.myapp.service.mapper.CompanyMapper;
 import com.mycompany.myapp.service.mapper.MissionMapper;
-import com.mycompany.myapp.service.view.MissionView;
 import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
 import com.mycompany.myapp.web.rest.errors.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 
 @Service
@@ -47,12 +47,14 @@ public class MissionService {
 
     public MissionDTO getById(Long id){
         hasAuthorization(id);
-        return mapper.asDTO(repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("mission not found", ENTITY_NAME, "id doesn't exist")));
+        Mission mission = repository.findById(id).orElseThrow(() -> new BadRequestAlertException("position doesn't exist", ENTITY_NAME, "id doesn't exist"));
+        System.out.println("AFTER : " + mission.getPositions());
+        return mapper.asDTO(mission);
     }
 
     public MissionDTO createMission(MissionDTO mission){
         if (mission.getId() != null) {
-            throw new BadRequestAlertException("A new mission cannot already have an ID", ENTITY_NAME, "id already exists");
+            throw new BadRequestAlertException("A new mission cannot already have an ID", ENTITY_NAME, "id exists");
         }
         UserDTO user = userService.getUserWithAuthorities()
             .map(UserDTO::new)
@@ -64,7 +66,7 @@ public class MissionService {
 
     public void deleteMission(Long id){
         hasAuthorization(id);
-        Mission mission = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("position doesn't exist", ENTITY_NAME, "id doesn't exist"));
+        Mission mission = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("mission doesn't exist", ENTITY_NAME, "id doesn't exist"));
         mission.setDeletedAt(LocalDateTime.now());
         mission.getPositions().forEach(position -> position.setDeletedAt(LocalDateTime.now()));
         positionService.clearPositionCacheByCompany(mission.getCompany());
@@ -82,7 +84,7 @@ public class MissionService {
         return mapper.asDTO(repository.save(mission));
     }
 
-    public Page<MissionView> getAllMissionByCompany(Pageable pageable, String searchTerm){
+    public Page<Mission> getAllMissionByCompany(Pageable pageable, String searchTerm){
         UserDTO user = userService.getUserWithAuthorities()
             .map(UserDTO::new)
             .orElseThrow(() -> new ResourceNotFoundException("user not found", ENTITY_NAME, "id exists"));

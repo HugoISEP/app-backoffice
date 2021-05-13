@@ -1,6 +1,5 @@
 package com.mycompany.myapp.service;
 
-import com.google.common.collect.Streams;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.mycompany.myapp.domain.Company;
 import com.mycompany.myapp.domain.JobType;
@@ -20,7 +19,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static com.mycompany.myapp.config.Constants.DEFAULT_LANGUAGE;
 
@@ -95,7 +93,6 @@ public class DeviceService {
         user.setLangKey(newLanguage);
     }
 
-    @Async
     public void unsubscribeAllCompanyUsersToNotifications(Company company){
         company.getJobTypes().forEach(jobType -> {
             Map<String, List<String>> usersDevicesByLanguage = company.getUsers().stream()
@@ -112,17 +109,14 @@ public class DeviceService {
 
         Map<String, List<String>> usersDevicesByLanguage = jobType.getCompany().getUsers().stream()
             .filter(usr -> usr.getAuthorities().stream().noneMatch(authority -> authority.getName().equals(AuthoritiesConstants.ADMIN)))
-            .peek(usr -> usr.setJobTypes(Streams.concat(usr.getJobTypes().stream(), Stream.of(jobType)).collect(Collectors.toList())))
+            .peek(usr -> usr.getJobTypes().add(jobType))
             .collect(Collectors.toMap(usr -> Optional.ofNullable(usr.getLangKey()).orElse(DEFAULT_LANGUAGE), User::getDevices, (item, identicalItem) -> item));
         usersDevicesByLanguage.keySet().stream().filter(lang -> !usersDevicesByLanguage.get(lang).isEmpty()).forEach(lang -> {
             FirebaseMessaging.getInstance().subscribeToTopicAsync(usersDevicesByLanguage.get(lang), lang + id.toString());
         });
     }
 
-    @Async
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void unsubscribeAllUsersDeletedTopic(Long id){
-        JobType jobType = jobTypeRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("jobType not found", "JobType", "wrong id"));
+    public void unsubscribeAllUsersDeletedTopic(JobType jobType){
         Map<String, List<String>> usersDevicesByLanguage = jobType.getCompany().getUsers().stream()
             .filter(usr -> usr.getJobTypes().contains(jobType))
             .peek(usr -> usr.getJobTypes().remove(jobType))

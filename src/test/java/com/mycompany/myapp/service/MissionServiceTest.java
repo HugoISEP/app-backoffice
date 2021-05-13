@@ -185,9 +185,12 @@ public class MissionServiceTest {
     @Test
     public void deleteMissionMissionSuccess(){
         missionService.deleteMission(mission.getId());
-        Optional<Mission> missionDeleted = missionRepository.findById(mission.getId());
 
-        assertNotNull(missionDeleted.get());
+        Optional<Mission> emptyMission = missionRepository.findById(mission.getId());
+        Optional<Mission> missionDeleted = missionRepository.findByIdAndDeletedAtIsNotNull(mission.getId());
+
+        assertFalse(emptyMission.isPresent());
+        assertNotNull(missionDeleted);
         assertNotNull(missionDeleted.get().getDeletedAt());
         assertNotNull(missionDeleted.get().getPositions().get(0).getDeletedAt());
         verify(positionService, times(1)).clearPositionCacheByCompany(any(Company.class));
@@ -228,8 +231,8 @@ public class MissionServiceTest {
 
 
         Pageable pageable = PageRequest.of(0, 10);
-        Page<MissionView> missionViews = missionService.getAllMissionByCompany(pageable, "%%");
-        List<Long> missionViewIds = missionViews.getContent().stream().map(MissionView::getId).sorted().collect(Collectors.toList());
+        Page<Mission> missions = missionService.getAllMissionByCompany(pageable, "%%");
+        List<Long> missionViewIds = missions.getContent().stream().map(Mission::getId).sorted().collect(Collectors.toList());
 
         assertTrue(missionViewIds.contains(mission.getId()));
         assertFalse(missionViewIds.contains(otherMission.getId()));

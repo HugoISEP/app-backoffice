@@ -158,9 +158,8 @@ Desktop.ini
 ######################
 /src/main/resources/google
 
-
 ######################
-# Docekr Dev
+# Docker Dev
 ######################
 /src/main/docker/developpement
 !/src/main/docker/developpement/docker-compose.yml

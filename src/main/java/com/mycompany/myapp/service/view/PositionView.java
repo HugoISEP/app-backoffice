@@ -15,4 +15,5 @@ public interface PositionView {
     boolean isStatus();
     JobTypeView getJobType();
     MissionUserView getMission();
+    LocalDateTime getDeletedAt();
 }
