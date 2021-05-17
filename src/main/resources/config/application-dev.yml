@@ -68,7 +68,6 @@ spring:
     accessKey: adminadmin
     secretKey: adminadmin
     secure: false # secure if using https
-    mandatory: false
 
 server:
   port: 8080

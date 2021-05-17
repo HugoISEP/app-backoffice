@@ -77,7 +77,6 @@ spring:
     accessKey: ${MINIO_ACCESSKEY}
     secretKey: ${MINIO_SECRETKEY}
     secure: true # secure if using https
-    mandatory: true
 
 # ===================================================================
 # To enable TLS in production, generate a certificate using:
