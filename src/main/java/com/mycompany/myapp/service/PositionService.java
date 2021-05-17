@@ -1,8 +1,6 @@
 package com.mycompany.myapp.service;
 
-import com.mycompany.myapp.domain.Company;
-import com.mycompany.myapp.domain.Mission;
-import com.mycompany.myapp.domain.Position;
+import com.mycompany.myapp.domain.*;
 import com.mycompany.myapp.repository.*;
 import com.mycompany.myapp.repository.PositionRepository;
 import com.mycompany.myapp.repository.MissionRepository;
@@ -49,6 +47,7 @@ public class PositionService {
     private final UserService userService;
     private final NotificationService notificationService;
     private final CacheManager cacheManager;
+    private final UserPositionRepository userPositionRepository;
 
     public void hasAuthorization(Long id){
         UserDTO user = userService.getUserWithAuthorities()
@@ -149,6 +148,15 @@ public class PositionService {
 
     public void clearPositionCacheByCompany(Company company) {
         Objects.requireNonNull(cacheManager.getCache(PositionRepository.POSITIONS_AVAILABLE_CACHE)).evict(company.getId());
+    }
+
+    public PositionView bindUserToPosition(Long userId, Long positionId) {
+        UserPosition userPosition = UserPosition.builder()
+            .position(repository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("Position not found", ENTITY_NAME, "id doesn't exist")))
+            .user(userService.getUserById(userId))
+            .build();
+        userPositionRepository.save(userPosition);
+        return mapper.asDto(repository.findById(positionId).orElseThrow(()-> new ResourceNotFoundException("Position not found", ENTITY_NAME, "id doesn't exist")));
     }
 }
 

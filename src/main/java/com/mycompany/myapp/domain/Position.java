@@ -9,6 +9,7 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @Builder
@@ -59,5 +60,8 @@ public class Position {
 
     @JsonIgnore
     private LocalDateTime lastNotificationAt;
+
+    @OneToMany
+    private List<UserPosition> userPositions;
 
 }
