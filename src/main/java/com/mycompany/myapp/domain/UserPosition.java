@@ -3,6 +3,7 @@ package com.mycompany.myapp.domain;
 import lombok.*;
 
 import javax.persistence.*;
+import javax.validation.constraints.Size;
 
 @Data
 @Builder
@@ -18,6 +19,8 @@ public class UserPosition {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "comment", length = 2048)
+    @Size(max = 2048)
     private String comment;
 
     private Long mark;
