@@ -6,7 +6,11 @@ import com.mycompany.myapp.service.mapper.UserPositionMapper;
 import com.mycompany.myapp.service.view.UserPositionView;
 import com.mycompany.myapp.web.rest.errors.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @RequiredArgsConstructor
 @Service
@@ -24,4 +28,19 @@ public class UserPositionService {
     public UserPositionView getViewById(Long id) {
         return repository.findUserPositionViewById(id).orElseThrow(()-> new ResourceNotFoundException("UserPosition not found", ENTITY_NAME, "id not found"));
     }
+
+    public Page<UserPositionView> getViewsPaginatedByUserId(Pageable pageable, Long id) {
+        return repository.findByUserId(pageable, id);
+    }
+
+    public Page<UserPositionView> getViewsPaginatedByPositionId(Pageable pageable, Long id) {
+        return repository.findByPositionId(pageable, id);
+    }
+
+    public Page<UserPositionView> getViewsPaginatedByMissionId(Pageable pageable, Long id) {
+        return repository.findByPositionMissionId(pageable, id);
+    }
+
+
+
 }

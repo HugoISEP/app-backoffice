@@ -5,6 +5,8 @@ import com.mycompany.myapp.service.UserPositionService;
 import com.mycompany.myapp.service.dto.UserPositionDto;
 import com.mycompany.myapp.service.view.UserPositionView;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,5 +29,21 @@ public class UserPositionController {
     public UserPositionView getById(@PathVariable Long id) {
         return service.getViewById(id);
     }
+
+    @GetMapping("/user/{id}")
+    public Page<UserPositionView> getByUser(Pageable page, @PathVariable Long id) {
+        return service.getViewsPaginatedByUserId(page, id);
+    }
+
+    @GetMapping("/position/{id}")
+    public Page<UserPositionView> getByPosition(Pageable page, @PathVariable Long id) {
+        return service.getViewsPaginatedByPositionId(page, id);
+    }
+
+    @GetMapping("/mission/{id}")
+    public Page<UserPositionView> getByMission(Pageable page, @PathVariable Long id) {
+        return service.getViewsPaginatedByMissionId(page, id);
+    }
+
 
 }
