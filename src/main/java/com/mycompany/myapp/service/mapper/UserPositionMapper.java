@@ -13,6 +13,7 @@ import org.mapstruct.NullValuePropertyMappingStrategy;
 public interface UserPositionMapper {
 
     @Mapping(source = "user", target = "user", qualifiedByName = "userAsDto")
+    @Mapping(target = "createdAt", ignore = true)
     UserPositionDto asDto(UserPosition in);
 
     @Mapping(source = "user", target = "user", qualifiedByName = "userToDto")

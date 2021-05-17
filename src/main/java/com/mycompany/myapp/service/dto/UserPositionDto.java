@@ -4,6 +4,7 @@ import com.mycompany.myapp.service.view.UserPositionView;
 import lombok.Data;
 
 import javax.validation.constraints.Size;
+import java.time.LocalDateTime;
 
 @Data
 public class UserPositionDto implements UserPositionView {
@@ -15,4 +16,6 @@ public class UserPositionDto implements UserPositionView {
     Long remuneration;
     UserDTO user;
     PositionDTO position;
+    LocalDateTime endedAt;
+    LocalDateTime createdAt;
 }

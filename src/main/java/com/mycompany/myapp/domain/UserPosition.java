@@ -1,9 +1,12 @@
 package com.mycompany.myapp.domain;
 
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
+import java.time.LocalDateTime;
 
 @Data
 @Builder
@@ -26,6 +29,14 @@ public class UserPosition {
     private Long mark;
 
     private Float remuneration;
+
+    @CreationTimestamp
+    private LocalDateTime createdAt;
+
+    @UpdateTimestamp
+    private LocalDateTime updatedAt;
+
+    private LocalDateTime endedAt;
 
     @ManyToOne
     private User user;
