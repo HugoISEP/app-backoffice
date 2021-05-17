@@ -45,5 +45,10 @@ public class UserPositionController {
         return service.getViewsPaginatedByMissionId(page, id);
     }
 
+    @DeleteMapping("/{id}")
+    public void delete(@PathVariable Long id) {
+        service.deleteById(id);
+    }
+
 
 }

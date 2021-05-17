@@ -41,6 +41,10 @@ public class UserPositionService {
         return repository.findByPositionMissionId(pageable, id);
     }
 
+    public void deleteById(Long id) {
+        repository.deleteById(id);
+    }
+
 
 
 }
