@@ -11,7 +11,7 @@ import static com.mycompany.myapp.config.Constants.DOCUMENT_BUCKET;
 @Entity
 @Builder
 @NoArgsConstructor
-@RequiredArgsConstructor
+@AllArgsConstructor
 @ToString
 @Table(name = "document")
 public class Document {
