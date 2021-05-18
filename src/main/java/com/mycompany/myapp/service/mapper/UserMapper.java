@@ -29,6 +29,11 @@ public class UserMapper {
         return new UserDTO(user);
     }
 
+    public static UserDTO userToUserDTOStatic(User user) {
+        return new UserDTO(user);
+    }
+
+
     public List<User> userDTOsToUsers(List<UserDTO> userDTOs) {
         return userDTOs.stream()
             .filter(Objects::nonNull)
@@ -37,6 +42,10 @@ public class UserMapper {
     }
 
     public User userDTOToUser(UserDTO userDTO) {
+        return userDTOToUserStatic(userDTO);
+    }
+
+    public static User userDTOToUserStatic(UserDTO userDTO) {
         if (userDTO == null) {
             return null;
         } else {
@@ -49,14 +58,13 @@ public class UserMapper {
             user.setImageUrl(userDTO.getImageUrl());
             user.setActivated(userDTO.isActivated());
             user.setLangKey(userDTO.getLangKey());
-            Set<Authority> authorities = this.authoritiesFromStrings(userDTO.getAuthorities());
+            Set<Authority> authorities = authoritiesFromStrings(userDTO.getAuthorities());
             user.setAuthorities(authorities);
             return user;
         }
     }
 
-
-    private Set<Authority> authoritiesFromStrings(Set<String> authoritiesAsString) {
+    public static Set<Authority> authoritiesFromStrings(Set<String> authoritiesAsString) {
         Set<Authority> authorities = new HashSet<>();
 
         if (authoritiesAsString != null) {
