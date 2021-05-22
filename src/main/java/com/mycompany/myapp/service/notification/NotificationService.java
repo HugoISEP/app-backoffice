@@ -39,6 +39,7 @@ public class NotificationService {
         log.info("Send notification " + Locale.forLanguageTag(language).getLanguage() + ", message: " + beginBody + " " + endBody);
         return AndroidConfig.builder()
             .setTtl(Duration.ofMinutes(2).toMillis())
+            .putData("positionId", position.getId().toString())
             .setNotification(AndroidNotification.builder()
                 .setTitle(position.getMission().getCompany().getName())
                 .setBody(String.format("%s %s %s",
@@ -54,6 +55,7 @@ public class NotificationService {
 
     private ApnsConfig getApnsConfig(Position position, NotificationStatus notificationStatus, String language) {
         return ApnsConfig.builder()
+            .putCustomData("positionId", position.getId())
             .setAps(Aps.builder().setCategory(position.getJobType().getId().toString()).setSound("default")
                 .setAlert(ApsAlert.builder()
                     .setTitle(position.getMission().getCompany().getName())
@@ -63,9 +65,7 @@ public class NotificationService {
                         messageSource.getMessage("mission_status." + notificationStatus.getValue() + ".text2", null, Locale.forLanguageTag(language))
                         ))
                     .build())
-                .setContentAvailable(true)
                 .build())
-            .putHeader("apns-priority", "10")
             .build();
     }
 
