@@ -24,6 +24,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Optional;
 
 @Tag(name = "Position", description = "Endpoints for Position resource. Positions are entities which will be visible in the application.")
 @RestController
@@ -53,7 +54,7 @@ public class PositionController {
     @GetMapping("/active")
     @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.MANAGER + "\") or hasAuthority(\"" + AuthoritiesConstants.USER + "\")")
     public ResponseEntity<List<PositionView>> getActivePositionsByUser(@PageableDefault(size = 50) Pageable pageable,
-                                                                       @RequestParam(value = "searchTerm", defaultValue = "%%") String searchTerm){
+                                                                       @RequestParam(value = "searchTerm") Optional<String> searchTerm){
         Page<PositionView> page = service.getActivePositionsByUser(pageable, searchTerm);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);

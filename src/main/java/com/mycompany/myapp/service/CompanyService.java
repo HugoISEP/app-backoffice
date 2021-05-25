@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 import static com.mycompany.myapp.config.Constants.LOGO_BUCKET;
 
@@ -54,8 +55,8 @@ public class CompanyService {
         return repository.findCompanyFromCurrentUser(user.getId());
     }
 
-    public Page<CompanyDetailsView> getAllPaginated(Pageable pageable, String searchTerm){
-        return repository.findAllPaginated(pageable, searchTerm);
+    public Page<CompanyDetailsView> getAllPaginated(Pageable pageable, Optional<String> searchTerm){
+        return repository.findAllPaginated(pageable, searchTerm.orElse("%%"));
     }
 
     public CompanyDTO create(String companyJson, MultipartFile file) throws Exception {

@@ -179,7 +179,7 @@ public class UserResource {
      */
     @GetMapping("/users")
     @AdminSecured
-    public ResponseEntity<List<UserDTO>> getAllUsers(Pageable pageable, @RequestParam(value = "searchTerm", defaultValue = "%%") String searchTerm) {
+    public ResponseEntity<List<UserDTO>> getAllUsers(Pageable pageable, @RequestParam Optional<String> searchTerm) {
         final Page<UserDTO> page = userService.getAllManagedUsers(pageable, searchTerm);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
@@ -188,7 +188,7 @@ public class UserResource {
     @Operation(summary = "Get users from company", description = "Get all users from company with pagination.")
     @GetMapping("/users/manager")
     @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.MANAGER + "\")")
-    public ResponseEntity<List<UserDTO>> getAllUsersByManager(Pageable pageable, @RequestParam(value = "searchTerm", defaultValue = "%%") String searchTerm) {
+    public ResponseEntity<List<UserDTO>> getAllUsersByManager(Pageable pageable, @RequestParam Optional<String> searchTerm) {
         final Page<UserDTO> page = userService.getAllManagedUsersByManager(pageable, searchTerm);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);

@@ -165,7 +165,7 @@ public class JobTypeServiceTest {
             .build();
         jobTypeAnotherMission = repository.save(jobTypeAnotherMission);
 
-        String searchTerm = "symfony";
+        Optional<String> searchTerm = Optional.of("symfony");
         Pageable pageable = PageRequest.of(0, 10);
         Page<JobTypeView> jobTypes = jobTypeService.getAllJobTypeByUserPaginated(pageable, searchTerm);
         assertEquals(jobTypes.getContent().size(), 1);

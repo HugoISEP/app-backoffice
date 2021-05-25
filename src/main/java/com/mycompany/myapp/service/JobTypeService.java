@@ -22,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 
@@ -54,12 +55,12 @@ public class JobTypeService {
         return mapper.asDTO(repository.findById(id).orElseThrow(() -> new BadRequestAlertException("position doesn't exist", ENTITY_NAME, "id doesn't exist")));
     }
 
-    public Page<JobTypeView> getAllJobTypeByUserPaginated(Pageable pageable, String searchTerm){
+    public Page<JobTypeView> getAllJobTypeByUserPaginated(Pageable pageable, Optional<String> searchTerm){
         UserDTO user = userService.getUserWithAuthorities()
             .map(UserDTO::new)
             .orElseThrow(() -> new ResourceNotFoundException("User not found", ENTITY_NAME, "id doesn't exist"));
 
-        return repository.findAllByCompanyIdPaginated(user.getCompany().getId(), searchTerm, pageable);
+        return repository.findAllByCompanyIdPaginated(user.getCompany().getId(), searchTerm.orElse("%%"), pageable);
     }
 
     public List<JobTypeView> getAllJobTypeByUser(){

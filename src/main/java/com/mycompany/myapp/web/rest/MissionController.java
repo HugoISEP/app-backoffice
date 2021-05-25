@@ -20,6 +20,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Optional;
 
 
 @RestController
@@ -39,7 +40,7 @@ public class MissionController {
 
     @Operation(summary = "Get all missions paged", description = "Get all own company's missions with pagination.")
     @GetMapping
-    public ResponseEntity<List<MissionView>> getAllByUserCompany(Pageable pageable, @RequestParam(value = "searchTerm", defaultValue = "%%") String searchTerm){
+    public ResponseEntity<List<MissionView>> getAllByUserCompany(Pageable pageable, @RequestParam Optional<String> searchTerm){
         Page<MissionView> page = service.getAllMissionByCompany(pageable, searchTerm);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);

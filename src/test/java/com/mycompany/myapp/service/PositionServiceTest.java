@@ -253,7 +253,7 @@ public class PositionServiceTest {
         otherMission.setPositions(listPositions);
         otherMission = missionRepository.saveAndFlush(otherMission);
 
-        String searchTerm = "BNP";
+        Optional<String> searchTerm = Optional.of("BNP");
         Pageable pageable = PageRequest.of(0, 10);
         List<PositionView> activePositions = positionService.getActivePositionsByUser(pageable, searchTerm).getContent();
 

@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 
 @Service
@@ -82,10 +83,10 @@ public class MissionService {
         return mapper.asDTO(repository.save(mission));
     }
 
-    public Page<MissionView> getAllMissionByCompany(Pageable pageable, String searchTerm){
+    public Page<MissionView> getAllMissionByCompany(Pageable pageable, Optional<String> searchTerm){
         UserDTO user = userService.getUserWithAuthorities()
             .map(UserDTO::new)
             .orElseThrow(() -> new ResourceNotFoundException("user not found", ENTITY_NAME, "id exists"));
-        return repository.findAllByCompanyId(user.getCompany().getId(), searchTerm, pageable);
+        return repository.findAllByCompanyId(user.getCompany().getId(), searchTerm.orElse("%%"), pageable);
     }
 }
