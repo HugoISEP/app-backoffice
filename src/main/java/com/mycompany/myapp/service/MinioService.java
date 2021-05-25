@@ -13,7 +13,7 @@ import java.util.List;
 @Service
 public class MinioService {
 
-    @Autowired
+    @Autowired(required = false)
     MinioClient minioClient;
 
     public List<Bucket> getAllBuckets() {
