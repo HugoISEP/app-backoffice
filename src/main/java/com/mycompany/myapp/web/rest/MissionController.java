@@ -1,8 +1,10 @@
 package com.mycompany.myapp.web.rest;
 
+import com.mycompany.myapp.domain.Mission;
 import com.mycompany.myapp.security.AuthoritiesConstants;
 import com.mycompany.myapp.service.MissionService;
 import com.mycompany.myapp.service.dto.MissionDTO;
+import com.mycompany.myapp.service.mapper.MissionMapper;
 import com.mycompany.myapp.service.view.MissionView;
 import io.github.jhipster.web.util.PaginationUtil;
 import io.swagger.v3.oas.annotations.Operation;
@@ -31,6 +33,7 @@ import java.util.Optional;
 public class MissionController {
 
     private final MissionService service;
+    private final MissionMapper mapper;
 
     @Operation(summary = "Get mission by id", description = "Retrieve Mission resource by his id property.")
     @GetMapping("/{id}")
@@ -40,10 +43,10 @@ public class MissionController {
 
     @Operation(summary = "Get all missions paged", description = "Get all own company's missions with pagination.")
     @GetMapping
-    public ResponseEntity<List<MissionView>> getAllByUserCompany(Pageable pageable, @RequestParam Optional<String> searchTerm){
-        Page<MissionView> page = service.getAllMissionByCompany(pageable, searchTerm);
+    public ResponseEntity<List<MissionDTO>> getAllByUserCompany(Pageable pageable, @RequestParam Optional<String> searchTerm){
+        Page<Mission> page = service.getAllMissionByCompany(pageable, searchTerm);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
-        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+        return new ResponseEntity<>(mapper.asListDTO(page.getContent()), headers, HttpStatus.OK);
     }
 
     @Operation(summary = "Create a new mission", description = "Create a new mission resource to user's own company.")

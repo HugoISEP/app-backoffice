@@ -12,7 +12,6 @@ import com.mycompany.myapp.service.dto.CompanyDTO;
 import com.mycompany.myapp.service.dto.JobTypeDTO;
 import com.mycompany.myapp.service.mapper.JobTypeMapper;
 import com.mycompany.myapp.service.view.JobTypeView;
-import com.mycompany.myapp.service.view.PositionView;
 import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
 import com.mycompany.myapp.web.rest.errors.ResourceNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
@@ -22,7 +21,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
-import org.springframework.cache.CacheManager;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -54,7 +52,7 @@ public class JobTypeServiceTest {
     private JobTypeMapper mapper;
     @MockBean
     private UserService userService;
-    @MockBean
+    @SpyBean
     private DeviceService deviceService;
     @Autowired
     private CompanyRepository companyRepository;
@@ -167,7 +165,7 @@ public class JobTypeServiceTest {
 
         Optional<String> searchTerm = Optional.of("symfony");
         Pageable pageable = PageRequest.of(0, 10);
-        Page<JobTypeView> jobTypes = jobTypeService.getAllJobTypeByUserPaginated(pageable, searchTerm);
+        Page<JobTypeView> jobTypes = jobTypeService.getAllJobTypeByCompanyPaginated(pageable, searchTerm);
         assertEquals(jobTypes.getContent().size(), 1);
         assertNotEquals(jobTypes.getContent().get(0).getId(), jobTypeAnotherMission.getId());
         assertEquals(jobTypes.getContent().get(0).getId(), jobType1.getId());
@@ -198,7 +196,6 @@ public class JobTypeServiceTest {
     @Test
     public void createJobTypeSuccess(){
         JobTypeDTO jobTypeDTO = JobTypeDTO.builder().name("powerball").icon("symfony").company(CompanyDTO.builder().id(company.getId()).build()).build();
-        doNothing().when(deviceService).subscribeAllUsersToNewTopic(isA(Long.class));
 
         JobTypeDTO jobTypeDTOSaved = jobTypeService.createJobType(jobTypeDTO);
 
@@ -246,24 +243,26 @@ public class JobTypeServiceTest {
 
     @Test
     public void deleteJobTypeSuccess(){
-        Long JobTypeId = jobType.getId();
+        Long jobTypeId = jobType.getId();
 
-        jobTypeService.deleteJobType(JobTypeId);
+        jobTypeService.deleteJobType(jobTypeId);
 
-        Optional<JobType> jobTypeDeleted = repository.findById(JobTypeId);
-        assertTrue(jobTypeDeleted.isPresent());
-        assertTrue(Objects.nonNull(jobTypeDeleted.get().getDeletedAt()));
-        assertTrue(Objects.nonNull(jobTypeDeleted.get().getPositions().get(0).getDeletedAt()));
+        Optional<JobType> jobTypeDeleted = repository.findByIdAndDeletedAtIsNotNull(jobTypeId);
+        Optional<JobType> emptyJobType = repository.findById(jobTypeId);
+
+        assertFalse(emptyJobType.isPresent());
+        assertNotNull(jobTypeDeleted.get().getDeletedAt());
+        assertNotNull(jobTypeDeleted.get().getPositions().get(0).getDeletedAt());
         assertTrue(user.getJobTypes().isEmpty());
         verify(jobTypeService, times(1)).clearJobTypeCacheByCompany(company);
-        verify(deviceService, times(1)).unsubscribeAllUsersDeletedTopic(jobTypeDeleted.get().getId());
+        verify(deviceService, times(1)).unsubscribeAllUsersDeletedTopic(jobTypeDeleted.get());
     }
 
     @Test
     public void clearJobTypeCacheByPositionSuccess(){
-        List<JobTypeView> jobTypesViewsBefore = repository.findAllByCompany_Id(company.getId());
+        List<JobTypeView> jobTypesViewsBefore = repository.findAllByCompany_IdAndDeletedAtIsNull(company.getId());
         jobTypeService.deleteJobType(jobType.getId());
-        List<JobTypeView> jobTypesViewsAfter = repository.findAllByCompany_Id(jobType.getId());
+        List<JobTypeView> jobTypesViewsAfter = repository.findAllByCompany_IdAndDeletedAtIsNull(jobType.getId());
         assertNotEquals(jobTypesViewsBefore, jobTypesViewsAfter);
         assertFalse(jobTypesViewsAfter.stream().anyMatch(j -> j.getId().equals(position.getId())));
     }

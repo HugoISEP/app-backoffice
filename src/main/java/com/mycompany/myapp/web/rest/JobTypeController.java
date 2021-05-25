@@ -43,7 +43,7 @@ public class JobTypeController {
     @GetMapping
     @Operation(summary = "Get all job-types paged", description = "Get all job-types of his own company with pagination.")
     public ResponseEntity<List<JobTypeView>> getAllByUserPaginated(Pageable pageable, @RequestParam Optional<String> searchTerm){
-        Page page = service.getAllJobTypeByUserPaginated(pageable, searchTerm);
+        Page page = service.getAllJobTypeByCompanyPaginated(pageable, searchTerm);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }

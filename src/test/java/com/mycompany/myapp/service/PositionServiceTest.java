@@ -355,8 +355,10 @@ public class PositionServiceTest {
 
     @Test
     public void deletePositionSuccess(){
-        positionService.deletePosition(position);
-        Optional<Position> deletedPosition = positionRepository.findById(position.getId());
+        positionService.deletePosition(position.getId());
+        Optional<Position> emptyPosition = positionRepository.findById(position.getId());
+        Optional<Position> deletedPosition = positionRepository.findByIdAndDeletedAtIsNotNull(position.getId());
+        assertFalse(emptyPosition.isPresent());
         assertTrue(deletedPosition.isPresent());
         assertNotNull(deletedPosition.get().getDeletedAt());
         verify(positionService, times(1)).clearPositionCacheByPosition(position.getMission().getCompany().getId());
@@ -366,7 +368,7 @@ public class PositionServiceTest {
     public void clearPositionCacheByPositionSuccess(){
         Pageable pageable = PageRequest.of(0, 10);
         List<PositionView> positionViewsBefore = positionRepository.findAllByMissionCompanyIdAndStatusIsTrue(position.getMission().getCompany().getId(), "%%",  pageable).getContent();
-        positionService.deletePosition(position);
+        positionService.deletePosition(position.getId());
         List<PositionView> positionViewsAfter = positionRepository.findAllByMissionCompanyIdAndStatusIsTrue(position.getMission().getCompany().getId(), "%%",  pageable).getContent();
         assertNotEquals(positionViewsBefore, positionViewsAfter);
         assertFalse(positionViewsAfter.stream().anyMatch(p -> p.getId().equals(position.getId())));

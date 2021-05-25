@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.mycompany.myapp.service.validator.IconConstraint;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -19,7 +18,6 @@ import java.util.List;
 @Entity
 @ToString(exclude = {"positions"})
 @EqualsAndHashCode(of = {"id"})
-@Where(clause = "deleted_at is null ")
 @Table(name = "job_type")
 public class JobType {
 

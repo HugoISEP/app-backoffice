@@ -10,17 +10,23 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface PositionRepository extends JpaRepository<Position, Long> {
 
     String POSITIONS_AVAILABLE_CACHE = "positionsAvailable";
 
-    List<PositionView> findAllByMissionId(Long id);
+    List<PositionView> findAllByMissionIdAndDeletedAtIsNull(Long id);
 
     @Cacheable(cacheNames = POSITIONS_AVAILABLE_CACHE, key = "#p0", condition = "#p1 == '%%' && #p2.pageSize == 50")
     @Query("select p from Position p " +
-        "where p.mission.company.id = :id and p.status = true and " +
+        "where p.mission.company.id = :id and p.status = true and p.deletedAt is null and " +
         "lower(p.mission.name) like concat('%',lower(:searchTerm),'%') " +
         "order by p.createdAt")
     Page<PositionView> findAllByMissionCompanyIdAndStatusIsTrue(@Param("id") Long id, @Param("searchTerm") String searchTerm, Pageable pageable);
+
+    @Query("select p from Position p where p.deletedAt is null and p.id = :id")
+    Optional<Position> findById(@Param("id") Long id);
+
+    Optional<Position> findByIdAndDeletedAtIsNotNull(Long id);
 }

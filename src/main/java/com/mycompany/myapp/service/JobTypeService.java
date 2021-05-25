@@ -23,7 +23,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 
 @Service
@@ -55,7 +54,7 @@ public class JobTypeService {
         return mapper.asDTO(repository.findById(id).orElseThrow(() -> new BadRequestAlertException("position doesn't exist", ENTITY_NAME, "id doesn't exist")));
     }
 
-    public Page<JobTypeView> getAllJobTypeByUserPaginated(Pageable pageable, Optional<String> searchTerm){
+    public Page<JobTypeView> getAllJobTypeByCompanyPaginated(Pageable pageable, Optional<String> searchTerm){
         UserDTO user = userService.getUserWithAuthorities()
             .map(UserDTO::new)
             .orElseThrow(() -> new ResourceNotFoundException("User not found", ENTITY_NAME, "id doesn't exist"));
@@ -67,7 +66,7 @@ public class JobTypeService {
         UserDTO user = userService.getUserWithAuthorities()
             .map(UserDTO::new)
             .orElseThrow(() -> new ResourceNotFoundException("User not found", ENTITY_NAME, "id doesn't exist"));
-        return repository.findAllByCompany_Id(user.getCompany().getId());
+        return repository.findAllByCompany_IdAndDeletedAtIsNull(user.getCompany().getId());
     }
 
     public JobTypeDTO createJobType(JobTypeDTO jobTypeDTO){
@@ -103,14 +102,11 @@ public class JobTypeService {
     public void deleteJobType(Long id){
         JobType jobTypeToDelete = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("JobType doesn't exist", ENTITY_NAME, "id doesn't exist"));
         hasAuthorization(id);
-        //Remove user's Notifications
-        jobTypeToDelete.getCompany().getUsers().forEach(user ->
-            user.setJobTypes(user.getJobTypes().stream().filter(jobType -> !jobType.getId().equals(jobTypeToDelete.getId())).collect(Collectors.toList())));
+        deviceService.unsubscribeAllUsersDeletedTopic(jobTypeToDelete);
         jobTypeToDelete.setDeletedAt(LocalDateTime.now());
         jobTypeToDelete.getPositions().forEach(position -> position.setDeletedAt(LocalDateTime.now()));
         positionService.clearPositionCacheByCompany(jobTypeToDelete.getCompany());
         this.clearJobTypeCacheByCompany(jobTypeToDelete.getCompany());
-        deviceService.unsubscribeAllUsersDeletedTopic(id);
         repository.save(jobTypeToDelete);
     }
 

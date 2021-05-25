@@ -68,7 +68,7 @@ public class PositionService {
 
     public List<PositionView> getByMissionId(Long id){
         missionService.hasAuthorization(id);
-        return repository.findAllByMissionId(id);
+        return repository.findAllByMissionIdAndDeletedAtIsNull(id);
     }
 
     public Page<PositionView> getActivePositionsByUser(Pageable pageable, Optional<String> searchTerm){
@@ -132,8 +132,9 @@ public class PositionService {
         }
     }
 
-    public void deletePosition(Position position){
-        hasAuthorization(position.getId());
+    public void deletePosition(Long id){
+        hasAuthorization(id);
+        Position position = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("position doesn't exist", ENTITY_NAME, "id doesn't exist"));
         position.setDeletedAt(LocalDateTime.now());
         repository.save(position);
         this.clearPositionCacheByPosition(position.getMission().getCompany().getId());

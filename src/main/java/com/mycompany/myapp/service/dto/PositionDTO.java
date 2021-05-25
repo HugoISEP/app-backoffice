@@ -23,5 +23,5 @@ public class PositionDTO implements PositionView {
     private boolean status;
     private JobTypeDTO jobType;
     private MissionUserDTO mission;
-
+    private LocalDateTime deletedAt;
 }

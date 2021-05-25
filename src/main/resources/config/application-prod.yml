@@ -15,6 +15,12 @@
 
 logging:
   level:
+    org:
+      hibernate:
+        type:
+          descriptor:
+            sql:
+              BasicBinder: TRACE
     ROOT: ${LOGGING_LEVEL}
     io.github.jhipster: ${LOGGING_LEVEL}
     com.mycompany.myapp: ${LOGGING_LEVEL}
@@ -46,7 +52,7 @@ spring:
       auto-commit: false
   jpa:
     database-platform: io.github.jhipster.domain.util.FixedPostgreSQL10Dialect
-    show-sql: false
+    show-sql: true
   # Replace by 'prod, faker' to add the faker context and have sample data loaded in production
   liquibase:
     contexts: prod

@@ -3,7 +3,6 @@ package com.mycompany.myapp.domain;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import javax.validation.constraints.Min;
@@ -16,7 +15,6 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString(exclude = {"mission", "jobType"})
-@Where(clause = "deleted_at is null ")
 @Entity
 @Table(name = "position")
 public class Position {
