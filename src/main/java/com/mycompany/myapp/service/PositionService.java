@@ -87,18 +87,19 @@ public class PositionService {
         Mission mission = missionRepository.findById(missionId).orElseThrow(() -> new ResourceNotFoundException("mission doesn't exist", ENTITY_NAME, "id doesn't exist"));
         newPosition.setMission(mission);
         mission.getPositions().add(newPosition);
+
+        Mission missionSaved = missionRepository.save(mission);
+        Position positionSaved = missionSaved.getPositions().stream().sorted((p1, p2) -> p2.getCreatedAt().compareTo(p1.getCreatedAt())).findFirst().get();
         try {
-            if (newPosition.isStatus()){
-                notificationService.sendMessage(newPosition, NotificationStatus.NEW);
+            if (positionSaved.isStatus()){
+                notificationService.sendMessage(positionSaved, NotificationStatus.NEW);
                 newPosition.setLastNotificationAt(LocalDateTime.now());
             }
         } catch (InterruptedException | ExecutionException e) {
             log.warn("Error when sending notification: " + e.toString());
         }
-        Mission missionSaved = missionRepository.save(mission);
         this.clearPositionCacheByPosition(mission.getCompany().getId());
-        PositionDTO positionDTO = mapper.asDto(missionSaved.getPositions().stream().sorted((p1, p2) -> p2.getCreatedAt().compareTo(p1.getCreatedAt())).findFirst().get());
-        return positionDTO;
+        return mapper.asDto(positionSaved);
     }
 
     public PositionDTO editPosition(PositionDTO updatedPosition){
