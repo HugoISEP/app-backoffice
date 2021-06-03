@@ -293,16 +293,16 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public Page<UserDTO> getAllManagedUsers(Pageable pageable, String searchTerm) {
-        return userRepository.findAllWithSearchTerm(pageable, Constants.ANONYMOUS_USER, searchTerm).map(UserDTO::new);
+    public Page<UserDTO> getAllManagedUsers(Pageable pageable, Optional<String> searchTerm) {
+        return userRepository.findAllWithSearchTerm(pageable, Constants.ANONYMOUS_USER, searchTerm.orElse("%%")).map(UserDTO::new);
     }
 
     @Transactional(readOnly = true)
-    public Page<UserDTO> getAllManagedUsersByManager(Pageable pageable, String searchTerm) {
+    public Page<UserDTO> getAllManagedUsersByManager(Pageable pageable, Optional<String> searchTerm) {
         UserDTO user = this.getUserWithAuthorities()
             .map(UserDTO::new)
             .orElseThrow(() -> new BadRequestAlertException("user not found", "USER", "id exists"));
-        return userRepository.findAllUsersByManager(pageable, user.getCompany().getId(), searchTerm).map(UserDTO::new);
+        return userRepository.findAllUsersByManager(pageable, user.getCompany().getId(), searchTerm.orElse("%%")).map(UserDTO::new);
     }
 
     @Transactional(readOnly = true)

@@ -1,6 +1,7 @@
 package com.mycompany.myapp.web.rest;
 
 import com.mycompany.myapp.config.Constants;
+import com.mycompany.myapp.config.annotations.AdminSecured;
 import com.mycompany.myapp.domain.User;
 import com.mycompany.myapp.repository.UserRepository;
 import com.mycompany.myapp.security.AuthoritiesConstants;
@@ -19,7 +20,10 @@ import io.github.jhipster.web.util.HeaderUtil;
 import io.github.jhipster.web.util.PaginationUtil;
 import io.github.jhipster.web.util.ResponseUtil;
 
+import io.swagger.v3.oas.annotations.Hidden;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -27,6 +31,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -62,7 +67,8 @@ import java.util.*;
  * Another option would be to have a specific JPA entity graph to handle this case.
  */
 @RestController
-@RequestMapping("/api")
+@Tag(name = "User", description = "Endpoints for User resource")
+@RequestMapping(value = "/api", produces = MediaType.APPLICATION_JSON_VALUE)
 @RequiredArgsConstructor
 public class UserResource {
 
@@ -91,6 +97,7 @@ public class UserResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      * @throws BadRequestAlertException {@code 400 (Bad Request)} if the login or email is already in use.
      */
+    @Operation(summary = "Create user", description = "Create a user for user's own company.")
     @PostMapping("/users")
     @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\") or hasAuthority(\"" + AuthoritiesConstants.MANAGER + "\")")
     public ResponseEntity<User> createUser(@Valid @RequestBody UserDTO userDTO) throws Exception {
@@ -119,6 +126,7 @@ public class UserResource {
      * @throws EmailAlreadyUsedException {@code 400 (Bad Request)} if the email is already in use.
      * @throws LoginAlreadyUsedException {@code 400 (Bad Request)} if the login is already in use.
      */
+    @Operation(summary = "Update user")
     @PutMapping("/users")
     @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\") or hasAuthority(\"" + AuthoritiesConstants.MANAGER + "\")")
     public ResponseEntity<UserDTO> updateUser(@Valid @RequestBody UserDTO userDTO) throws Exception {
@@ -143,6 +151,7 @@ public class UserResource {
      * @param id the login of the user to find.
      * @return the {@link List<? extends JobTypeView>} with status {@code 200 (OK)} and with list of jobTypes.
      */
+    @Operation(summary = "Update notifications preferences")
     @PutMapping("/users/{id}")
     @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.USER + "\") or hasAuthority(\"" + AuthoritiesConstants.MANAGER + "\")")
     public List<? extends JobTypeView> editJobTypes(@PathVariable("id") Long id, @Valid @RequestBody List<JobTypeDTO> jobTypes) {
@@ -154,6 +163,7 @@ public class UserResource {
      *
      * @return the {@link List<? extends JobTypeView>} with status {@code 200 (OK)} and with list of jobTypes.
      */
+    @Operation(summary = "Get preferences", description = "Get user's job-types preferences")
     @GetMapping("/users/job-types")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.USER + "\") or hasAuthority(\"" + AuthoritiesConstants.MANAGER + "\")")
@@ -168,16 +178,17 @@ public class UserResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body all users.
      */
     @GetMapping("/users")
-    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
-    public ResponseEntity<List<UserDTO>> getAllUsers(Pageable pageable, @RequestParam(value = "searchTerm", defaultValue = "%%") String searchTerm) {
+    @AdminSecured
+    public ResponseEntity<List<UserDTO>> getAllUsers(Pageable pageable, @RequestParam Optional<String> searchTerm) {
         final Page<UserDTO> page = userService.getAllManagedUsers(pageable, searchTerm);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
 
+    @Operation(summary = "Get users from company", description = "Get all users from company with pagination.")
     @GetMapping("/users/manager")
     @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.MANAGER + "\")")
-    public ResponseEntity<List<UserDTO>> getAllUsersByManager(Pageable pageable, @RequestParam(value = "searchTerm", defaultValue = "%%") String searchTerm) {
+    public ResponseEntity<List<UserDTO>> getAllUsersByManager(Pageable pageable, @RequestParam Optional<String> searchTerm) {
         final Page<UserDTO> page = userService.getAllManagedUsersByManager(pageable, searchTerm);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
@@ -188,7 +199,7 @@ public class UserResource {
      * @return a string list of all roles.
      */
     @GetMapping("/users/authorities")
-    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
+    @AdminSecured
     public List<String> getAuthorities() {
         return userService.getAuthorities();
     }
@@ -199,6 +210,7 @@ public class UserResource {
      * @param login the login of the user to find.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the "login" user, or with status {@code 404 (Not Found)}.
      */
+    @Hidden
     @GetMapping("/users/{login:" + Constants.LOGIN_REGEX + "}")
     public UserView getUser(@PathVariable String login) {
         log.debug("REST request to get User : {}", login);
@@ -211,7 +223,9 @@ public class UserResource {
      * @param id the id of the user to delete.
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
+    @Operation(summary = "Delete user")
     @DeleteMapping("/users/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\") or hasAuthority(\"" + AuthoritiesConstants.MANAGER + "\")")
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
         log.debug("REST request to delete User: {}", id);
