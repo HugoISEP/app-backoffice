@@ -231,7 +231,7 @@ public class MissionServiceTest {
 
 
         Pageable pageable = PageRequest.of(0, 10);
-        Page<Mission> missions = missionService.getAllMissionByCompany(pageable, "%%");
+        Page<Mission> missions = missionService.getAllMissionByCompany(pageable, Optional.of("%%"));
         List<Long> missionViewIds = missions.getContent().stream().map(Mission::getId).sorted().collect(Collectors.toList());
 
         assertTrue(missionViewIds.contains(mission.getId()));

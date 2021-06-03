@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.Objects;
 
 
@@ -48,7 +49,6 @@ public class MissionService {
     public MissionDTO getById(Long id){
         hasAuthorization(id);
         Mission mission = repository.findById(id).orElseThrow(() -> new BadRequestAlertException("position doesn't exist", ENTITY_NAME, "id doesn't exist"));
-        System.out.println("AFTER : " + mission.getPositions());
         return mapper.asDTO(mission);
     }
 
@@ -84,10 +84,10 @@ public class MissionService {
         return mapper.asDTO(repository.save(mission));
     }
 
-    public Page<Mission> getAllMissionByCompany(Pageable pageable, String searchTerm){
+    public Page<Mission> getAllMissionByCompany(Pageable pageable, Optional<String> searchTerm){
         UserDTO user = userService.getUserWithAuthorities()
             .map(UserDTO::new)
             .orElseThrow(() -> new ResourceNotFoundException("user not found", ENTITY_NAME, "id exists"));
-        return repository.findAllByCompanyId(user.getCompany().getId(), searchTerm, pageable);
+        return repository.findAllByCompanyId(user.getCompany().getId(), searchTerm.orElse("%%"), pageable);
     }
 }

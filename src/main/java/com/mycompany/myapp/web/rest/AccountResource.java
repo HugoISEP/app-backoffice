@@ -15,12 +15,17 @@ import com.mycompany.myapp.web.rest.vm.KeyAndPasswordVM;
 import com.mycompany.myapp.web.rest.vm.ManagedUserVM;
 import static com.mycompany.myapp.config.Constants.AVAILABLE_LANGUAGES;
 
+import io.swagger.v3.oas.annotations.Hidden;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -35,8 +40,9 @@ import java.util.*;
  * REST controller for managing the current user's account.
  */
 @RestController
-@RequestMapping("/api")
 @RequiredArgsConstructor
+@Tag(name = "Account", description = "Endpoints for Account resource")
+@RequestMapping(value = "/api", produces = MediaType.APPLICATION_JSON_VALUE)
 public class AccountResource {
 
     private static class AccountResourceException extends RuntimeException {
@@ -68,6 +74,7 @@ public class AccountResource {
      * @throws EmailAlreadyUsedException {@code 400 (Bad Request)} if the email is already used.
      * @throws LoginAlreadyUsedException {@code 400 (Bad Request)} if the login is already used.
      */
+    @Operation(description="Create a new account", summary = "Register account")
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
     public void registerUserAccount(@Valid @RequestBody ManagedUserVM managedUserVM, @RequestParam(value = "deviceToken") String deviceToken) throws Exception{
@@ -86,6 +93,7 @@ public class AccountResource {
      * @throws RuntimeException {@code 500 (Internal Server Error)} if the user couldn't be activated.
      */
     @GetMapping("/activate")
+    @Hidden // We probably don't need this in an OpenAPI
     public void activateAccount(@RequestParam(value = "key") String key, @RequestParam(value = "id") Long id, HttpServletResponse response) {
         User user = userService.activateRegistration(key)
             .orElse(userRepository.findById(id).orElseThrow(() -> new AccountResourceException("No user was found for this activation key")));      // Prevent from multiple clicks on link
@@ -106,6 +114,7 @@ public class AccountResource {
      * @return the login if the user is authenticated.
      */
     @GetMapping("/authenticate")
+    @Hidden
     public String isAuthenticated(HttpServletRequest request) {
         log.debug("REST request to check if the current user is authenticated");
         return request.getRemoteUser();
@@ -118,8 +127,9 @@ public class AccountResource {
      * @throws RuntimeException {@code 500 (Internal Server Error)} if the user couldn't be returned.
      */
     @Transactional
+    @Operation(summary = "Get account with language", description = "Retrieve current account and change language if needed")
     @GetMapping("/account")
-    public UserView getAccount(@RequestParam(value = "deviceToken", required = false) String deviceToken,
+    public UserView getAccount(@Parameter(hidden = true) @RequestParam(value = "deviceToken", required = false) String deviceToken, //Device token shouldn't be on OpenAPI
                                @RequestParam(value = "language", required = false) String language) {
         User user = userService.getUserWithAuthorities()
             .orElseThrow(() -> new AccountResourceException("User could not be found"));
@@ -139,6 +149,7 @@ public class AccountResource {
      * @throws RuntimeException {@code 500 (Internal Server Error)} if the user login wasn't found.
      */
     @PostMapping("/account")
+    @Operation(summary = "Update User", description = "Update name, email or language of account")
     public void saveAccount(@Valid @RequestBody UserDTO userDTO) {
         String userLogin = SecurityUtils.getCurrentUserLogin().orElseThrow(() -> new AccountResourceException("Current user login not found"));
         Optional<User> existingUser = userRepository.findOneByEmailIgnoreCase(userDTO.getEmail());
@@ -160,6 +171,7 @@ public class AccountResource {
      * @throws InvalidPasswordException {@code 400 (Bad Request)} if the new password is incorrect.
      */
     @PostMapping(path = "/account/change-password")
+    @Operation(summary = "Change password", description = "Set a new password for current account with current password")
     public void changePassword(@RequestBody PasswordChangeDTO passwordChangeDto) {
         if (!checkPasswordLength(passwordChangeDto.getNewPassword())) {
             throw new InvalidPasswordException();
@@ -173,6 +185,7 @@ public class AccountResource {
      * @param mail the mail of the user.
      */
     @PostMapping(path = "/account/reset-password/init")
+    @Hidden
     public void requestPasswordReset(@RequestBody String mail) {
         Optional<User> user = userService.requestPasswordReset(mail);
         if (user.isPresent()) {
@@ -192,6 +205,7 @@ public class AccountResource {
      * @throws RuntimeException {@code 500 (Internal Server Error)} if the password could not be reset.
      */
     @PostMapping(path = "/account/reset-password/finish")
+    @Hidden
     public void finishPasswordReset(@RequestBody KeyAndPasswordVM keyAndPassword) {
         if (!checkPasswordLength(keyAndPassword.getNewPassword())) {
             throw new InvalidPasswordException();

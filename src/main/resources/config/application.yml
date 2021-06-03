@@ -147,15 +147,32 @@ jhipster:
     from: hugoISEP@localhost
   swagger:
     default-include-pattern: /api/.*
-    title: hugoISEP API
-    description: hugoISEP API documentation
-    version: 0.0.1
-    terms-of-service-url:
-    contact-name:
-    contact-url:
-    contact-email:
-    license: unlicensed
-    license-url:
+    title: JE Consultants API
+    description: "
+      ### Introduction\n
+      This application provides access from JE Consultants application. It is aimed to be integrated to Junior Entreprises tools, to automate tasks.\n
+      This API is documented in **OpenAPI format**.\n
+      ### Authentication methods\n
+      Authentication is required to all endpoints, excluding registration and login ones.\n
+      A non-authentication will return a **401 Unauthorized**.\n
+      Missing authorizations (due to inappropriate Junior Entreprise) will return a **403 Forbidden**.\n
+      This app provides two ways of authentication:\n
+      #### JWT\n
+      You can use a JWT to authenticate to the API, which can be granted with username and password.\n
+      #### API Token\n
+      You can generate API Token from Back-Office to consume API.\n
+      ### Cross-Origin Resource Sharing\n
+      This API features Cross-Origin Resource Sharing (CORS) implemented in compliance with  [W3C spec](https://www.w3.org/TR/cors/).
+      And that allows cross-domain communication from the browser.\n
+      All responses have a wildcard same-origin which makes them completely public and accessible to everyone, including any code on any site.
+      "
+    version: 1.0.0
+    terms-of-service-url: https://www.juniorisep.com/je-consultants-cgu
+    contact-name: Junior ISEP
+    contact-url: https://www.juniorisep.com
+    contact-email: contact@juniorisep.com
+    license: Junior ISEP - All rights reserved
+    license-url: https://www.juniorisep.com/je-consultants-cgu
 # ===================================================================
 # Application specific properties
 # Add your own application properties here, see the ApplicationProperties class
@@ -166,3 +183,8 @@ jhipster:
 # ===================================================================
 
 # application:
+springdoc:
+  paths-to-exclude: /swagger-resources/**
+  swagger-ui:
+    operations-sorter: method
+    tags-sorter: alpha

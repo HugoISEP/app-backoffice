@@ -29,6 +29,7 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 
 @Service
@@ -70,11 +71,11 @@ public class PositionService {
         return repository.findAllByMissionIdAndDeletedAtIsNull(id);
     }
 
-    public Page<PositionView> getActivePositionsByUser(Pageable pageable, String searchTerm){
+    public Page<PositionView> getActivePositionsByUser(Pageable pageable, Optional<String> searchTerm){
         UserDTO user = userService.getUserWithAuthorities()
             .map(UserDTO::new)
             .orElseThrow(() -> new ResourceNotFoundException("user not found", ENTITY_NAME, "id exists"));
-        return repository.findAllByMissionCompanyIdAndStatusIsTrue(user.getCompany().getId(), searchTerm, pageable);
+        return repository.findAllByMissionCompanyIdAndStatusIsTrue(user.getCompany().getId(), searchTerm.orElse("%%"), pageable);
     }
 
 
