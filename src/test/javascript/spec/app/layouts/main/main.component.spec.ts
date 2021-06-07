@@ -4,7 +4,7 @@ import { Title } from '@angular/platform-browser';
 import { Subject } from 'rxjs';
 
 import { MainComponent } from 'app/layouts/main/main.component';
-import { HugoIsepTestModule } from '../../../test.module';
+import { BackofficeJETestModule } from '../../../test.module';
 import { MockRouter } from '../../../helpers/mock-route.service';
 
 describe('Component Tests', () => {
@@ -17,7 +17,7 @@ describe('Component Tests', () => {
 
     beforeEach(async(() => {
       TestBed.configureTestingModule({
-        imports: [HugoIsepTestModule],
+        imports: [BackofficeJETestModule],
         declarations: [MainComponent],
         providers: [Title],
       })
@@ -35,7 +35,7 @@ describe('Component Tests', () => {
 
     describe('page title', () => {
       let routerState: any;
-      const defaultPageTitle = 'HugoISEP';
+      const defaultPageTitle = 'BackofficeJE';
       const parentRoutePageTitle = 'parentTitle';
       const childRoutePageTitle = 'childTitle';
       const navigationEnd = new NavigationEnd(1, '', '');

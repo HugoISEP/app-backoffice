@@ -1,7 +1,7 @@
 version: '2'
 services:
-  hugoisep-app:
-    image: hugoisep
+  backoffice-je-app:
+    image: backoffice-je
     environment:
       - _JAVA_OPTIONS=-Xmx512m -Xms256m
       - SPRING_PROFILES_ACTIVE=prod,swagger
@@ -17,7 +17,7 @@ services:
     image: 'registry.dev.juniorisep.com/application-consultants-globale/confirmation-page'
     ports:
       - 5000:5000
-  #hugoisep-postgresql:
+  #backofficeje-postgresql:
   # extends:
   #  file: postgresql.yml
-  # service: hugoisep-postgresql
+  # service: backofficeje-postgresql

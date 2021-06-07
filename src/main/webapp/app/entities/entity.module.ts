@@ -25,4 +25,4 @@ import { RouterModule } from '@angular/router';
     ]),
   ],
 })
-export class HugoIsepEntityModule {}
+export class BackofficeJEEntityModule {}

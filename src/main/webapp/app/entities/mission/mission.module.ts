@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { HugoIsepSharedModule } from 'app/shared/shared.module';
+import { BackofficeJESharedModule } from 'app/shared/shared.module';
 import { RouterModule } from '@angular/router';
 import { MissionComponent } from './mission.component';
 import { MissionDetailComponent } from './mission-detail.component';
@@ -11,7 +11,7 @@ import { PositionDeleteDialogComponent } from '../position/position-delete-dialo
 import { NotificationSenderDialogComponent } from '../position/notification-sender-dialog.component';
 
 @NgModule({
-  imports: [HugoIsepSharedModule, RouterModule.forChild(missionRoute)],
+  imports: [BackofficeJESharedModule, RouterModule.forChild(missionRoute)],
   declarations: [
     MissionComponent,
     MissionDetailComponent,

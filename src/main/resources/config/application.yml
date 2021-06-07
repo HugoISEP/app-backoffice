@@ -59,7 +59,7 @@ management:
 
 spring:
   application:
-    name: hugoISEP
+    name: backofficeJE
   profiles:
     # The commented value for `active` can be replaced with valid Spring profiles to load.
     # Otherwise, it will be filled in by maven when building the JAR file
@@ -87,7 +87,7 @@ spring:
       hibernate.query.fail_on_pagination_over_collection_fetch: true
       hibernate.query.in_clause_parameter_padding: true
     hibernate:
-      ddl-auto: none
+      ddl-auto: update
       naming:
         physical-strategy: org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy
         implicit-strategy: org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy
@@ -97,13 +97,13 @@ spring:
     allow-bean-definition-overriding: true
   task:
     execution:
-      thread-name-prefix: hugo-isep-task-
+      thread-name-prefix: backoffice-je-task-
       pool:
         core-size: 2
         max-size: 50
         queue-capacity: 10000
     scheduling:
-      thread-name-prefix: hugo-isep-scheduling-
+      thread-name-prefix: backoffice-je-scheduling-
       pool:
         size: 2
   thymeleaf:
@@ -134,7 +134,7 @@ info:
 
 jhipster:
   clientApp:
-    name: 'hugoIsepApp'
+    name: 'backofficeJEApp'
   # By default CORS is disabled. Uncomment to enable.
   # cors:
   #     allowed-origins: "*"
@@ -144,11 +144,11 @@ jhipster:
   #     allow-credentials: true
   #     max-age: 1800
   mail:
-    from: hugoISEP@localhost
+    from: backofficeJE@localhost
   swagger:
     default-include-pattern: /api/.*
-    title: hugoISEP API
-    description: hugoISEP API documentation
+    title: backofficeJE API
+    description: backofficeJE API documentation
     version: 0.0.1
     terms-of-service-url:
     contact-name:

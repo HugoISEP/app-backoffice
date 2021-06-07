@@ -36,7 +36,7 @@ export class MainComponent implements OnInit {
   private updateTitle(): void {
     let pageTitle = this.getPageTitle(this.router.routerState.snapshot.root);
     if (!pageTitle) {
-      pageTitle = 'HugoISEP';
+      pageTitle = 'BackofficeJE';
     }
     this.titleService.setTitle(pageTitle);
   }

@@ -1,11 +1,11 @@
 version: '2'
 services:
-  hugoisep-postgresql:
+  backoffice-je-postgresql:
     image: postgres:12.3
     # volumes:
-    #     - ~/volumes/jhipster/hugoISEP/postgresql/:/var/lib/postgresql/data/
+    #     - ~/volumes/jhipster/backofficeJE/postgresql/:/var/lib/postgresql/data/
     environment:
-      - POSTGRES_USER=hugoISEP
+      - POSTGRES_USER=backofficeJE
       - POSTGRES_PASSWORD=
       - POSTGRES_HOST_AUTH_METHOD=trust
     ports:

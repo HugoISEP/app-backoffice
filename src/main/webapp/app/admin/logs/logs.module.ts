@@ -1,13 +1,13 @@
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { HugoIsepSharedModule } from 'app/shared/shared.module';
+import { BackofficeJESharedModule } from 'app/shared/shared.module';
 
 import { LogsComponent } from './logs.component';
 
 import { logsRoute } from './logs.route';
 
 @NgModule({
-  imports: [HugoIsepSharedModule, RouterModule.forChild([logsRoute])],
+  imports: [BackofficeJESharedModule, RouterModule.forChild([logsRoute])],
   declarations: [LogsComponent],
 })
 export class LogsModule {}

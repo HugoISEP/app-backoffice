@@ -17,7 +17,7 @@ logging:
   level:
     ROOT: DEBUG
     io.github.jhipster: DEBUG
-    com.mycompany.myapp: DEBUG
+    com.juniorisep.backofficeJE: DEBUG
 
 mobile-app:
   url: 'http://confirmation.cnje-staging.juniorisep.com'

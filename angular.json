@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "hugo-isep": {
+    "backoffice-je": {
       "root": "",
       "sourceRoot": "src/main/webapp",
       "projectType": "application",
@@ -29,7 +29,7 @@
       "architect": {}
     }
   },
-  "defaultProject": "hugo-isep",
+  "defaultProject": "backoffice-je",
   "cli": {
     "packageManager": "yarn"
   }

@@ -1,12 +1,12 @@
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 
-import { HugoIsepSharedModule } from 'app/shared/shared.module';
+import { BackofficeJESharedModule } from 'app/shared/shared.module';
 import { HOME_ROUTE } from './home.route';
 import { HomeComponent } from './home.component';
 
 @NgModule({
-  imports: [HugoIsepSharedModule, RouterModule.forChild([HOME_ROUTE])],
+  imports: [BackofficeJESharedModule, RouterModule.forChild([HOME_ROUTE])],
   declarations: [HomeComponent],
 })
-export class HugoIsepHomeModule {}
+export class BackofficeJEHomeModule {}

@@ -32,7 +32,7 @@ const LAYOUT_ROUTES = [navbarRoute, ...errorRoute];
         },
         {
           path: 'home',
-          loadChildren: () => import('./home/home.module').then(m => m.HugoIsepHomeModule),
+          loadChildren: () => import('./home/home.module').then(m => m.BackofficeJEHomeModule),
         },
         {
           path: 'login',
@@ -45,4 +45,4 @@ const LAYOUT_ROUTES = [navbarRoute, ...errorRoute];
   ],
   exports: [RouterModule],
 })
-export class HugoIsepAppRoutingModule {}
+export class BackofficeJEAppRoutingModule {}

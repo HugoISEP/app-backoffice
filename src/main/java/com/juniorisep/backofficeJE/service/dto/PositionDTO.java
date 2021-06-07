@@ -1,0 +1,27 @@
+package com.juniorisep.backofficeJE.service.dto;
+
+import com.juniorisep.backofficeJE.service.view.PositionView;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.time.LocalDateTime;
+
+@Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+public class PositionDTO implements PositionView {
+
+    private Long id;
+    private int duration;
+    private String description;
+    private int placesNumber;
+    private Float remuneration;
+    private LocalDateTime createdAt;
+    private boolean status;
+    private JobTypeDTO jobType;
+    private MissionUserDTO mission;
+    private LocalDateTime deletedAt;
+}
