@@ -19,6 +19,7 @@
     <include file="config/liquibase/changelog/20210123134320_changelog.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20210302214429_removeNotNullConstraintRemuneration.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20210314091855_addDevicesColumn.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20210608112939_changelog.xml" relativeToChangelogFile="false"/>
 
     <!-- jhipster-needle-liquibase-add-constraints-changelog - JHipster will add liquibase constraints changelogs here -->
     <!-- jhipster-needle-liquibase-add-incremental-changelog - JHipster will add incremental liquibase changelogs here -->
