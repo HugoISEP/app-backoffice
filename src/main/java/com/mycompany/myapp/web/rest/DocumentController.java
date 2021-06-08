@@ -38,9 +38,8 @@ public class DocumentController {
 
     @PostMapping()
     public DocumentDTO create(@RequestBody MultipartFile file,
-                              @RequestParam Long userId,
                               @RequestParam Long typeId) throws MinioException {
-        return service.create(file, userId, typeId);
+        return service.create(file, typeId);
     }
 
     @PutMapping("/{id}")

@@ -6,9 +6,11 @@ import com.mycompany.myapp.domain.User;
 import com.mycompany.myapp.repository.DocumentRepository;
 import com.mycompany.myapp.repository.DocumentTypeRepository;
 import com.mycompany.myapp.repository.UserRepository;
+import com.mycompany.myapp.security.SecurityUtils;
 import com.mycompany.myapp.service.dto.DocumentDTO;
 import com.mycompany.myapp.service.mapper.DocumentMapper;
 import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
+import com.mycompany.myapp.web.rest.errors.ResourceNotFoundException;
 import io.minio.errors.MinioException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -29,6 +31,7 @@ public class DocumentService {
     private final MinioService minioService;
     private final DocumentTypeRepository documentTypeRepository;
     private final UserRepository userRepository;
+    private final UserService userService;
 
     public DocumentDTO getById(Long id) throws MinioException {
         Document document = repository.findById(id).orElseThrow(() -> new BadRequestAlertException("document doesn't exist", ENTITY_NAME, "id doesn't exist"));
@@ -45,10 +48,11 @@ public class DocumentService {
         return mapper.asListDTO(documents);
     }
 
-    public DocumentDTO create(MultipartFile file, Long userId, Long typeId) throws MinioException {
+    public DocumentDTO create(MultipartFile file, Long typeId) throws MinioException {
         DocumentType documentType = documentTypeRepository.findById(typeId).orElseThrow(() -> new BadRequestAlertException("document type doesn't exist", ENTITY_NAME, "id doesn't exist"));
-        User user = userRepository.findById(userId).orElseThrow(() -> new BadRequestAlertException("user doesn't exist", ENTITY_NAME, "id doesn't exist"));
-        String filePath = String.format("%s/%s-%s", userId, documentType.getName(), LocalDateTime.now());
+        User user = userService.getUserWithAuthoritiesByLogin(SecurityUtils.getCurrentUserLogin().orElseThrow(() -> new BadRequestAlertException("User not found", ENTITY_NAME, "id doesn't exist")))
+            .orElseThrow(() -> new BadRequestAlertException("User not found", ENTITY_NAME, "id doesn't exist"));
+        String filePath = String.format("%s/%s-%s", user.getId(), documentType.getName(), LocalDateTime.now());
         Document document = new Document(documentType, filePath, user);
         minioService.uploadFile(file, filePath, Document.getBucket());
         return mapper.asDTO(repository.save(document));
