@@ -77,6 +77,15 @@ public class PositionService {
         return repository.findAllByMissionCompanyIdAndStatusIsTrue(user.getCompany().getId(), searchTerm, pageable);
     }
 
+    public Page<PositionView> getPositionsByUser(Pageable pageable, String searchTerm){
+        UserDTO user = userService.getUserWithAuthorities()
+            .map(UserDTO::new)
+            .orElseThrow(() -> new ResourceNotFoundException("user not found", ENTITY_NAME, "id exists"));
+        Page<PositionView> response = repository.findAllByMissionCompanyIdAndStatusIsTrue(user.getCompany().getId(), searchTerm, pageable);
+        log.debug(String.valueOf(response.getContent()));
+        return response;
+    }
+
 
     public PositionDTO addPosition(Long missionId, PositionDTO position){
         missionService.hasAuthorization(missionId);

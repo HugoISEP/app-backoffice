@@ -51,6 +51,16 @@ public class PositionController {
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
 
+    @GetMapping("/")
+    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.MANAGER + "\") or hasAuthority(\"" + AuthoritiesConstants.USER + "\")")
+    public ResponseEntity<Page<PositionView>> getPositionsByUser(@PageableDefault(size = 50) Pageable pageable,
+                                                                       @RequestParam(value = "searchTerm", defaultValue = "%%") String searchTerm){
+        Page<PositionView> page = service.getPositionsByUser(pageable, searchTerm);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
+        return new ResponseEntity<>(page, headers, HttpStatus.OK);
+    }
+
+
     @PostMapping("/mission/{missionId}")
     public PositionView addPosition(@PathVariable Long missionId, @RequestBody PositionDTO position){
         return service.addPosition(missionId, position);

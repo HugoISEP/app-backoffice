@@ -22,5 +22,6 @@ public class MissionDTO implements MissionView {
     private LocalDateTime createdAt;
     private List<PositionDTO> positions = new ArrayList<>();
     private Company company;
+    private LocalDateTime endedAt;
 
 }

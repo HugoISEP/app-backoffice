@@ -10,6 +10,7 @@ import javax.persistence.Entity;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -48,5 +49,7 @@ public class Mission {
     @CreationTimestamp
     private LocalDateTime createdAt;
     private LocalDateTime deletedAt;
+
+    private LocalDateTime endedAt;
 
 }
