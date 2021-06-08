@@ -55,7 +55,11 @@ public class DocumentService {
         String filePath = String.format("%s/%s-%s", user.getId(), documentType.getName(), LocalDateTime.now());
         Document document = new Document(documentType, filePath, user);
         minioService.uploadFile(file, filePath, Document.getBucket());
-        return mapper.asDTO(repository.save(document));
+        Document returnedDocument = repository.save(document);
+        System.out.println(returnedDocument);
+        DocumentDTO returnedDocumentDTO = mapper.asDTO(returnedDocument);
+        System.out.println(returnedDocumentDTO);
+        return returnedDocumentDTO;
     }
 
     public DocumentDTO edit(MultipartFile file, Long id) throws MinioException {

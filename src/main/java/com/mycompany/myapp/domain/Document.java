@@ -12,7 +12,6 @@ import static com.mycompany.myapp.config.Constants.DOCUMENT_BUCKET;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
 @Table(name = "document")
 public class Document {
     private static String bucket = DOCUMENT_BUCKET;
@@ -53,5 +52,15 @@ public class Document {
 
     public void setFilePath(String filePath) {
         this.filePath = filePath;
+    }
+
+    @Override
+    public String toString() {
+        return "Document{" +
+            "id=" + id +
+            ", type=" + type +
+            ", filePath='" + filePath + '\'' +
+            ", user=" + user.getLogin() +
+            '}';
     }
 }

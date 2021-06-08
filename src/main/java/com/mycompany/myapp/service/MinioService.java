@@ -1,9 +1,11 @@
 package com.mycompany.myapp.service;
 
+import com.mycompany.myapp.domain.Document;
 import io.minio.*;
 import io.minio.errors.*;
 import io.minio.http.Method;
 import io.minio.messages.Bucket;
+import org.mapstruct.Named;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -63,6 +65,11 @@ public class MinioService {
             throw new MinioException(e.getMessage());
         }
 
+    }
+
+    @Named("getFileUrl")
+    public String getUrlFromFile(Document document) throws MinioException {
+        return getFileUrl(document.getFilePath(), Document.getBucket());
     }
 
 }
