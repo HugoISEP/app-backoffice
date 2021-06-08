@@ -71,6 +71,11 @@ public class PositionController {
         return service.editPosition(position);
     }
 
+    @PutMapping("/{positionId}/bind/{userId}")
+    public PositionView bindUser(@PathVariable("positionId") Long positionId, @PathVariable("userId") Long userId) {
+        return service.bindUserToPosition(userId, positionId);
+    }
+
     @PostMapping("/{id}/notification")
     public ResponseEntity<Void> sendNotification(@PathVariable("id") Long id) {
         try {

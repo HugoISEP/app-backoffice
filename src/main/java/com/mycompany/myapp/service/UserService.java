@@ -364,6 +364,10 @@ public class UserService {
         }
     }
 
+    public User getUserById(Long id) {
+        return userRepository.findById(id).orElseThrow(()->new ResourceNotFoundException("User not found", "USER", "id not found"));
+    }
+
     public List<User> getUsersByCompany(Company company) {
         return userRepository.findAllByCompany(company);
     }

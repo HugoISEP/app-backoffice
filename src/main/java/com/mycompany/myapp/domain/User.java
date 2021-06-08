@@ -99,6 +99,9 @@ public class User extends AbstractAuditingEntity implements Serializable {
     @ElementCollection
     private List<String> devices = new ArrayList<>();
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Document> documents = new ArrayList<>();
+
     public Long getId() {
         return id;
     }
@@ -227,6 +230,10 @@ public class User extends AbstractAuditingEntity implements Serializable {
     public void setDevices(List<String> devices) {
         this.devices = devices;
     }
+
+    public List<Document> getDocuments() { return documents; }
+
+    public void setDocuments(List<Document> documents) { this.documents = documents; }
 
     @Override
     public boolean equals(Object o) {
