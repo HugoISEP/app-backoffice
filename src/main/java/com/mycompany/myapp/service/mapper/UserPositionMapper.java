@@ -12,11 +12,11 @@ import org.mapstruct.NullValuePropertyMappingStrategy;
 @Mapper(componentModel = "spring", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 public interface UserPositionMapper {
 
-    @Mapping(source = "user", target = "user", qualifiedByName = "userAsDto")
+    @Mapping(source = "user.login", target = "userLogin")
     @Mapping(target = "createdAt", ignore = true)
     UserPositionDto asDto(UserPosition in);
 
-    @Mapping(source = "user", target = "user", qualifiedByName = "userToDto")
+    @Mapping(source = "userLogin", target = "user.login", ignore = true)
     UserPosition fromDto(UserPositionDto in);
 
 
