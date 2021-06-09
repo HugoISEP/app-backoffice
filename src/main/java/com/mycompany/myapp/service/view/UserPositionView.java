@@ -6,7 +6,7 @@ public interface UserPositionView {
     Long getId();
     String getComment();
     Long getRemuneration();
-    UserView getUser();
+    String getUserLogin();
     PositionView getPosition();
     LocalDateTime getEndedAt();
     LocalDateTime getCreatedAt();

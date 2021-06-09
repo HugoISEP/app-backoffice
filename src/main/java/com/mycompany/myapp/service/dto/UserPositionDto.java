@@ -14,7 +14,7 @@ public class UserPositionDto implements UserPositionView {
     String comment;
     Long mark;
     Long remuneration;
-    UserDTO user;
+    String userLogin;
     PositionDTO position;
     LocalDateTime endedAt;
     LocalDateTime createdAt;
