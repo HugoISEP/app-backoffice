@@ -13,6 +13,7 @@ public interface MissionView {
     String getName();
     String getProjectManagerEmail();
     LocalDateTime getCreatedAt();
+    LocalDateTime getEndedAt();
     List<? extends PositionView> getPositions();
     @JsonIgnore
     Company getCompany();
