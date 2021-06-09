@@ -10,4 +10,5 @@ public interface UserPositionView {
     PositionView getPosition();
     LocalDateTime getEndedAt();
     LocalDateTime getCreatedAt();
+    Long getMark();
 }

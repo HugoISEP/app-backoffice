@@ -12,7 +12,7 @@ public class UserPositionDto implements UserPositionView {
 
     @Size(max = 2048)
     String comment;
-
+    Long mark;
     Long remuneration;
     UserDTO user;
     PositionDTO position;

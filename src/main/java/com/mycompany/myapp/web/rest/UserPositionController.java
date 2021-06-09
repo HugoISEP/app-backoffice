@@ -14,27 +14,30 @@ import javax.validation.Valid;
 
 @RestController
 @RequestMapping("api/user-position")
-@PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.MANAGER + "\")")
 @RequiredArgsConstructor
 public class UserPositionController {
 
     private final UserPositionService service;
 
+    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.MANAGER + "\")")
     @PutMapping("/{id}")
     public UserPositionDto update(@Valid @RequestBody UserPositionDto dto) {
         return service.update(dto);
     }
 
+    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.MANAGER + "\")")
     @GetMapping("/{id}")
     public UserPositionView getById(@PathVariable Long id) {
         return service.getViewById(id);
     }
 
+    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.MANAGER + "\")")
     @GetMapping("/user/{id}")
     public Page<UserPositionView> getByUser(Pageable page, @PathVariable Long id) {
         return service.getViewsPaginatedByUserId(page, id);
     }
 
+    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.MANAGER + "\")")
     @GetMapping("/position/{id}")
     public Page<UserPositionView> getByPosition(Pageable page, @PathVariable Long id) {
         return service.getViewsPaginatedByPositionId(page, id);
