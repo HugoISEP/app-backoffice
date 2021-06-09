@@ -7,12 +7,14 @@ import com.mycompany.myapp.service.dto.DocumentDTO;
 import com.mycompany.myapp.web.rest.errors.ResourceNotFoundException;
 import io.minio.errors.MinioException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
 @RestController
+@Slf4j
 @RequestMapping("api/document")
 @RequiredArgsConstructor
 public class DocumentController {
@@ -35,6 +37,14 @@ public class DocumentController {
         User user = userService.getUserWithAuthorities().orElseThrow(() -> new ResourceNotFoundException("User not found", "user", "id doesn't exist"));
         return service.getDocuments(user.getId());
     }
+
+    @GetMapping("/user/{login}")
+    public List<DocumentDTO> getDocumentsByUser(@PathVariable("login") String userLogin) {
+        Long id = userService.getUserByLogin(userLogin).getId();
+        log.debug(id.toString());
+        return service.getDocuments(id);
+    }
+
 
     @PostMapping()
     public DocumentDTO create(@RequestBody MultipartFile file,

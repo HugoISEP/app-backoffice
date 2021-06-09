@@ -40,6 +40,7 @@ import {
   faUserAlt,
   faKey,
   faPaperPlane,
+  faDownload,
 } from '@fortawesome/free-solid-svg-icons';
 
 export const fontAwesomeIcons = [
@@ -84,4 +85,5 @@ export const fontAwesomeIcons = [
   faUserAlt,
   faKey,
   faPaperPlane,
+  faDownload,
 ];

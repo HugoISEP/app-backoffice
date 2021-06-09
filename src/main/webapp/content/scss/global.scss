@@ -268,6 +268,10 @@ ui bootstrap tweaks
   font-size: calc(100% + 1vw + 1vh);
 }
 
+.border-3 {
+  border-width: 3px !important;
+}
+
 html,
 body {
   height: 100%;

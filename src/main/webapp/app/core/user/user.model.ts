@@ -16,6 +16,7 @@ export interface IUser {
   lastModifiedDate?: Date;
   password?: string;
   company?: ICompany;
+  documents?: IDocument[];
 }
 
 export class User implements IUser {
@@ -33,6 +34,18 @@ export class User implements IUser {
     public lastModifiedBy?: string,
     public lastModifiedDate?: Date,
     public password?: string,
-    public company?: ICompany
+    public company?: ICompany,
+    public documents?: IDocument[]
   ) {}
+}
+
+export interface IDocument {
+  id: any;
+  type: string;
+  fileUrl: string;
+  fileName: string;
+}
+
+export class Document {
+  constructor(public id?: any, public type?: string, public fileUrl?: string, public fileName?: string) {}
 }

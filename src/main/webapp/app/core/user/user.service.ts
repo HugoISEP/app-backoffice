@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 
 import { SERVER_API_URL } from 'app/app.constants';
 import { createRequestOption, Pagination } from 'app/shared/util/request-util';
-import { IUser } from './user.model';
+import { IDocument, IUser } from './user.model';
 
 @Injectable({ providedIn: 'root' })
 export class UserService {
