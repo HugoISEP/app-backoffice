@@ -70,7 +70,11 @@ module.exports = webpackMerge(commonConfig({ env: ENV }), {
                 'css-loader',
                 'postcss-loader'
             ]
-        }]
+        },{
+            test: /\.css$/,
+            loaders: 'style-loader!css-loader'
+          }
+        ]
     },
     optimization: {
         runtimeChunk: false,
