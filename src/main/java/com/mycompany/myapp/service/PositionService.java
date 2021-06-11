@@ -9,6 +9,7 @@ import com.mycompany.myapp.service.dto.PositionDTO;
 import com.mycompany.myapp.service.dto.PositionWithUserDTO;
 import com.mycompany.myapp.service.dto.UserDTO;
 import com.mycompany.myapp.service.mapper.PositionMapper;
+import com.mycompany.myapp.service.mapper.UserMapper;
 import com.mycompany.myapp.service.notification.NotificationService;
 import com.mycompany.myapp.service.notification.NotificationStatus;
 import com.mycompany.myapp.service.view.PositionView;
@@ -42,6 +43,7 @@ public class PositionService {
 
     private final PositionRepository repository;
     private final PositionMapper mapper;
+    private final UserMapper userMapper;
     private final MissionRepository missionRepository;
     private final CompanyRepository companyRepository;
     private final MissionService missionService;
@@ -63,6 +65,17 @@ public class PositionService {
     public PositionDTO getById(Long id){
         hasAuthorization(id);
         return mapper.asDto(repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("position doesn't exist", ENTITY_NAME, "id doesn't exist")));
+    }
+
+    public PositionWithUserDTO getWithUserById(Long id) {
+        hasAuthorization(id);
+        Position p = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("position doesn't exist", ENTITY_NAME, "id doesn't exist"));
+        List<UserPosition> positions = userPositionRepository.findByPosition(p);
+        if (positions.size() > 0){
+            return new PositionWithUserDTO(positions.get(0).getComment(), userMapper.userToUserDTO(positions.get(0).getUser()), positions.get(0).getMark(),mapper.asDto(p));
+        }
+        return new PositionWithUserDTO(null, null, null, mapper.asDto(p));
+
     }
 
     public List<PositionView> getByMissionId(Long id){

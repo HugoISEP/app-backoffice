@@ -38,6 +38,13 @@ public class PositionController {
         return service.getById(id);
     }
 
+    @GetMapping("/full/{id}")
+    public PositionWithUserDTO getFullById(@PathVariable Long id){
+        return service.getWithUserById(id);
+    }
+
+
+
     @GetMapping("/mission/{id}")
     public List<PositionView> getPositionsByMission(@PathVariable Long id){
         return service.getByMissionId(id);
