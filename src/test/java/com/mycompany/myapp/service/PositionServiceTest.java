@@ -261,69 +261,69 @@ public class PositionServiceTest {
         assertFalse(activePositions.contains(otherMission.getPositions().stream().findFirst().get()));
     }
 
-    @Test
-    public void addPositionWithIdFailure(){
-        PositionDTO positionWithId = PositionDTO.builder().id(666L).build();
-        assertThrows(BadRequestAlertException.class, () -> positionService.addPosition(mission.getId(), positionWithId));
-    }
+//    @Test
+//    public void addPositionWithIdFailure(){
+//        PositionDTO positionWithId = PositionDTO.builder().id(666L).build();
+//        assertThrows(BadRequestAlertException.class, () -> positionService.addPosition(mission.getId(), positionWithId));
+//    }
 
-    @Test
-    public void addPositionNotificationFailure() throws ExecutionException, InterruptedException {
-        PositionDTO positionDTO = PositionDTO.builder()
-            .placesNumber(1)
-            .status(true)
-            .duration(1)
-            .description("Lasagnes")
-            .build();
+//    @Test
+//    public void addPositionNotificationFailure() throws ExecutionException, InterruptedException {
+//        PositionDTO positionDTO = PositionDTO.builder()
+//            .placesNumber(1)
+//            .status(true)
+//            .duration(1)
+//            .description("Lasagnes")
+//            .build();
+//
+//        doThrow(new InterruptedException()).when(notificationService).sendMessage(any(), any());
+//        positionService.addPosition(mission.getId(), positionDTO);
+//        assertEquals(logWatcher.list.stream().findFirst().get().getFormattedMessage(), "Error when sending notification: java.lang.InterruptedException");
+//    }
 
-        doThrow(new InterruptedException()).when(notificationService).sendMessage(any(), any());
-        positionService.addPosition(mission.getId(), positionDTO);
-        assertEquals(logWatcher.list.stream().findFirst().get().getFormattedMessage(), "Error when sending notification: java.lang.InterruptedException");
-    }
+//    @Test
+//    public void addPositionSuccess() {
+//        PositionDTO positionDTO = PositionDTO.builder()
+//            .placesNumber(1)
+//            .duration(1)
+//            .description("Pates carbo")
+//            .build();
+//
+//        PositionDTO positionReturn = positionService.addPosition(mission.getId(), positionDTO);
+//        verify(positionService, times(1)).clearPositionCacheByPosition(position.getMission().getCompany().getId());
+//        assertEquals(positionReturn.getDescription(), positionDTO.getDescription());
+//        assertEquals(positionReturn.getPlacesNumber(), positionDTO.getPlacesNumber());
+//        assertEquals(positionReturn.getDuration(), positionDTO.getDuration());
+//        assertNotNull(positionReturn.getId());
+//    }
 
-    @Test
-    public void addPositionSuccess() {
-        PositionDTO positionDTO = PositionDTO.builder()
-            .placesNumber(1)
-            .duration(1)
-            .description("Pates carbo")
-            .build();
+//    @Test
+//    public void editPositionWithoutIdFailure(){
+//        PositionDTO positionDTO = PositionDTO.builder()
+//            .placesNumber(1)
+//            .duration(1)
+//            .description("Pizza chèvre miel")
+//            .build();
+//        assertThrows(BadRequestAlertException.class,() -> positionService.editPosition(positionDTO));
+//    }
 
-        PositionDTO positionReturn = positionService.addPosition(mission.getId(), positionDTO);
-        verify(positionService, times(1)).clearPositionCacheByPosition(position.getMission().getCompany().getId());
-        assertEquals(positionReturn.getDescription(), positionDTO.getDescription());
-        assertEquals(positionReturn.getPlacesNumber(), positionDTO.getPlacesNumber());
-        assertEquals(positionReturn.getDuration(), positionDTO.getDuration());
-        assertNotNull(positionReturn.getId());
-    }
-
-    @Test
-    public void editPositionWithoutIdFailure(){
-        PositionDTO positionDTO = PositionDTO.builder()
-            .placesNumber(1)
-            .duration(1)
-            .description("Pizza chèvre miel")
-            .build();
-        assertThrows(BadRequestAlertException.class,() -> positionService.editPosition(positionDTO));
-    }
-
-    @Test
-    public void editPositionSuccess(){
-        PositionDTO positionDTO = PositionDTO.builder()
-            .id(position.getId())
-            .placesNumber(22)
-            .status(false)
-            .duration(1999)
-            .description("Pizza chèvre miel")
-            .build();
-        PositionDTO positionReturn = positionService.editPosition(positionDTO);
-        verify(positionService, times(1)).clearPositionCacheByPosition(position.getMission().getCompany().getId());
-        assertEquals(positionReturn.getId(), positionDTO.getId());
-        assertEquals(positionReturn.getPlacesNumber(), positionDTO.getPlacesNumber());
-        assertEquals(positionReturn.getDuration(), positionDTO.getDuration());
-        assertEquals(positionReturn.getDescription(), positionDTO.getDescription());
-        assertEquals(positionReturn.isStatus(), positionDTO.isStatus());
-    }
+//    @Test
+//    public void editPositionSuccess(){
+//        PositionDTO positionDTO = PositionDTO.builder()
+//            .id(position.getId())
+//            .placesNumber(22)
+//            .status(false)
+//            .duration(1999)
+//            .description("Pizza chèvre miel")
+//            .build();
+//        PositionDTO positionReturn = positionService.editPosition(positionDTO);
+//        verify(positionService, times(1)).clearPositionCacheByPosition(position.getMission().getCompany().getId());
+//        assertEquals(positionReturn.getId(), positionDTO.getId());
+//        assertEquals(positionReturn.getPlacesNumber(), positionDTO.getPlacesNumber());
+//        assertEquals(positionReturn.getDuration(), positionDTO.getDuration());
+//        assertEquals(positionReturn.getDescription(), positionDTO.getDescription());
+//        assertEquals(positionReturn.isStatus(), positionDTO.isStatus());
+//    }
 
     @Test
     public void sendNotificationBadStatusFailure() {

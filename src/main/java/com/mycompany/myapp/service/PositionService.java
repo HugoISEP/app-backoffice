@@ -6,6 +6,7 @@ import com.mycompany.myapp.repository.PositionRepository;
 import com.mycompany.myapp.repository.MissionRepository;
 import com.mycompany.myapp.security.AuthoritiesConstants;
 import com.mycompany.myapp.service.dto.PositionDTO;
+import com.mycompany.myapp.service.dto.PositionWithUserDTO;
 import com.mycompany.myapp.service.dto.UserDTO;
 import com.mycompany.myapp.service.mapper.PositionMapper;
 import com.mycompany.myapp.service.notification.NotificationService;
@@ -86,7 +87,7 @@ public class PositionService {
     }
 
 
-    public PositionDTO addPosition(Long missionId, PositionDTO position){
+    public PositionDTO addPosition(Long missionId, PositionWithUserDTO position){
         missionService.hasAuthorization(missionId);
         Position newPosition = mapper.fromDTO(position);
         if (newPosition.getId() != null) {
@@ -104,20 +105,33 @@ public class PositionService {
             log.warn("Error when sending notification: " + e.toString());
         }
         Mission missionSaved = missionRepository.save(mission);
+        Position savedPosition = missionSaved.getPositions().stream().sorted((p1, p2) -> p2.getCreatedAt().compareTo(p1.getCreatedAt())).findFirst().get();
         this.clearPositionCacheByPosition(mission.getCompany().getId());
-        PositionDTO positionDTO = mapper.asDto(missionSaved.getPositions().stream().sorted((p1, p2) -> p2.getCreatedAt().compareTo(p1.getCreatedAt())).findFirst().get());
+        UserPosition newUserPosition = new UserPosition();
+        newUserPosition.setPosition(savedPosition);
+        newUserPosition.setUser(userService.getUserById(position.getUser().getId()));
+        newUserPosition.setMark(position.getMark());
+        newUserPosition.setComment(position.getComment());
+        userPositionRepository.save(newUserPosition);
+        PositionDTO positionDTO = mapper.asDto(savedPosition);
         return positionDTO;
     }
 
-    public PositionDTO editPosition(PositionDTO updatedPosition){
+    public PositionDTO editPosition(PositionWithUserDTO updatedPosition){
         if (updatedPosition.getId() == null) {
             throw new BadRequestAlertException("Cannot edit ", ENTITY_NAME, " id doesn't exist");
         }
         hasAuthorization(updatedPosition.getId());
+        UserPosition newUserPosition = new UserPosition();
 
         Position position = repository.findById(updatedPosition.getId()).orElseThrow(() -> new ResourceNotFoundException("position doesn't exist", ENTITY_NAME, "id doesn't exist"));
+        newUserPosition.setPosition(position);
+        newUserPosition.setUser(userService.getUserById(updatedPosition.getUser().getId()));
+        newUserPosition.setComment(updatedPosition.getComment());
+        newUserPosition.setMark(updatedPosition.getMark());
         mapper.updatePosition(mapper.fromDTO(updatedPosition), position);
         this.clearPositionCacheByPosition(position.getMission().getCompany().getId());
+        userPositionRepository.save(newUserPosition);
         return mapper.asDto(repository.save(position));
     }
 

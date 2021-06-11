@@ -3,6 +3,7 @@ package com.mycompany.myapp.web.rest;
 import com.mycompany.myapp.security.AuthoritiesConstants;
 import com.mycompany.myapp.service.PositionService;
 import com.mycompany.myapp.service.dto.PositionDTO;
+import com.mycompany.myapp.service.dto.PositionWithUserDTO;
 import com.mycompany.myapp.service.view.PositionView;
 import io.github.jhipster.web.util.HeaderUtil;
 import io.github.jhipster.web.util.PaginationUtil;
@@ -62,12 +63,12 @@ public class PositionController {
 
 
     @PostMapping("/mission/{missionId}")
-    public PositionView addPosition(@PathVariable Long missionId, @RequestBody PositionDTO position){
+    public PositionView addPosition(@PathVariable Long missionId, @RequestBody PositionWithUserDTO position){
         return service.addPosition(missionId, position);
     }
 
     @PutMapping
-    public PositionView edit(@Valid @RequestBody PositionDTO position){
+    public PositionView edit(@Valid @RequestBody PositionWithUserDTO position){
         return service.editPosition(position);
     }
 
