@@ -9,9 +9,12 @@ import { missionRoute } from './mission.route';
 import { PositionUpdateComponent } from '../position/position-update.component';
 import { PositionDeleteDialogComponent } from '../position/position-delete-dialog.component';
 import { NotificationSenderDialogComponent } from '../position/notification-sender-dialog.component';
+import { MatSelectModule } from '@angular/material/select';
+import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
+import { MatIconModule } from '@angular/material/icon';
 
 @NgModule({
-  imports: [HugoIsepSharedModule, RouterModule.forChild(missionRoute)],
+  imports: [HugoIsepSharedModule, RouterModule.forChild(missionRoute), MatSelectModule, NgxMatSelectSearchModule, MatIconModule],
   declarations: [
     MissionComponent,
     MissionDetailComponent,

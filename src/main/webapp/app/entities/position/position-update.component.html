@@ -1,108 +1,146 @@
 <div class="card jh-card">
-<div class="row justify-content-center">
-    <div class="col-8">
-        <form name="editForm" role="form" novalidate (ngSubmit)="save()" [formGroup]="editForm">
-            <h2 id="jhi-owner-heading" >{{editForm.get(['id'])!.value ? "Editer un poste": "Créer un poste"}}</h2>
+    <div class="row justify-content-center">
+        <div class="col-8">
+            <form name="editForm" role="form" novalidate (ngSubmit)="save()" [formGroup]="editForm">
+                <h2 id="jhi-owner-heading">{{editForm.get(['id'])!.value ? "Editer un poste" : "Créer un poste"}}</h2>
 
-            <div>
-                <jhi-alert-error></jhi-alert-error>
-                <div class="form-group">
-                    <label class="form-control-label" for="field_duration">Durée (en semaines)</label>
-                    <input type="number" class="form-control" name="duration" id="field_duration"
-                           formControlName="duration"/>
-                    <div *ngIf="editForm.get('duration')!.invalid && (editForm.get('duration')!.dirty || editForm.get('duration')!.touched)">
-                        <small class="form-text text-danger"
-                               *ngIf="editForm.get('duration')?.errors?.required">
-                            Ce champs est requis
-                        </small>
-                        <small class="form-text text-danger"
-                               *ngIf="editForm.get('duration')?.errors?.pattern">
-                            Nombre entier positif requis
-                        </small>
+                <div>
+                    <jhi-alert-error></jhi-alert-error>
+                    <div class="form-group">
+                        <label class="form-control-label" for="field_duration">Durée (en semaines)</label>
+                        <input type="number" class="form-control" name="duration" id="field_duration"
+                               formControlName="duration"/>
+                        <div
+                            *ngIf="editForm.get('duration')!.invalid && (editForm.get('duration')!.dirty || editForm.get('duration')!.touched)">
+                            <small class="form-text text-danger"
+                                   *ngIf="editForm.get('duration')?.errors?.required">
+                                Ce champs est requis
+                            </small>
+                            <small class="form-text text-danger"
+                                   *ngIf="editForm.get('duration')?.errors?.pattern">
+                                Nombre entier positif requis
+                            </small>
+                        </div>
                     </div>
-                </div>
 
-                <div class="form-group">
-                    <label class="form-control-label" for="field_placesNumber">Nombre de places</label>
-                    <input type="number" class="form-control" name="placesNumber" id="field_placesNumber"
-                           formControlName="placesNumber"/>
-                    <div *ngIf="editForm.get('placesNumber')!.invalid && (editForm.get('placesNumber')!.dirty || editForm.get('placesNumber')!.touched)">
-                        <small class="form-text text-danger"
-                               *ngIf="editForm.get('placesNumber')?.errors?.required">
-                            Ce champs est requis
-                        </small>
-                        <small class="form-text text-danger"
-                               *ngIf="editForm.get('placesNumber')?.errors?.pattern">
-                            Nombre entier positif requis
-                        </small>
+                    <div class="form-group">
+                        <label class="form-control-label" for="field_placesNumber">Nombre de places</label>
+                        <input type="number" class="form-control" name="placesNumber" id="field_placesNumber"
+                               formControlName="placesNumber"/>
+                        <div
+                            *ngIf="editForm.get('placesNumber')!.invalid && (editForm.get('placesNumber')!.dirty || editForm.get('placesNumber')!.touched)">
+                            <small class="form-text text-danger"
+                                   *ngIf="editForm.get('placesNumber')?.errors?.required">
+                                Ce champs est requis
+                            </small>
+                            <small class="form-text text-danger"
+                                   *ngIf="editForm.get('placesNumber')?.errors?.pattern">
+                                Nombre entier positif requis
+                            </small>
+                        </div>
                     </div>
-                </div>
 
-                <div class="form-group">
-                    <label class="form-control-label" for="field_remuneration">Rémunération</label>
-                    <div class="input-group mb-3">
-                        <span class="input-group-text" id="basic-addon1">€</span>
-                        <input type="number" class="form-control" name="remuneration" id="field_remuneration"
-                               formControlName="remuneration"/>
+                    <div class="form-group">
+                        <label class="form-control-label" for="field_remuneration">Rémunération</label>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon1">€</span>
+                            <input type="number" class="form-control" name="remuneration" id="field_remuneration"
+                                   formControlName="remuneration"/>
+                        </div>
+                        <div
+                            *ngIf="editForm.get('remuneration')!.invalid && (editForm.get('remuneration')!.dirty || editForm.get('remuneration')!.touched)">
+                            <small class="form-text text-danger"
+                                   *ngIf="editForm.get('remuneration')?.errors?.pattern">
+                                Nombre entier positif requis
+                            </small>
+                        </div>
                     </div>
-                    <div *ngIf="editForm.get('remuneration')!.invalid && (editForm.get('remuneration')!.dirty || editForm.get('remuneration')!.touched)">
-                        <small class="form-text text-danger"
-                               *ngIf="editForm.get('remuneration')?.errors?.pattern">
-                            Nombre entier positif requis
-                        </small>
+
+                    <div class="form-group">
+                        <label class="form-control-label" for="field_description">Description</label>
+                        <textarea class="form-control" name="description" id="field_description"
+                                  formControlName="description" rows="5"></textarea>
+                        <small class="float-right"
+                               [ngClass]="editForm.get('description')!.value?.length > 500 ? 'text-danger' : 'text-muted'">{{editForm.get('description')!.value?.length}}
+                            / 500</small>
+                        <div
+                            *ngIf="editForm.get('description')!.invalid && (editForm.get('description')!.dirty || editForm.get('description')!.touched)">
+                            <small class="form-text text-danger"
+                                   *ngIf="editForm.get('description')?.errors?.required">
+                                Ce champs est requis
+                            </small>
+                        </div>
                     </div>
-                </div>
 
-                <div class="form-group">
-                    <label class="form-control-label" for="field_description">Description</label>
-                    <textarea class="form-control" name="description" id="field_description"
-                              formControlName="description" rows="5"></textarea>
-                    <small class="float-right" [ngClass]="editForm.get('description')!.value?.length > 500 ? 'text-danger' : 'text-muted'">{{editForm.get('description')!.value?.length}} / 500</small>
-                    <div *ngIf="editForm.get('description')!.invalid && (editForm.get('description')!.dirty || editForm.get('description')!.touched)">
-                        <small class="form-text text-danger"
-                               *ngIf="editForm.get('description')?.errors?.required">
-                            Ce champs est requis
-                        </small>
+                    <div class="form-group">
+                        <label class="form-control-label" for="field_jobType">Type de poste</label>
+                        <select class="form-control" id="field_jobType" name="jobType" formControlName="jobType">
+                            <option [value]="null"></option>
+                            <option *ngFor="let jobTypeOption of jobTypes; trackBy: getJobId"
+                                    [ngValue]="jobTypeOption.id === editForm.get('jobType')!.value?.id ? editForm.get('jobType')!.value : jobTypeOption">{{ jobTypeOption.name }}</option>
+                        </select>
                     </div>
-                </div>
 
-                <div class="form-group">
-                    <label class="form-control-label" for="field_jobType">Type de poste</label>
-                    <select class="form-control" id="field_jobType" name="jobType" formControlName="jobType">
-                        <option [value]="null"></option>
-                        <option *ngFor="let jobTypeOption of jobTypes; trackBy: getId" [ngValue]="jobTypeOption.id === editForm.get('jobType')!.value?.id ? editForm.get('jobType')!.value : jobTypeOption" >{{ jobTypeOption.name }}</option>
-                    </select>
-                </div>
 
-                <div class="form-group">
-                    <div class="custom-control custom-switch">
-                        <input type="checkbox" class="custom-control-input" name="status" id="field_status" [formControlName]="'status'">
-                        <label class="custom-control-label" for="field_status" >Statut</label>
+                    <div class="form-group" style="margin-top:3em">
+                        <mat-form-field>
+                            <mat-select [formControl]="userCtrl" [compareWith]="compareFn" placeholder="Consultant">
+                                <mat-option>
+                                    <ngx-mat-select-search [formControl]="userFilterCtrl"
+                                                           placeholderLabel="Chercher un consultant..."
+                                                           noEntriesFoundLabel="Aucun consultant trouvé"
+                                    ></ngx-mat-select-search>
+                                </mat-option>
+                                <mat-option *ngFor="let user of users; trackBy: getUserId" [value]="user">
+                                    {{user.lastName + " " + user.firstName}}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
                     </div>
-                </div>
 
-            </div>
-            <div class="d-flex flex-row">
-                <div class="d-flex align-items-center mr-3">
-                    <button type="button" id="cancel-save" class="btn btn-secondary" (click)="previousState()">
-                        <fa-icon icon="ban"></fa-icon>&nbsp;<span>Annuler</span>
-                    </button>
-                </div>
-
-                <div class="d-flex align-items-center">
-                    <button *ngIf="!isSaving; else elseSavingBlock" type="submit" id="save-entity" [disabled]="editForm.invalid || isSaving" class="btn btn-primary">
-                        <fa-icon icon="save"></fa-icon>&nbsp;<span>Sauvegarder</span>
-                    </button>
-                </div>
-
-                <ng-template #elseSavingBlock>
-                    <div *ngIf="isSaving" class="spinner-border text-primary d-flex align-items-center ml-3" role="status">
-                        <span class="sr-only">Loading...</span>
+                    <div class="form-group" style="padding-top: 0px" *ngIf="userCtrl.value">
+                        <label class="form-control-label" for="field_comment">Commentaire</label>
+                        <textarea class="form-control" name="description" id="field_comment" formControlName="comment"
+                                  rows="5"></textarea>
                     </div>
-                </ng-template>
 
-            </div>
-        </form>
+                    <div class="form-group" style="padding-top: 0" *ngIf="userCtrl.value">
+                        <label for="mark">Notes (1-5):</label>
+                        <input type="number" id="mark" name="mark" formControlName="mark" min="1" max="5"/>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="custom-control custom-switch">
+                            <input type="checkbox" class="custom-control-input" name="status" id="field_status"
+                                   [formControlName]="'status'">
+                            <label class="custom-control-label" for="field_status">Statut</label>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="d-flex flex-row">
+                    <div class="d-flex align-items-center mr-3">
+                        <button type="button" id="cancel-save" class="btn btn-secondary" (click)="previousState()">
+                            <fa-icon icon="ban"></fa-icon>&nbsp;<span>Annuler</span>
+                        </button>
+                    </div>
+
+                    <div class="d-flex align-items-center">
+                        <button *ngIf="!isSaving; else elseSavingBlock" type="submit" id="save-entity"
+                                [disabled]="editForm.invalid || isSaving" class="btn btn-primary">
+                            <fa-icon icon="save"></fa-icon>&nbsp;<span>Sauvegarder</span>
+                        </button>
+                    </div>
+
+                    <ng-template #elseSavingBlock>
+                        <div *ngIf="isSaving" class="spinner-border text-primary d-flex align-items-center ml-3"
+                             role="status">
+                            <span class="sr-only">Loading...</span>
+                        </div>
+                    </ng-template>
+
+                </div>
+            </form>
+        </div>
     </div>
-</div>
 </div>

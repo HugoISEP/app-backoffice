@@ -42,7 +42,7 @@ spring:
       indent-output: true
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
-    url: jdbc:postgresql://localhost:5432/app_backoffice
+    url: jdbc:postgresql://localhost:5432/phoenix
     username: root
     password: root
     hikari:
@@ -64,7 +64,7 @@ spring:
   thymeleaf:
     cache: false
   minio:
-    url: http://localhost:9000
+    url: http://localhost:9001
     accessKey: adminadmin
     secretKey: adminadmin
     secure: false # secure if using https

@@ -1,6 +1,7 @@
-import { BasicIMission, IMission } from './mission.model';
+import { BasicIMission } from './mission.model';
 import { Moment } from 'moment';
 import { JobType } from 'app/shared/model/jobType.model';
+import { IUser } from 'app/core/user/user.model';
 
 export interface IPosition {
   id?: number;
@@ -12,6 +13,9 @@ export interface IPosition {
   createdAt?: Moment;
   jobType?: JobType;
   mission?: BasicIMission;
+  user?: IUser;
+  comment?: string;
+  mark?: string;
 }
 
 export class Position implements IPosition {

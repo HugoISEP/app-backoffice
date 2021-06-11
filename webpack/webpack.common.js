@@ -54,7 +54,7 @@ module.exports = (options) => ({
                 }
             },
             // Ignore warnings about System.import in Angular
-            { test: /[\/\\]@angular[\/\\].+\.js$/, parser: { system: true } },
+            { test: /[\/\\]@angular[\/\\].+\.js$/, parser: { system: true } }
         ]
     },
     plugins: [

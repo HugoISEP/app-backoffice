@@ -3,7 +3,7 @@ services:
   minio:
     image: minio/minio
     ports:
-      - '9000:9000'
+      - '9001:9000'
     command: server /data --address ":9000"
     environment:
       - MINIO_ACCESS_KEY=adminadmin

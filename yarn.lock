@@ -30,6 +30,22 @@
     ora "4.0.4"
     rxjs "6.5.5"
 
+"@angular/animations@11.2.3":
+  version "11.2.3"
+  resolved "https://registry.yarnpkg.com/@angular/animations/-/animations-11.2.3.tgz#518183e5f7b8c3b304020ea86d12cc3216142cc9"
+  integrity sha512-Z6sHIeTeeZrRAW83NI7FO7THF50cPCFkkuvVah3qmCqopY6FuoHKUBEENyGzQGH69LbGFYhEppY8KM/6JtVF6Q==
+  dependencies:
+    tslib "^2.0.0"
+
+"@angular/cdk@11.2.3":
+  version "11.2.3"
+  resolved "https://registry.yarnpkg.com/@angular/cdk/-/cdk-11.2.3.tgz#e4e0cba88a0db469bfd6e52d1c964461358215da"
+  integrity sha512-QehBMt36nNfXZ8nBGJLLUQlexzQv6rohQmEYXULHarAC3Ily8DnB9wDGJ4emlKyGz1MIVYR0tZP39RmQp0hH+g==
+  dependencies:
+    tslib "^2.0.0"
+  optionalDependencies:
+    parse5 "^5.0.0"
+
 "@angular/cli@10.0.0":
   version "10.0.0"
   resolved "https://registry.yarnpkg.com/@angular/cli/-/cli-10.0.0.tgz#5137aeb89d5d237d09f7c6b37437b0a6e65e224a"
@@ -111,6 +127,13 @@
     "@babel/core" "7.8.3"
     glob "7.1.2"
     yargs "15.3.0"
+
+"@angular/material@11.2.3":
+  version "11.2.3"
+  resolved "https://registry.yarnpkg.com/@angular/material/-/material-11.2.3.tgz#d38a63ea49f2c16c35752b8daab03addb59d98f1"
+  integrity sha512-esIDzEmShc+fhkbgLn4kYcmc855NShR2YuqyPHs7fxRXOlKkK9c2PHKjhk+Vd8Hf7gtilJwuCB4kReKMl0psWQ==
+  dependencies:
+    tslib "^2.0.0"
 
 "@angular/platform-browser-dynamic@10.0.0":
   version "10.0.0"
@@ -1268,6 +1291,13 @@
   version "6.1.0"
   resolved "https://registry.yarnpkg.com/@ng-bootstrap/ng-bootstrap/-/ng-bootstrap-6.1.0.tgz#fce7550a095aeac42108f76ac1ebd63caf8304e9"
   integrity sha512-2GzkNJBKdeHkaUqaCAqSILPft0IzzHjMfAlAuGY6/ZLlVQ0glt5MTbIXtIhSbjR+OvlrljoXFLrvzs1LGdmE+A==
+
+"@ng-select/ng-select@^6.1.0":
+  version "6.1.0"
+  resolved "https://registry.yarnpkg.com/@ng-select/ng-select/-/ng-select-6.1.0.tgz#c0575d963a1871dcf72d38186598c7c71d26dd49"
+  integrity sha512-uro/zIjL+TRWzbrzNN9IjIusOeLfhCn9cIr5Bq3AsJyxyU7Gdj9kOD5wVrrQ0NVkaQ1BJMcWmUvmYGBXLI6cnA==
+  dependencies:
+    tslib "^2.0.0"
 
 "@ngtools/webpack@10.0.0":
   version "10.0.0"
@@ -8735,6 +8765,13 @@ ngx-infinite-scroll@9.0.0:
     "@scarf/scarf" "0.1.5"
     opencollective-postinstall "^2.0.2"
 
+ngx-mat-select-search@^3.3.0:
+  version "3.3.0"
+  resolved "https://registry.yarnpkg.com/ngx-mat-select-search/-/ngx-mat-select-search-3.3.0.tgz#49e7b3a96e18d572043150062487e50fca2bd942"
+  integrity sha512-OLLkNpWdFvb+AKtKEuq0G48gz9l5HA1WuVBuayOubekpq3UlMUHh+xr9TFh5DX4VY6NektTzG/XYfdAh5Sg9dg==
+  dependencies:
+    tslib "^1.9.0"
+
 ngx-webstorage@5.0.0:
   version "5.0.0"
   resolved "https://registry.yarnpkg.com/ngx-webstorage/-/ngx-webstorage-5.0.0.tgz#e27d9673c2452ca000ff509cd5a8397924c5b433"
@@ -9527,7 +9564,7 @@ parse-srcset@^1.0.2:
   resolved "https://registry.yarnpkg.com/parse-srcset/-/parse-srcset-1.0.2.tgz#f2bd221f6cc970a938d88556abc589caaaa2bde1"
   integrity sha1-8r0iH2zJcKk42IVWq8WJyqqiveE=
 
-parse5@5.1.1:
+parse5@5.1.1, parse5@^5.0.0:
   version "5.1.1"
   resolved "https://registry.yarnpkg.com/parse5/-/parse5-5.1.1.tgz#f68e4e5ba1852ac2cadc00f4555fff6c2abb6178"
   integrity sha512-ugq4DFI0Ptb+WWjAdOK16+u/nHfiIrcE+sh8kZMaM0WllQKLI9rOUq6c2b7cwPkXdzfQESqvoqK6ug7U/Yyzug==

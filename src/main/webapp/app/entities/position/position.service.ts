@@ -23,7 +23,7 @@ export class PositionService {
   }
 
   getById(id: number): Observable<EntityResponseType> {
-    return this.http.get<IPosition>(`${this.resourceUrl}/${id}`, { observe: 'response' });
+    return this.http.get<IPosition>(`${this.resourceUrl}/full/${id}`, { observe: 'response' });
   }
 
   getAllByMission(missionId: number): Observable<EntityArrayResponseType> {
