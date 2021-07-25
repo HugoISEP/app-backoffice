@@ -25,9 +25,9 @@ public class ApiUser {
     @OneToOne
     private User user;
 
-    @CreationTimestamp
+    /*@CreationTimestamp
     @Column(updatable = false)
     private LocalDateTime createDateTime;
-
+    */
 
 }
