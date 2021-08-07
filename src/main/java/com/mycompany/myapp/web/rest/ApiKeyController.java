@@ -12,6 +12,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
@@ -26,11 +27,12 @@ public class ApiKeyController {
 
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
 
-    @GetMapping("/apiKey-authenticate/")
+    @GetMapping("/apiKey-authenticate")
+    @Transactional
     public ResponseEntity<?> authorize(@RequestHeader(KeyFilter.APIKEY_HEADER) String apiKey) {
-        Optional<ApiUser> user = fetchUserByKey(apiKey);
-        if (user.isPresent()){
-            setContextAuthentification(user.get());
+        Optional<ApiUser> apiUser = fetchUserByKey(apiKey);
+        if (apiUser.isPresent()){
+            setContextAuthentification(apiUser.get());
             HttpHeaders httpHeaders = new HttpHeaders();
             httpHeaders.add(KeyFilter.APIKEY_HEADER, "Bearer " + apiKey);
             return new ResponseEntity<>(null, httpHeaders, HttpStatus.OK);
@@ -42,8 +44,8 @@ public class ApiKeyController {
         return apiKeyService.fetchUserByKey(apiKey);
     }
 
-    public void setContextAuthentification (ApiUser user) {
-        LoginVM loginVM = apiKeyService.loginUser(user);
+    public void setContextAuthentification (ApiUser apiUser) {
+        LoginVM loginVM = apiKeyService.loginUser(apiUser);
         UsernamePasswordAuthenticationToken authenticationToken =
             new UsernamePasswordAuthenticationToken(loginVM.getUsername(), loginVM.getPassword());
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);

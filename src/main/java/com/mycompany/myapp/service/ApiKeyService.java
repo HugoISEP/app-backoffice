@@ -18,10 +18,10 @@ public class ApiKeyService {
         return apiKeyRepository.findOneByApiKey(apiKey);
     }
 
-    public LoginVM loginUser(ApiUser user) {
+    public LoginVM loginUser(ApiUser apiUser) {
         LoginVM login = new LoginVM();
-        login.setUsername(user.getUser().getEmail());
-        login.setPassword(user.getUser().getPassword());
+        login.setUsername(apiUser.getUser().getEmail());
+        login.setPassword(apiUser.getUser().getPassword());
         login.setRememberMe(true);
         return login;
     }
